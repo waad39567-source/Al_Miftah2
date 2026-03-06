@@ -15,14 +15,19 @@ trait ApiResponseTrait
         ], $statusCode);
     }
 
-    public function errorResponse(string $message = 'حدث خطأ ما', int $statusCode = 400,  $errors = null)
+    public function errorResponse(string $message = 'حدث خطأ ما', int $statusCode = 400, $errors = null, ?string $debug = null)
     {
         $response = [
             'success' => false,
             'message' => $message,
         ];
+
         if ($errors !== null) {
             $response['errors'] = $errors;
+        }
+
+        if ($debug !== null && config('app.debug')) {
+            $response['debug'] = $debug;
         }
 
         return response()->json($response, $statusCode);
