@@ -1,7 +1,7 @@
 {
   "info": {
-    "name": "Al-Miftah API",
-    "description": "Testing all authentication features",
+    "name": "Al-Miftah API - Test Suite",
+    "description": "Testing all authentication features including email verification",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -14,11 +14,36 @@
       "key": "token",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "unverified_user_email",
+      "value": "unverified@test.com",
+      "type": "string"
+    },
+    {
+      "key": "verified_user_email",
+      "value": "verified@test.com",
+      "type": "string"
+    },
+    {
+      "key": "verified_user_phone",
+      "value": "966501111111",
+      "type": "string"
+    },
+    {
+      "key": "inactive_user_email",
+      "value": "inactive@test.com",
+      "type": "string"
     }
   ],
   "item": [
     {
-      "name": "1. Register - User",
+      "name": "01. Register - New Unverified User",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/auth/register",
@@ -26,16 +51,109 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
           }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"name\": \"مستخدم عادي\",\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"phone\": \"01234567890\",\n    \"role\": \"user\"\n}"
+          "raw": "{\n    \"name\": \"مستخدم غير موثق\",\n    \"email\": \"{{unverified_user_email}}\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"phone\": \"966503333333\",\n    \"role\": \"user\"\n}"
         }
-      }
+      },
+      "response": []
     },
     {
-      "name": "2. Register - Owner",
+      "name": "02. Login - Unverified Account (Should Fail)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/login",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"{{unverified_user_email}}\",\n    \"password\": \"password123\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "03. Login - Invalid Credentials",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/login",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"wrong@test.com\",\n    \"password\": \"wrongpass\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "04. Login - Wrong Password",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/login",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"{{unverified_user_email}}\",\n    \"password\": \"wrongpassword\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05. Login - Already Verified User",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/login",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"{{verified_user_email}}\",\n    \"password\": \"password123\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "06. Register - Duplicate Email",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/auth/register",
@@ -43,16 +161,21 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
           }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"name\": \"مالك عقار\",\n    \"email\": \"owner@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"phone\": \"01234567891\",\n    \"role\": \"owner\"\n}"
+          "raw": "{\n    \"name\": \"مستخدم مكرر\",\n    \"email\": \"{{unverified_user_email}}\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\"\n}"
         }
-      }
+      },
+      "response": []
     },
     {
-      "name": "3. Register - Invalid Role",
+      "name": "07. Register - Invalid Role",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/auth/register",
@@ -60,16 +183,65 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
           }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"name\": \"تجربة\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"role\": \"admin\"\n}"
+          "raw": "{\n    \"name\": \"تجربة\",\n    \"email\": \"testinvalid@test.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"phone\": \"966505555555\",\n    \"role\": \"admin\"\n}"
         }
-      }
+      },
+      "response": []
     },
     {
-      "name": "4. Login - Success",
+      "name": "08. Verify Email (Set Current Time)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/verify-email",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"{{unverified_user_email}}\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "09. Verify Email - Already Verified",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/verify-email",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"{{verified_user_email}}\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "10. Login - After Verification (Success)",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/auth/login",
@@ -77,50 +249,21 @@
           {
             "key": "Content-Type",
             "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}"
-        }
-      }
-    },
-    {
-      "name": "5. Login - Wrong Password",
-      "request": {
-        "method": "POST",
-        "url": "{{base_url}}/auth/login",
-        "header": [
+          },
           {
-            "key": "Content-Type",
+            "key": "Accept",
             "value": "application/json"
           }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"wrongpassword\"\n}"
+          "raw": "{\n    \"email\": \"{{unverified_user_email}}\",\n    \"password\": \"password123\"\n}"
         }
-      }
+      },
+      "response": []
     },
     {
-      "name": "6. Login - Invalid Email",
-      "request": {
-        "method": "POST",
-        "url": "{{base_url}}/auth/login",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"email\": \"notfound@example.com\",\n    \"password\": \"password123\"\n}"
-        }
-      }
-    },
-    {
-      "name": "7. Get Current User (Me)",
+      "name": "11. Get Current User (Me)",
       "request": {
         "method": "GET",
         "url": "{{base_url}}/auth/me",
@@ -130,14 +273,29 @@
             "value": "Bearer {{token}}"
           },
           {
-            "key": "Content-Type",
+            "key": "Accept",
             "value": "application/json"
           }
         ]
-      }
+      },
+      "response": []
     },
     {
-      "name": "8. Change Password",
+      "name": "12. Get Me - Without Token",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/auth/me",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ]
+      },
+      "response": []
+    },
+    {
+      "name": "13. Change Password",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/auth/change-password",
@@ -148,6 +306,10 @@
           },
           {
             "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
             "value": "application/json"
           }
         ],
@@ -155,10 +317,11 @@
           "mode": "raw",
           "raw": "{\n    \"current_password\": \"password123\",\n    \"password\": \"newpassword123\",\n    \"password_confirmation\": \"newpassword123\"\n}"
         }
-      }
+      },
+      "response": []
     },
     {
-      "name": "9. Change Password - Wrong Current",
+      "name": "14. Change Password - Wrong Current",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/auth/change-password",
@@ -170,16 +333,21 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
           }
         ],
         "body": {
           "mode": "raw",
           "raw": "{\n    \"current_password\": \"wrongpassword\",\n    \"password\": \"newpassword123\",\n    \"password_confirmation\": \"newpassword123\"\n}"
         }
-      }
+      },
+      "response": []
     },
     {
-      "name": "10. Logout",
+      "name": "15. Logout",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/auth/logout",
@@ -191,12 +359,21 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
           }
-        ]
-      }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      },
+      "response": []
     },
     {
-      "name": "11. Login After Password Change",
+      "name": "16. Login After Password Change",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/auth/login",
@@ -204,26 +381,35 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
           }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"newpassword123\"\n}"
+          "raw": "{\n    \"email\": \"{{unverified_user_email}}\",\n    \"password\": \"newpassword123\"\n}"
         }
-      }
+      },
+      "response": []
     },
     {
-      "name": "12. Promote to Admin (By ID)",
+      "name": "17. Promote to Admin (By ID)",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/auth/promote-to-admin",
         "header": [
           {
             "key": "Authorization",
-            "value": "Bearer {{token}}"
+            "value": "Bearer {{admin_token}}"
           },
           {
             "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
             "value": "application/json"
           }
         ],
@@ -231,41 +417,51 @@
           "mode": "raw",
           "raw": "{\n    \"id\": 2\n}"
         }
-      }
+      },
+      "response": []
     },
     {
-      "name": "13. Promote to Admin (By Email)",
+      "name": "18. Promote to Admin (By Email)",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/auth/promote-to-admin",
         "header": [
           {
             "key": "Authorization",
-            "value": "Bearer {{token}}"
+            "value": "Bearer {{admin_token}}"
           },
           {
             "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
             "value": "application/json"
           }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"email\": \"owner@example.com\"\n}"
+          "raw": "{\n    \"email\": \"{{verified_user_email}}\"\n}"
         }
-      }
+      },
+      "response": []
     },
     {
-      "name": "14. Promote - User Not Found",
+      "name": "19. Promote - User Not Found",
       "request": {
         "method": "POST",
         "url": "{{base_url}}/auth/promote-to-admin",
         "header": [
           {
             "key": "Authorization",
-            "value": "Bearer {{token}}"
+            "value": "Bearer {{admin_token}}"
           },
           {
             "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
             "value": "application/json"
           }
         ],
@@ -273,20 +469,78 @@
           "mode": "raw",
           "raw": "{\n    \"id\": 999\n}"
         }
-      }
+      },
+      "response": []
     },
     {
-      "name": "15. Protect Route Without Token",
+      "name": "20. Create User (Admin Only)",
       "request": {
-        "method": "GET",
-        "url": "{{base_url}}/auth/me",
+        "method": "POST",
+        "url": "{{base_url}}/auth/users",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{admin_token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"مستخدم جديد من الأدمن\",\n    \"email\": \"admincreated@test.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"phone\": \"966509999999\",\n    \"role\": \"user\",\n    \"is_active\": true\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "21. Login - Inactive Account",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/login",
         "header": [
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
           }
-        ]
-      }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"inactive@test.com\",\n    \"password\": \"password123\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "22. Register - Owner Role",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/register",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"مالك عقار\",\n    \"email\": \"owner@test.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"phone\": \"966504444444\",\n    \"role\": \"owner\"\n}"
+        }
+      },
+      "response": []
     }
   ]
 }

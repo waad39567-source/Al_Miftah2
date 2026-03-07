@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthRequest;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Services\AuthService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
@@ -25,8 +26,7 @@ class AuthController extends Controller
 
             return $this->successResponse([
                 'user' => new UserResource($result['user']),
-                'token' => $result['token'],
-            ], 'تم التسجيل بنجاح', 201);
+            ], 'تم التسجيل بنجاح. لم يتم توثيق حسابك بعد يرجى التحقق من بريدك الالكتروني لتوثيق الحساب', 201);
         } catch (Throwable $e) {
             return $this->errorResponse('حدث خطأ أثناء التسجيل', 500, null, $e->getMessage());
         }
@@ -43,6 +43,10 @@ class AuthController extends Controller
 
             if ($result === false) {
                 return $this->errorResponse('الحساب غير نشط', 403);
+            }
+
+            if ($result === 'unverified') {
+                return $this->errorResponse('لم يتم توثيق حسابك بعد يرجى التحقق من بريدك الالكتروني لتوثيق الحساب', 403);
             }
 
             return $this->successResponse([
@@ -130,6 +134,29 @@ class AuthController extends Controller
             );
         } catch (Throwable $e) {
             return $this->errorResponse('حدث خطأ أثناء إنشاء المستخدم', 500, null, $e->getMessage());
+        }
+    }
+
+    public function verifyEmail(Request $request): JsonResponse
+    {
+        try {
+            $request->validate([
+                'email' => 'required|email|exists:users,email',
+            ]);
+
+            $user = User::where('email', $request->email)->first();
+
+            if (!is_null($user->email_verified_at)) {
+                return $this->errorResponse('تم توثيق البريد الإلكتروني مسبقاً', 400);
+            }
+
+            $user->update(['email_verified_at' => now()]);
+
+            return $this->successResponse([
+                'email_verified_at' => $user->email_verified_at,
+            ], 'تم توثيق البريد الإلكتروني بنجاح');
+        } catch (Throwable $e) {
+            return $this->errorResponse('حدث خطأ أثناء توثيق البريد الإلكتروني', 500, null, $e->getMessage());
         }
     }
 }

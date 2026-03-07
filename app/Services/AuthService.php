@@ -16,17 +16,15 @@ class AuthService
             'phone' => $data['phone'] ?? null,
             'role' => $data['role'] ?? 'user',
             'is_active' => true,
+            'email_verified_at' => null,
         ]);
-
-        $token = $user->createToken('auth-token')->plainTextToken;
 
         return [
             'user' => $user,
-            'token' => $token,
         ];
     }
 
-    public function login(array $data): array|false|null
+    public function login(array $data): array|false|null|string
     {
         $user = User::where('email', $data['email'])->first();
 
@@ -36,6 +34,10 @@ class AuthService
 
         if (!$user->is_active) {
             return false;
+        }
+
+        if (is_null($user->email_verified_at)) {
+            return 'unverified';
         }
 
         $token = $user->createToken('auth-token')->plainTextToken;

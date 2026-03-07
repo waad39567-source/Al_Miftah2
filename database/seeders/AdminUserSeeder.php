@@ -19,6 +19,33 @@ class AdminUserSeeder extends Seeder
                 'phone' => '01234567890',
                 'role' => 'admin',
                 'is_active' => true,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'verified@test.com'],
+            [
+                'name' => 'مستخدم موثق',
+                'email' => 'verified@test.com',
+                'password' => Hash::make('password123'),
+                'phone' => '966501111111',
+                'role' => 'user',
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'inactive@test.com'],
+            [
+                'name' => 'مستخدم غير نشط',
+                'email' => 'inactive@test.com',
+                'password' => Hash::make('password123'),
+                'phone' => '966502222222',
+                'role' => 'user',
+                'is_active' => false,
+                'email_verified_at' => now(),
             ]
         );
 
