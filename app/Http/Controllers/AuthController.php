@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthRequest;
 use App\Http\Resources\UserResource;
+use App\Jobs\SendVerificationEmailJob;
+use App\Mail\EmailVerification;
 use App\Models\User;
 use App\Services\AuthService;
 use App\Traits\ApiResponseTrait;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Throwable;
 
 class AuthController extends Controller
@@ -157,6 +159,27 @@ class AuthController extends Controller
             ], 'تم توثيق البريد الإلكتروني بنجاح');
         } catch (Throwable $e) {
             return $this->errorResponse('حدث خطأ أثناء توثيق البريد الإلكتروني', 500, null, $e->getMessage());
+        }
+    }
+
+    public function sendVerificationEmail(Request $request): JsonResponse
+    {
+        try {
+            $request->validate([
+                'email' => 'required|email|exists:users,email',
+            ]);
+
+            $user = User::where('email', $request->email)->first();
+
+            if (!is_null($user->email_verified_at)) {
+                return $this->errorResponse('تم توثيق البريد الإلكتروني مسبقاً', 400);
+            }
+
+            SendVerificationEmailJob::dispatch($user);
+
+            return $this->successResponse(null, 'تم إضافة إرسال رابط توثيق البريد الإلكتروني إلى قائمة الانتظار');
+        } catch (Throwable $e) {
+            return $this->errorResponse('حدث خطأ أثناء إضافة البريد الإلكتروني إلى قائمة الانتظار', 500, null, $e->getMessage());
         }
     }
 }
