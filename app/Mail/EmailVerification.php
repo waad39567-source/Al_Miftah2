@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
@@ -13,7 +14,7 @@ class EmailVerification extends Mailable
     use Queueable, SerializesModels;
 
     public function __construct(
-        public string $userName
+        public User $user
     ) {}
 
     public function envelope(): Envelope
@@ -27,6 +28,10 @@ class EmailVerification extends Mailable
     {
         return new Content(
             view: 'emails.email-verification',
+            with: [
+                'userName' => $this->user->name,
+                'verificationUrl' => config('app.frontend_url') . '/verify-email?token=' . $this->user->email,
+            ],
         );
     }
 }

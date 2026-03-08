@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Region extends Model
 {
-    protected $fillable = ['name', 'parent_id'];
+    protected $fillable = ['name', 'type', 'parent_id'];
 
     public function parent()
     {
@@ -21,5 +21,15 @@ class Region extends Model
     public function properties()
     {
         return $this->hasMany(Property::class);
+    }
+
+    public static function getTypes(): array
+    {
+        return [
+            'country' => 'دولة',
+            'governorate' => 'محافظة',
+            'city' => 'مدينة',
+            'neighborhood' => 'حي',
+        ];
     }
 }

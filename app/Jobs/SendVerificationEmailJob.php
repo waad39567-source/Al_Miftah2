@@ -25,7 +25,7 @@ class SendVerificationEmailJob implements ShouldQueue
         Log::info('Sending verification email to: ' . $this->user->email);
         
         try {
-            Mail::to($this->user->email)->send(new EmailVerification($this->user->name));
+            Mail::to($this->user->email)->send(new EmailVerification($this->user));
             Log::info('Email sent successfully to: ' . $this->user->email);
         } catch (\Exception $e) {
             Log::error('Failed to send email: ' . $e->getMessage());
