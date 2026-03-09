@@ -13,6 +13,28 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Throwable;
 
+/**
+ * @OA\Info(
+ *     title="شركة المفتاح API",
+ *     version="1.0.0",
+ *     description="API للعقارات ونظام المستخدمين",
+ *     @OA\Contact(
+ *         email="info@almiftah.com"
+ *     )
+ * )
+ *
+ * @OA\Server(
+ *     url="http://127.0.0.1:8000/api",
+ *     description="Local Server"
+ * )
+ *
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT"
+ * )
+ */
 class AuthController extends Controller
 {
     use ApiResponseTrait;
@@ -21,6 +43,27 @@ class AuthController extends Controller
         private AuthService $authService
     ) {}
 
+    /**
+     * @OA\Post(
+     *     path="/auth/register",
+     *     summary="تسجيل مستخدم جديد",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "email", "password", "password_confirmation", "phone"},
+     *             @OA\Property(property="name", type="string", example="اسم المستخدم"),
+     *             @OA\Property(property="email", type="string", example="user@example.com"),
+     *             @OA\Property(property="password", type="string", example="password123"),
+     *             @OA\Property(property="password_confirmation", type="string", example="password123"),
+     *             @OA\Property(property="phone", type="string", example="966501234567"),
+     *             @OA\Property(property="role", type="string", example="user", enum={"user", "owner"})
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="تم التسجيل بنجاح"),
+     *     @OA\Response(response=422, description="خطأ في التحقق")
+     * )
+     */
     public function register(AuthRequest $request): JsonResponse
     {
         try {

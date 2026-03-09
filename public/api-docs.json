@@ -1,0 +1,402 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "شركة المفتاح API",
+    "description": "API للعقارات ونظام المستخدمين",
+    "version": "1.0.0",
+    "contact": {
+      "name": "شركة المفتاح",
+      "email": "info@almiftah.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8000/api",
+      "description": "Local Server"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "تسجيل مستخدم جديد",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "password", "password_confirmation", "phone"],
+                "properties": {
+                  "name": {"type": "string", "example": "اسم المستخدم"},
+                  "email": {"type": "string", "format": "email", "example": "user@example.com"},
+                  "password": {"type": "string", "example": "password123"},
+                  "password_confirmation": {"type": "string", "example": "password123"},
+                  "phone": {"type": "string", "example": "966501234567"},
+                  "role": {"type": "string", "enum": ["user", "owner"], "example": "user"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "تم التسجيل بنجاح"},
+          "422": {"description": "خطأ في التحقق"}
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "تسجيل الدخول",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {"type": "string", "format": "email"},
+                  "password": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "تم تسجيل الدخول بنجاح"},
+          "401": {"description": "بيانات الاعتماد غير صحيحة"},
+          "403": {"description": "الحساب غير نشط أو غير موثق"}
+        }
+      }
+    },
+    "/auth/send-verification-email": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "إرسال بريد توثيق",
+        "description": "يرسل رابط التوثيق عبر البريد الإلكتروني",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": {"type": "string", "format": "email"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "تم إضافة البريد إلى قائمة الانتظار"},
+          "400": {"description": "البريد موثق مسبقاً"}
+        }
+      }
+    },
+    "/auth/verify-email": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "توثيق البريد الإلكتروني",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": {"type": "string", "format": "email"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "تم توثيق البريد بنجاح"},
+          "400": {"description": "البريد موثق مسبقاً"}
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "جلب بيانات المستخدم الحالي",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {"description": "بيانات المستخدم"},
+          "401": {"description": "غير مصادق"}
+        }
+      }
+    },
+    "/auth/change-password": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "تغيير كلمة المرور",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["current_password", "password", "password_confirmation"],
+                "properties": {
+                  "current_password": {"type": "string"},
+                  "password": {"type": "string", "minLength": 8},
+                  "password_confirmation": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "تم تغيير كلمة المرور"},
+          "400": {"description": "كلمة المرور الحالية خطأ"}
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "تسجيل الخروج",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {"description": "تم تسجيل الخروج بنجاح"}
+        }
+      }
+    },
+    "/regions": {
+      "get": {
+        "tags": ["Regions"],
+        "summary": "جلب جميع المناطق",
+        "parameters": [
+          {"name": "type", "in": "query", "schema": {"type": "string", "enum": ["country", "governorate", "city", "neighborhood"]}},
+          {"name": "parent_id", "in": "query", "schema": {"type": "integer"}},
+          {"name": "search", "in": "query", "schema": {"type": "string"}},
+          {"name": "per_page", "in": "query", "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "قائمة المناطق"}
+        }
+      }
+    },
+    "/regions/{id}": {
+      "get": {
+        "tags": ["Regions"],
+        "summary": "جلب منطقة واحدة",
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}],
+        "responses": {
+          "200": {"description": "تفاصيل المنطقة"},
+          "404": {"description": "المنطقة غير موجودة"}
+        }
+      }
+    },
+    "/regions/types/list": {
+      "get": {
+        "tags": ["Regions"],
+        "summary": "جلب أنواع المناطق"
+      }
+    },
+    "/properties": {
+      "get": {
+        "tags": ["Properties"],
+        "summary": "جلب قائمة العقارات",
+        "parameters": [
+          {"name": "type", "in": "query", "schema": {"type": "string", "enum": ["sale", "rent"]}},
+          {"name": "region_id", "in": "query", "schema": {"type": "integer"}},
+          {"name": "search", "in": "query", "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {"description": "قائمة العقارات"}
+        }
+      }
+    },
+    "/properties/{id}": {
+      "get": {
+        "tags": ["Properties"],
+        "summary": "جلب عقار واحد",
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}],
+        "responses": {
+          "200": {"description": "تفاصيل العقار"},
+          "404": {"description": "العقار غير موجود"}
+        }
+      }
+    },
+    "/contact": {
+      "post": {
+        "tags": ["Contact"],
+        "summary": "إرسال طلب تواصل",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["property_id", "name", "phone"],
+                "properties": {
+                  "property_id": {"type": "integer"},
+                  "name": {"type": "string"},
+                  "phone": {"type": "string"},
+                  "message": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "تم إرسال الطلب"},
+          "422": {"description": "خطأ في التحقق"}
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "جلب جميع المستخدمين",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {"description": "قائمة المستخدمين"},
+          "403": {"description": "غير مصرح"}
+        }
+      }
+    },
+    "/admin/properties": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "جلب جميع العقارات (أدمن)",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {"description": "قائمة العقارات"},
+          "403": {"description": "غير مصرح"}
+        }
+      }
+    },
+    "/admin/properties/{id}/approve": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "الموافقة على عقار",
+        "security": [{"bearerAuth": []}],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}],
+        "responses": {
+          "200": {"description": "تم الموافقة"},
+          "404": {"description": "العقار غير موجود"}
+        }
+      }
+    },
+    "/admin/properties/{id}/reject": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "رفض عقار",
+        "security": [{"bearerAuth": []}],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["reason"],
+                "properties": {
+                  "reason": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "تم الرفض"},
+          "404": {"description": "العقار غير موجود"}
+        }
+      }
+    },
+    "/admin/contact-requests": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "جلب طلبات التواصل",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {"description": "قائمة الطلبات"}
+        }
+      }
+    },
+    "/admin/regions": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "إنشاء منطقة جديدة",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "type"],
+                "properties": {
+                  "name": {"type": "string"},
+                  "type": {"type": "string", "enum": ["country", "governorate", "city", "neighborhood"]},
+                  "parent_id": {"type": "integer", "nullable": true}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "تم الإنشاء"},
+          "403": {"description": "غير مصرح"}
+        }
+      }
+    },
+    "/admin/regions/{id}": {
+      "put": {
+        "tags": ["Admin"],
+        "summary": "تحديث منطقة",
+        "security": [{"bearerAuth": []}],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}],
+        "responses": {
+          "200": {"description": "تم التحديث"},
+          "403": {"description": "غير مصرح"},
+          "404": {"description": "المنطقة غير موجودة"}
+        }
+      },
+      "delete": {
+        "tags": ["Admin"],
+        "summary": "حذف منطقة",
+        "security": [{"bearerAuth": []}],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}],
+        "responses": {
+          "200": {"description": "تم الحذف"},
+          "403": {"description": "غير مصرح"},
+          "422": {"description": "لا يمكن الحذف"}
+        }
+      }
+    },
+    "/admin/statistics": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "جلب الإحصائيات",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {"description": "الإحصائيات"},
+          "403": {"description": "غير مصرح"}
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

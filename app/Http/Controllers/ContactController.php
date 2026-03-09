@@ -2,44 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ContactRequest;
-use App\Models\Property;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\ContactRequest;
+use App\Http\Resources\ContactResource;
+use App\Services\ContactService;
+use App\Traits\ApiResponseTrait;
+use Illuminate\Http\JsonResponse;
 
 class ContactController extends Controller
 {
-    public function store(Request $request)
+    use ApiResponseTrait;
+
+    public function __construct(
+        private ContactService $contactService
+    ) {}
+
+    public function store(ContactRequest $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'property_id' => 'required|exists:properties,id',
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'message' => 'nullable|string',
-        ]);
+        $contactRequest = $this->contactService->create($request->validated());
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $property = Property::find($request->property_id);
-
-        $contactRequest = ContactRequest::create([
-            'property_id' => $request->property_id,
-            'owner_id' => $property->owner_id,
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'message' => $request->message,
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'تم إرسال طلب التواصل بنجاح',
-            'data' => $contactRequest
-        ], 201);
+        return $this->successResponse(
+            new ContactResource($contactRequest),
+            'تم إرسال طلب التواصل بنجاح',
+            201
+        );
     }
 }

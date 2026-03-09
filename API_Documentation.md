@@ -520,10 +520,24 @@ Accept: application/json
 
 ### 2.1 جلب جميع المناطق
 
-**الوصف:** جلب قائمة المناطق الرئيسية مع المناطق الفرعية
+**الوصف:** جلب قائمة المناطق مع دعم التصفية والبحث
 
 **Method:** `GET`
 **URL:** `{{base_url}}/regions`
+
+**الـ Query Parameters (اختياري):**
+| Parameter | الوصف | مثال |
+|-----------|-------|------|
+| type | فلترة حسب النوع | `?type=city` |
+| parent_id | فلترة حسب المنطقة الأب | `?parent_id=1` |
+| parent_id | المناطق الرئيسية | `?parent_id=null` |
+| search | البحث في الاسم | `?search=رياض` |
+| has_children | فلترة حسب وجود أبناء | `?has_children=true` |
+| sort_by | ترتيب حسب الحقل | `?sort_by=name` |
+| sort_order | اتجاه الترتيب (asc/desc) | `?sort_order=asc` |
+| per_page | عدد النتائج في الصفحة | `?per_page=10` |
+
+**ملاحظة:** القيم المتاحة لـ type: `country`, `governorate`, `city`, `neighborhood`
 
 **Headers:**
 ```
@@ -593,6 +607,154 @@ Accept: application/json
 {
     "success": false,
     "message": "المنطقة غير موجودة"
+}
+```
+
+---
+
+### 2.3 جلب أنواع المناطق المتاحة
+
+**الوصف:** جلب قائمة أنواع المناطق
+
+**Method:** `GET`
+**URL:** `{{base_url}}/regions/types/list`
+
+---
+
+**✅ استجابة ناجحة (200):**
+```json
+{
+    "success": true,
+    "data": {
+        "country": "دولة",
+        "governorate": "محافظة",
+        "city": "مدينة",
+        "neighborhood": "حي"
+    }
+}
+```
+
+---
+
+### 2.4 جلب المناطق الرئيسية
+
+**الوصف:** جلب المناطق الرئيسية (التي ليس لها أب)
+
+**Method:** `GET`
+**URL:** `{{base_url}}/regions/root/list`
+
+---
+
+### 2.5 جلب المناطق الفرعية
+
+**الوصف:** جلب المناطق الفرعية لمنطقة معينة
+
+**Method:** `GET`
+**URL:** `{{base_url}}/regions/{id}/children`
+
+---
+
+### 2.6 إنشاء منطقة جديدة (أدمن فقط)
+
+**الوصف:** إنشاء منطقة جديدة
+
+**Method:** `POST`
+**URL:** `{{base_url}}/admin/regions`
+
+**Headers:**
+```
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+Accept: application/json
+```
+
+**Body (JSON):**
+```json
+{
+    "name": "الدمام",
+    "type": "city",
+    "parent_id": null
+}
+```
+
+**قواعد التحقق:**
+| الحقل | النوع | مطلوب | القيم الممكنة |
+|-------|------|-------|---------------|
+| name | string | نعم | |
+| type | string | نعم | country, governorate, city, neighborhood |
+| parent_id | integer | لا | معرف المنطقة الأب |
+
+---
+
+**✅ استجابة ناجحة (201):**
+```json
+{
+    "success": true,
+    "message": "تم إنشاء المنطقة بنجاح",
+    "data": {
+        "id": 5,
+        "name": "الدمام",
+        "type": "city",
+        "parent_id": null,
+        "created_at": "2026-03-08T12:00:00"
+    }
+}
+```
+
+**❌ استجابة خاطئة - غير مصرح (403):**
+```json
+{
+    "success": false,
+    "message": "غير مصرح لك بهذه العملية"
+}
+```
+
+---
+
+### 2.7 تحديث منطقة (أدمن فقط)
+
+**الوصف:** تحديث منطقة موجودة
+
+**Method:** `PUT`
+**URL:** `{{base_url}}/admin/regions/{id}`
+
+**Headers:**
+```
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+Accept: application/json
+```
+
+**Body (JSON):**
+```json
+{
+    "name": "الدمام - تحديث",
+    "type": "city"
+}
+```
+
+---
+
+### 2.8 حذف منطقة (أدمن فقط)
+
+**الوصف:** حذف منطقة
+
+**Method:** `DELETE`
+**URL:** `{{base_url}}/admin/regions/{id}`
+
+**Headers:**
+```
+Authorization: Bearer {{admin_token}}
+Accept: application/json
+```
+
+---
+
+**❌ استجابة خاطئة - منطقة لها أبناء (422):**
+```json
+{
+    "success": false,
+    "message": "لا يمكن حذف منطقة لها مناطق فرعية"
 }
 ```
 
