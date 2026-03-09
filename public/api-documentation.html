@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توثيق API شركة المفتاح</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+            color: #333;
+        }
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 { margin: 0; font-size: 2.5em; }
+        .header p { margin: 10px 0 0; opacity: 0.9; }
+        .nav {
+            background: #fff;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #1e3c72;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: #e8f0fe;
+            transition: all 0.3s;
+        }
+        .nav a:hover { background: #1e3c72; color: white; }
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .endpoint {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .endpoint-header {
+            background: #1e3c72;
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .method {
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+        .GET { background: #28a745; }
+        .POST { background: #007bff; }
+        .PUT { background: #fd7e14; }
+        .DELETE { background: #dc3545; }
+        .endpoint-url { font-family: monospace; font-size: 1.1em; }
+        .endpoint-body { padding: 20px; }
+        .section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-right: 4px solid #1e3c72;
+        }
+        .section h3 {
+            margin: 0 0 15px;
+            color: #1e3c72;
+            font-size: 1.1em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        th, td {
+            padding: 10px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
+        }
+        th { background: #e8f0fe; color: #1e3c72; }
+        .required { color: #dc3545; font-weight: bold; }
+        .optional { color: #6c757d; }
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+        .success { border-right: 4px solid #28a745; }
+        .error { border-right: 4px solid #dc3545; }
+        .warning { border-right: 4px solid #fd7e14; }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+        .badge-auth { background: #28a745; color: white; }
+        .badge-public { background: #6c757d; color: white; }
+        .badge-admin { background: #dc3545; color: white; }
+        .response-code {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .code-200 { background: #28a745; color: white; }
+        .code-201 { background: #17a2b8; color: white; }
+        .code-400 { background: #ffc107; color: black; }
+        .code-401 { background: #dc3545; color: white; }
+        .code-403 { background: #6f42c1; color: white; }
+        .code-404 { background: #fd7e14; color: white; }
+        .code-422 { background: #e0a800; color: black; }
+        .code-500 { background: #dc3545; color: white; }
+        .toc { position: sticky; top: 70px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .toc h3 { margin-top: 0; color: #1e3c72; }
+        .toc ul { list-style: none; padding: 0; }
+        .toc li { margin: 8px 0; }
+        .toc a { color: #333; text-decoration: none; }
+        .toc a:hover { color: #1e3c72; }
+        .two-col { display: grid; grid-template-columns: 1fr 300px; gap: 30px; }
+        @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏢 شركة المفتاح</h1>
+        <p>توثيق API - الإصدار 1.0.0</p>
+        <p>Base URL: <code>http://127.0.0.1:8000/api</code></p>
+    </div>
+    
+    <nav class="nav">
+        <ul>
+            <li><a href="#authentication">المصادقة</a></li>
+            <li><a href="#regions">المناطق</a></li>
+            <li><a href="#properties">العقارات</a></li>
+            <li><a href="#contact">طلبات التواصل</a></li>
+            <li><a href="#admin">الأدمن</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="two-col">
+            <div>
+                <!-- ==================== AUTHENTICATION ==================== -->
+                <div id="authentication" class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method POST">POST</span>
+                        <span class="endpoint-url">/auth/register</span>
+                        <span class="badge badge-public">عام</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📝 الوصف</h3>
+                            <p>تسجيل مستخدم جديد في النظام. يتم إنشاء حساب غير موثق في البداية.</p>
+                        </div>
+                        <div class="section">
+                            <h3>📋 Headers</h3>
+                            <table>
+                                <tr><th>المفتاح</th><th>القيمة</th></tr>
+                                <tr><td>Content-Type</td><td><code>application/json</code></td></tr>
+                                <tr><td>Accept</td><td><code>application/json</code></td></tr>
+                            </table>
+                        </div>
+                        <div class="section">
+                            <h3>📦 Request Body</h3>
+                            <table>
+                                <tr><th>الحقل</th><th>النوع</th><th>مطلوب</th><th>الوصف</th><th>القواعد</th><th>مثال</th></tr>
+                                <tr>
+                                    <td>name</td>
+                                    <td>string</td>
+                                    <td class="required">نعم</td>
+                                    <td>الاسم الكامل</td>
+                                    <td>required, max:255</td>
+                                    <td>"اسم المستخدم"</td>
+                                </tr>
+                                <tr>
+                                    <td>email</td>
+                                    <td>email</td>
+                                    <td class="required">نعم</td>
+                                    <td>البريد الإلكتروني</td>
+                                    <td>required, email, unique</td>
+                                    <td>"user@test.com"</td>
+                                </tr>
+                                <tr>
+                                    <td>password</td>
+                                    <td>string</td>
+                                    <td class="required">نعم</td>
+                                    <td>كلمة المرور</td>
+                                    <td>required, min:8, confirmed</td>
+                                    <td>"password123"</td>
+                                </tr>
+                                <tr>
+                                    <td>password_confirmation</td>
+                                    <td>string</td>
+                                    <td class="required">نعم</td>
+                                    <td>تأكيد كلمة المرور</td>
+                                    <td>required</td>
+                                    <td>"password123"</td>
+                                </tr>
+                                <tr>
+                                    <td>phone</td>
+                                    <td>string</td>
+                                    <td class="required">نعم</td>
+                                    <td>رقم الهاتف</td>
+                                    <td>required, unique, max:20</td>
+                                    <td>"966501234567"</td>
+                                </tr>
+                                <tr>
+                                    <td>role</td>
+                                    <td>string</td>
+                                    <td class="optional">لا</td>
+                                    <td>دور المستخدم</td>
+                                    <td>in:user,owner</td>
+                                    <td>"user"</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="section success">
+                            <h3>✅ استجابات ناجحة</h3>
+                            <span class="response-code code-201">201 Created</span>
+                            <div class="code-block">{
+  "success": true,
+  "message": "تم التسجيل بنجاح...",
+  "data": {
+    "user": {
+      "id": 1,
+      "name": "اسم المستخدم",
+      "email": "user@test.com",
+      "phone": "966501234567",
+      "role": "user",
+      "is_active": true,
+      "created_at": "2026-03-08T12:00:00"
+    }
+  }
+}</div>
+                        </div>
+                        <div class="section error">
+                            <h3>❌ استجابات خاطئة</h3>
+                            <span class="response-code code-422">422 Unprocessable</span>
+                            <p>خطأ في التحقق من البيانات</p>
+                            <div class="code-block">{
+  "success": false,
+  "message": "Validation error",
+  "errors": {
+    "email": ["البريد الإلكتروني مستخدم من قبل"],
+    "phone": ["رقم الهاتف مستخدم من قبل"]
+  }
+}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method POST">POST</span>
+                        <span class="endpoint-url">/auth/login</span>
+                        <span class="badge badge-public">عام</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📝 الوصف</h3>
+                            <p>تسجيل الدخول للحصول على token المصادقة.</p>
+                        </div>
+                        <div class="section">
+                            <h3>📋 Request Body</h3>
+                            <table>
+                                <tr><th>الحقل</th><th>النوع</th><th>مطلوب</th><th>مثال</th></tr>
+                                <tr><td>email</td><td>string</td><td class="required">نعم</td><td>"user@test.com"</td></tr>
+                                <tr><td>password</td><td>string</td><td class="required">نعم</td><td>"password123"</td></tr>
+                            </table>
+                        </div>
+                        <div class="section success">
+                            <h3>✅ 200 - نجاح</h3>
+                            <div class="code-block">{
+  "success": true,
+  "message": "تم تسجيل الدخول بنجاح",
+  "data": {
+    "user": {...},
+    "token": "1|abc123..."
+  }
+}</div>
+                        </div>
+                        <div class="section error">
+                            <h3>❌ 401 - بيانات خاطئة</h3>
+                            <div class="code-block">{"success": false, "message": "بيانات الاعتماد غير صحيحة"}</div>
+                            <h3>❌ 403 - غير موثق</h3>
+                            <div class="code-block">{"success": false, "message": "لم يتم توثيق حسابك بعد..."}</div>
+                            <h3>❌ 403 - غير نشط</h3>
+                            <div class="code-block">{"success": false, "message": "الحساب غير نشط"}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Send Verification Email -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method POST">POST</span>
+                        <span class="endpoint-url">/auth/send-verification-email</span>
+                        <span class="badge badge-public">عام</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section warning">
+                            <h3>⚠️ ملاحظة مهمة</h3>
+                            <p>هذا الـ API يضيف البريد الإلكتروني إلى Queue (قائمة الانتظار). يجب تشغيل <code>php artisan queue:work</code> لإرسال البريد فعلياً. رابط التوثيق يُرسل للمستخدم عبر البريد الإلكتروني وليس الواجهة.</p>
+                        </div>
+                        <div class="section">
+                            <h3>📋 Request Body</h3>
+                            <table>
+                                <tr><th>الحقل</th><th>النوع</th><th>مطلوب</th><th>مثال</th></tr>
+                                <tr><td>email</td><td>string</td><td class="required">نعم</td><td>"user@test.com"</td></tr>
+                            </table>
+                        </div>
+                        <div class="section success">
+                            <h3>✅ 200 - نجاح</h3>
+                            <div class="code-block">{
+  "success": true,
+  "message": "تم إضافة إرسال رابط توثيق البريد الإلكتروني إلى قائمة الانتظار",
+  "data": null
+}</div>
+                        </div>
+                        <div class="section error">
+                            <h3>❌ 400 - موثق مسبقاً</h3>
+                            <div class="code-block">{"success": false, "message": "تم توثيق البريد الإلكتروني مسبقاً"}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verify Email -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method POST">POST</span>
+                        <span class="endpoint-url">/auth/verify-email</span>
+                        <span class="badge badge-public">عام</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📝 الوصف</h3>
+                            <p>توثيق البريد الإلكتروني للمستخدم (يُستخدم عادة بعد النقر على الرابط في البريد).</p>
+                        </div>
+                        <div class="section">
+                            <h3>📋 Request Body</h3>
+                            <table>
+                                <tr><th>الحقل</th><th>النوع</th><th>مطلوب</th><th>مثال</th></tr>
+                                <tr><td>email</td><td>string</td><td class="required">نعم</td><td>"user@test.com"</td></tr>
+                            </table>
+                        </div>
+                        <div class="section success">
+                            <h3>✅ 200 - نجاح</h3>
+                            <div class="code-block">{
+  "success": true,
+  "message": "تم توثيق البريد الإلكتروني بنجاح",
+  "data": {"email_verified_at": "2026-03-08T12:00:00"}
+}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Get Current User -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method GET">GET</span>
+                        <span class="endpoint-url">/auth/me</span>
+                        <span class="badge badge-auth">مطلوب توكن</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📋 Headers</h3>
+                            <table>
+                                <tr><th>المفتاح</th><th>القيمة</th></tr>
+                                <tr><td>Authorization</td><td><code>Bearer {token}</code></td></tr>
+                            </table>
+                        </div>
+                        <div class="section success">
+                            <h3>✅ 200 - نجاح</h3>
+                            <div class="code-block">{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "اسم المستخدم",
+    "email": "user@test.com",
+    "phone": "966501234567",
+    "role": "user",
+    "is_active": true,
+    "created_at": "2026-03-08T12:00:00"
+  }
+}</div>
+                        </div>
+                        <div class="section error">
+                            <h3>❌ 401 - غير مصادق</h3>
+                            <div class="code-block">{"message": "Unauthenticated."}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Change Password -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method POST">POST</span>
+                        <span class="endpoint-url">/auth/change-password</span>
+                        <span class="badge badge-auth">مطلوب توكن</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📋 Request Body</h3>
+                            <table>
+                                <tr><th>الحقل</th><th>النوع</th><th>مطلوب</th><th>مثال</th></tr>
+                                <tr><td>current_password</td><td>string</td><td class="required">نعم</td><td>"oldpass123"</td></tr>
+                                <tr><td>password</td><td>string</td><td class="required">نعم</td><td>"newpass123"</td></tr>
+                                <tr><td>password_confirmation</td><td>string</td><td class="required">نعم</td><td>"newpass123"</td></tr>
+                            </table>
+                        </div>
+                        <div class="section success">
+                            <h3>✅ 200 - نجاح</h3>
+                            <div class="code-block">{"success": true, "message": "تم تغيير كلمة المرور بنجاح"}</div>
+                        </div>
+                        <div class="section error">
+                            <h3>❌ 400 - كلمة المرور الحالية خطأ</h3>
+                            <div class="code-block">{"success": false, "message": "كلمة المرور الحالية غير صحيحة"}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logout -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method POST">POST</span>
+                        <span class="endpoint-url">/auth/logout</span>
+                        <span class="badge badge-auth">مطلوب توكن</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📋 Headers</h3>
+                            <table>
+                                <tr><th>المفتاح</th><th>القيمة</th></tr>
+                                <tr><td>Authorization</td><td><code>Bearer {token}</code></td></tr>
+                            </table>
+                        </div>
+                        <div class="section success">
+                            <h3>✅ 200 - نجاح</h3>
+                            <div class="code-block">{"success": true, "message": "تم تسجيل الخروج بنجاح"}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== REGIONS ==================== -->
+                <div id="regions" class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method GET">GET</span>
+                        <span class="endpoint-url">/regions</span>
+                        <span class="badge badge-public">عام</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📝 الوصف</h3>
+                            <p>جلب قائمة المناطق مع دعم التصفية والبحث والترتيب.</p>
+                        </div>
+                        <div class="section">
+                            <h3>📋 Query Parameters (اختياري)</h3>
+                            <table>
+                                <tr><th>المعامل</th><th>الوصف</th><th>القيم الممكنة</th><th>مثال</th></tr>
+                                <tr><td>type</td><td>فلترة حسب النوع</td><td>country, governorate, city, neighborhood</td><td>?type=city</td></tr>
+                                <tr><td>parent_id</td><td>فلترة حسب المنطقة الأب</td><td>رقم أو null</td><td>?parent_id=1</td></tr>
+                                <tr><td>search</td><td>البحث في الاسم</td><td>نص</td><td>?search=رياض</td></tr>
+                                <tr><td>has_children</td><td>فلترة حسب وجود أبناء</td><td>true, false</td><td>?has_children=true</td></tr>
+                                <tr><td>sort_by</td><td>حقل الترتيب</td><td>name, created_at, type</td><td>?sort_by=name</td></tr>
+                                <tr><td>sort_order</td><td>اتجاه الترتيب</td><td>asc, desc</td><td>?sort_order=asc</td></tr>
+                                <tr><td>per_page</td><td>عدد النتائج</td><td>رقم</td><td>?per_page=10</td></tr>
+                            </table>
+                        </div>
+                        <div class="section success">
+                            <h3>✅ 200 - نجاح</h3>
+                            <div class="code-block">{
+  "success": true,
+  "data": {
+    "current_page": 1,
+    "data": [
+      {
+        "id": 1,
+        "name": "السعودية",
+        "type": "country",
+        "parent_id": null,
+        "created_at": "2026-03-08T12:00:00"
+      }
+    ],
+    "total": 10
+  }
+}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Get Single Region -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method GET">GET</span>
+                        <span class="endpoint-url">/regions/{id}</span>
+                        <span class="badge badge-public">عام</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📋 Parameters</h3>
+                            <table>
+                                <tr><th>المعامل</th><th>في</th><th>النوع</th><th>الوصف</th></tr>
+                                <tr><td>id</td><td>path</td><td>integer</td><td>معرف المنطقة</td></tr>
+                            </table>
+                        </div>
+                        <div class="section success">
+                            <h3>✅ 200 - نجاح</h3>
+                            <div class="code-block">{
+  "success": true,
+  "data": {
+    "id": 2,
+    "name": "الرياض",
+    "type": "city",
+    "parent_id": 1,
+    "children": [],
+    "properties": []
+  }
+}</div>
+                        </div>
+                        <div class="section error">
+                            <h3>❌ 404 - غير موجودة</h3>
+                            <div class="code-block">{"success": false, "message": "المنطقة غير موجودة"}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Region Types -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method GET">GET</span>
+                        <span class="endpoint-url">/regions/types/list</span>
+                        <span class="badge badge-public">عام</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📝 الوصف</h3>
+                            <p>جلب أنواع المناطق المتاحة.</p>
+                        </div>
+                        <div class="section success">
+                            <h3>✅ 200 - نجاح</h3>
+                            <div class="code-block">{
+  "success": true,
+  "data": {
+    "country": "دولة",
+    "governorate": "محافظة",
+    "city": "مدينة",
+    "neighborhood": "حي"
+  }
+}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== PROPERTIES ==================== -->
+                <div id="properties" class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method GET">GET</span>
+                        <span class="endpoint-url">/properties</span>
+                        <span class="badge badge-public">عام</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📝 الوصف</h3>
+                            <p>جلب قائمة العقارات المعتمدة مع الفلترة.</p>
+                        </div>
+                        <div class="section">
+                            <h3>📋 Query Parameters</h3>
+                            <table>
+                                <tr><th>المعامل</th><th>الوصف</th><th>مثال</th></tr>
+                                <tr><td>type</td><td>نوع العقار (sale/rent)</td><td>?type=sale</td></tr>
+                                <tr><td>region_id</td><td>معرف المنطقة</td><td>?region_id=2</td></tr>
+                                <tr><td>search</td><td>البحث في العنوان والوصف</td><td>?search=شقة</td></tr>
+                                <tr><td>per_page</td><td>عدد النتائج</td><td>?per_page=15</td></tr>
+                            </table>
+                        </div>
+                        <div class="section success">
+                            <h3>✅ 200 - نجاح</h3>
+                            <div class="code-block">{
+  "success": true,
+  "data": {
+    "current_page": 1,
+    "data": [{
+      "id": 1,
+      "title": "شقة فاخرة",
+      "description": "شقة جديدة",
+      "price": 500000,
+      "type": "sale",
+      "property_type": "apartment",
+      "area": 150,
+      "region_id": 2,
+      "location": "الرياض",
+      "status": "approved",
+      "is_active": true,
+      "owner": {...},
+      "region": {...},
+      "images": []
+    }]
+  }
+}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Get Single Property -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method GET">GET</span>
+                        <span class="endpoint-url">/properties/{id}</span>
+                        <span class="badge badge-public">عام</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📋 Parameters</h3>
+                            <table>
+                                <tr><th>المعامل</th><th>في</th><th>النوع</th></tr>
+                                <tr><td>id</td><td>path</td><td>integer</td></tr>
+                            </table>
+                        </div>
+                        <div class="section success">
+                            <h3>✅ 200 - نجاح</h3>
+                        </div>
+                        <div class="section error">
+                            <h3>❌ 404 - غير موجود</h3>
+                            <div class="code-block">{"success": false, "message": "العقار غير موجود"}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== CONTACT ==================== -->
+                <div id="contact" class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method POST">POST</span>
+                        <span class="endpoint-url">/contact</span>
+                        <span class="badge badge-public">عام</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📝 الوصف</h3>
+                            <p>إرسال طلب تواصل مع مالك العقار.</p>
+                        </div>
+                        <div class="section">
+                            <h3>📋 Request Body</h3>
+                            <table>
+                                <tr><th>الحقل</th><th>النوع</th><th>مطلوب</th><th>مثال</th></tr>
+                                <tr><td>property_id</td><td>integer</td><td class="required">نعم</td><td>1</td></tr>
+                                <tr><td>name</td><td>string</td><td class="required">نعم</td><td>"اسم المرسل"</td></tr>
+                                <tr><td>phone</td><td>string</td><td class="required">نعم</td><td>"966501234567"</td></tr>
+                                <tr><td>message</td><td>string</td><td class="optional">لا</td><td>"رسالة"</td></tr>
+                            </table>
+                        </div>
+                        <div class="section success">
+                            <h3>✅ 201 - نجاح</h3>
+                            <div class="code-block">{
+  "success": true,
+  "message": "تم إرسال طلب التواصل بنجاح",
+  "data": {
+    "id": 1,
+    "property_id": 1,
+    "owner_id": 5,
+    "name": "اسم المرسل",
+    "phone": "966501234567",
+    "message": "رسالة",
+    "created_at": "2026-03-08T12:00:00"
+  }
+}</div>
+                        </div>
+                        <div class="section error">
+                            <h3>❌ 422 - خطأ في التحقق</h3>
+                            <div class="code-block">{
+  "success": false,
+  "message": "Validation error",
+  "errors": {"property_id": ["..."]}
+}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== ADMIN ==================== -->
+                <div id="admin" class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method GET">GET</span>
+                        <span class="endpoint-url">/users</span>
+                        <span class="badge badge-admin">أدمن فقط</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📋 Headers</h3>
+                            <table>
+                                <tr><th>المفتاح</th><th>القيمة</th></tr>
+                                <tr><td>Authorization</td><td><code>Bearer {admin_token}</code></td></tr>
+                            </table>
+                        </div>
+                        <div class="section success">
+                            <h3>✅ 200 - نجاح</h3>
+                            <div class="code-block">{"success": true, "data": {"current_page": 1, "data": [...]}}</div>
+                        </div>
+                        <div class="section error">
+                            <h3>❌ 403 - غير مصرح</h3>
+                            <div class="code-block">{"success": false, "message": "غير مصرح لك بهذه العملية"}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Properties -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method GET">GET</span>
+                        <span class="endpoint-url">/admin/properties</span>
+                        <span class="badge badge-admin">أدمن فقط</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📋 Query Parameters</h3>
+                            <table>
+                                <tr><th>المعامل</th><th>الوصف</th></tr>
+                                <tr><td>type</td><td>نوع العقار</td></tr>
+                                <tr><td>status</td><td>الحالة (pending, approved, rejected)</td></tr>
+                                <tr><td>region_id</td><td>معرف المنطقة</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Approve Property -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method POST">POST</span>
+                        <span class="endpoint-url">/admin/properties/{id}/approve</span>
+                        <span class="badge badge-admin">أدمن فقط</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section success">
+                            <h3>✅ 200 - نجاح</h3>
+                            <div class="code-block">{
+  "success": true,
+  "message": "تم الموافقة على العقار بنجاح",
+  "data": {"id": 1, "status": "approved", "approved_at": "..."}
+}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reject Property -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method POST">POST</span>
+                        <span class="endpoint-url">/admin/properties/{id}/reject</span>
+                        <span class="badge badge-admin">أدمن فقط</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📋 Request Body</h3>
+                            <table>
+                                <tr><th>الحقل</th><th>النوع</th><th>مطلوب</th></tr>
+                                <tr><td>reason</td><td>string</td><td class="required">نعم</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                <!-- Admin Statistics -->
+                <div class="endpoint">
+                    <div class=" </div>
+
+               endpoint-header">
+                        <span class="method GET">GET</span>
+                        <span class="endpoint-url">/admin/statistics</span>
+                        <span class="badge badge-admin">أدمن فقط</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section success">
+                            <h3>✅ 200 - نجاح</h3>
+                            <div class="code-block">{
+  "success": true,
+  "data": {
+    "users": 10,
+    "properties": 25,
+    "approved_properties": 20,
+    "pending_properties": 3,
+    "contact_requests": 15
+  }
+}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Regions CRUD -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method POST">POST</span>
+                        <span class="endpoint-url">/admin/regions</span>
+                        <span class="badge badge-admin">أدمن فقط</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="section">
+                            <h3>📋 Request Body</h3>
+                            <table>
+                                <tr><th>الحقل</th><th>النوع</th><th>مطلوب</th><th>القيم</th></tr>
+                                <tr><td>name</td><td>string</td><td class="required">نعم</td><td>-</td></tr>
+                                <tr><td>type</td><td>string</td><td class="required">نعم</td><td>country, governorate, city, neighborhood</td></tr>
+                                <tr><td>parent_id</td><td>integer</td><td class="optional">لا</td><td>-</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div>
+                <div class="toc">
+                    <h3>📚 المحتويات</h3>
+                    <ul>
+                        <li><a href="#authentication">المصادقة</a></li>
+                        <li>- تسجيل جديد</li>
+                        <li>- تسجيل دخول</li>
+                        <li>- إرسال توثيق</li>
+                        <li>- توثيق البريد</li>
+                        <li>- بيانات المستخدم</li>
+                        <li>- تغيير كلمة المرور</li>
+                        <li>- تسجيل خروج</li>
+                        <li><a href="#regions">المناطق</a></li>
+                        <li><a href="#properties">العقارات</a></li>
+                        <li><a href="#contact">طلبات التواصل</a></li>
+                        <li><a href="#admin">الأدمن</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 30px; background: #1e3c72; color: white;">
+        <p>شركة المفتاح &copy; 2026 - توثيق API</p>
+    </div>
+</body>
+</html>

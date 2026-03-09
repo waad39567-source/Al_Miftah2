@@ -6,6 +6,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/documentation', function () {
+    return file_get_contents(public_path('api-documentation.html'));
+});
+
 Route::get('/docs', function () {
-    return file_get_contents(public_path('docs.html'));
+    return redirect('/documentation');
 });
