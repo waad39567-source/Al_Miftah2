@@ -38,4 +38,20 @@ class Property extends Model
     {
         return $this->hasMany(ContactRequest::class);
     }
+
+    public static function getStatuses(): array
+    {
+        return [
+            'pending' => 'بانتظار الموافقة',
+            'active' => 'نشط',
+            'rented' => 'مؤجر',
+            'sold' => 'مباع',
+            'rejected' => 'مرفوض',
+        ];
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
 }

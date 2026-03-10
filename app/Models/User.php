@@ -18,6 +18,9 @@ class User extends Authenticatable
         'password',
         'role',
         'is_active',
+        'is_banned',
+        'banned_at',
+        'ban_reason',
         'email_verified_at'
     ];
 
@@ -29,7 +32,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'is_active' => 'boolean',
+        'is_banned' => 'boolean',
     ];
+
+    protected $appends = ['is_admin'];
+
+    public function getIsAdminAttribute(): bool
+    {
+        return $this->role === 'admin';
+    }
 
     /*
     |--------------------------------------------------------------------------

@@ -755,6 +755,321 @@
                 </div>
             </div>
 
+            <!-- ==================== PROPERTY SEARCH ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method GET">GET</span>
+                    <span class="endpoint-url">/properties/search</span>
+                    <span class="badge badge-public">عام</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>البحث المتقدم عن العقارات مع فلترة شاملة.</p>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📋 Query Parameters</h3>
+                        <table>
+                            <tr><th>المعامل</th><th>الوصف</th><th>القيم</th><th>مثال</th></tr>
+                            <tr><td>type</td><td>نوع العملية</td><td>sale, rent</td><td>?type=sale</td></tr>
+                            <tr><td>property_type</td><td>نوع العقار</td><td>apartment, house, shop, land</td><td>?property_type=apartment</td></tr>
+                            <tr><td>region_id</td><td>معرف المنطقة</td><td>رقم</td><td>?region_id=5</td></tr>
+                            <tr><td>min_price</td><td>السعر الأدنى</td><td>رقم</td><td>?min_price=50000</td></tr>
+                            <tr><td>max_price</td><td>السعر الأقصى</td><td>رقم</td><td>?max_price=500000</td></tr>
+                            <tr><td>min_area</td><td>المساحة الأدنى</td><td>رقم</td><td>?min_area=100</td></tr>
+                            <tr><td>max_area</td><td>المساحة الأقصى</td><td>رقم</td><td>?max_area=200</td></tr>
+                            <tr><td>search</td><td>البحث في العنوان والوصف</td><td>نص</td><td>?search=شقة</td></tr>
+                            <tr><td>sort_by</td><td>ترتيب حسب</td><td>price, created_at, area</td><td>?sort_by=price</td></tr>
+                            <tr><td>sort_order</td><td>اتجاه الترتيب</td><td>asc, desc</td><td>?sort_order=asc</td></tr>
+                            <tr><td>per_page</td><td>عدد النتائج</td><td>رقم</td><td>?per_page=15</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "data": {
+    "current_page": 1,
+    "data": [
+      {
+        "id": 1,
+        "title": "شقة فاخرة",
+        "price": 150000,
+        "type": "sale",
+        "property_type": "apartment",
+        "area": 120,
+        "region": { "id": 5, "name": "المزة" },
+        "image": "http://.../image.jpg",
+        "created_at": "2026-03-10"
+      }
+    ]
+  }
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== PROPERTY ADVANCED SEARCH ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method GET">GET</span>
+                    <span class="endpoint-url">/properties/advanced-search</span>
+                    <span class="badge badge-public">عام</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>بحث متقدم مع دعم فلترة حسب المحافظة والمدينة والحي.</p>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📋 Query Parameters</h3>
+                        <table>
+                            <tr><th>المعامل</th><th>الوصف</th><th>القيم</th><th>مثال</th></tr>
+                            <tr><td>governorate_id</td><td>المحافظة (يبحث في كل المدن والأحياء)</td><td>رقم</td><td>?governorate_id=2</td></tr>
+                            <tr><td>city_id</td><td>المدينة (يبحث في كل الأحياء)</td><td>رقم</td><td>?city_id=3</td></tr>
+                            <tr><td>neighborhood_id</td><td>الحي المحدد</td><td>رقم</td><td>?neighborhood_id=10</td></tr>
+                            <tr><td>region_ids</td><td>عدة مناطق</td><td>أرقام مفصولة بفاصلة</td><td>?region_ids=1,2,3</td></tr>
+                            <tr><td>region_names</td><td>أسماء المناطق</td><td>أسماء مفصولة بفاصلة</td><td>?region_names=المزة,باب توما</td></tr>
+                            <tr><td>type, property_type, min_price, max_price, min_area, max_area, search, sort_by, sort_order, per_page</td><td>فلاتر إضافية</td><td>...</td><td>...</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== CREATE PROPERTY ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method POST">POST</span>
+                    <span class="endpoint-url">/properties</span>
+                    <span class="badge badge-auth">مطلوب Token</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>إنشاء عقار جديد. يتطلب حساباً موثقاً.</p>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📋 Headers</h3>
+                        <table>
+                            <tr><th>المفتاح</th><th>القيمة</th></tr>
+                            <tr><td>Authorization</td><td><code>Bearer {token}</code></td></tr>
+                            <tr><td>Content-Type</td><td><code>multipart/form-data</code></td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📦 Request Body</h3>
+                        <table>
+                            <tr><th>الحقل</th><th>النوع</th><th>مطلوب</th><th>القواعد</th><th>مثال</th></tr>
+                            <tr><td>title</td><td>string</td><td class="required">نعم</td><td>required, max:255</td><td>"شقة في المزة"</td></tr>
+                            <tr><td>description</td><td>string</td><td class="required">نعم</td><td>required</td><td>"شقة حديثة 3 غرف"</td></tr>
+                            <tr><td>price</td><td>numeric</td><td class="required">نعم</td><td>required, min:0</td><td>150000</td></tr>
+                            <tr><td>type</td><td>string</td><td class="required">نعم</td><td>required, in:sale,rent</td><td>"sale"</td></tr>
+                            <tr><td>property_type</td><td>string</td><td class="required">نعم</td><td>required, max:100</td><td>"apartment"</td></tr>
+                            <tr><td>area</td><td>numeric</td><td class="required">نعم</td><td>required, min:1</td><td>120</td></tr>
+                            <tr><td>region_id</td><td>integer</td><td class="required">نعم</td><td>required, exists:regions,id</td><td>5</td></tr>
+                            <tr><td>location</td><td>string</td><td class="required">نعم</td><td>required, max:255</td><td>"دمشق - المزة"</td></tr>
+                            <tr><td>latitude</td><td>numeric</td><td class="optional">لا</td><td>nullable, between:-90,90</td><td>33.5</td></tr>
+                            <tr><td>longitude</td><td>numeric</td><td class="optional">لا</td><td>nullable, between:-180,180</td><td>36.2</td></tr>
+                            <tr><td>images[]</td><td>file</td><td class="optional">لا</td><td>array, image|mimes:jpeg,png,jpg,gif,webp|max:2048</td><td>(ملفات)</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 201 - تم الإنشاء</h3>
+                        <div class="code-block">{
+  "success": true,
+  "message": "تم إنشاء العقار بنجاح",
+  "data": {
+    "id": 1,
+    "title": "شقة في المزة",
+    "description": "شقة حديثة 3 غرف",
+    "price": 150000,
+    "type": "sale",
+    "property_type": "apartment",
+    "area": 120,
+    "status": "pending",
+    "region": {...},
+    "owner": {...},
+    "images": [...]
+  }
+}</div>
+                    </div>
+                    
+                    <div class="section error">
+                        <h3>❌ استجابات خاطئة</h3>
+                        <div class="response-codes">
+                            <span class="code-badge code-403">403 غير مصرح</span>
+                            <span class="code-badge code-422">422 خطأ في التحقق</span>
+                        </div>
+                        <p><strong>غير مصرح (حساب غير موثق):</strong></p>
+                        <div class="code-block">{"success": false, "message": "غير مصرح لك بإنشاء عقار"}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== UPDATE PROPERTY ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method PUT">PUT</span>
+                    <span class="endpoint-url">/properties/{id}</span>
+                    <span class="badge badge-auth">مطلوب Token</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>تحديث بيانات عقار. يمكن للمالك أو الأدمن فقط.</p>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📋 Parameters</h3>
+                        <table>
+                            <tr><th>المعامل</th><th>في</th><th>النوع</th><th>الوصف</th></tr>
+                            <tr><td>id</td><td>path</td><td>integer</td><td>معرف العقار</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📦 Request Body</h3>
+                        <p>نفس حقول الإنشاء مع الاختلاف أن جميع الحقول optional.</p>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "message": "تم تحديث العقار بنجاح",
+  "data": {...}
+}</div>
+                    </div>
+                    
+                    <div class="section error">
+                        <h3>❌ 403 - ليس لديك صلاحية</h3>
+                        <div class="code-block">{"success": false, "message": "ليس لديك صلاحية لتعديل هذا العقار"}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== DELETE PROPERTY ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method DELETE">DELETE</span>
+                    <span class="endpoint-url">/properties/{id}</span>
+                    <span class="badge badge-auth">مطلوب Token</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>حذف عقار. يمكن للمالك أو الأدمن فقط.</p>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "message": "تم حذف العقار بنجاح"
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== MY PROPERTIES ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method GET">GET</span>
+                    <span class="endpoint-url">/properties/my-properties</span>
+                    <span class="badge badge-auth">مطلوب Token</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>عرض عقارات المستخدم الحالي مع جميع الحالات (معلق، نشط، مؤجر، مباع).</p>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📋 Query Parameters</h3>
+                        <table>
+                            <tr><th>المعامل</th><th>الوصف</th><th>القيم</th></tr>
+                            <tr><td>type, property_type, region_id, status, search, sort_by, sort_order, per_page</td><td>فلاتر</td><td>...</td></tr>
+                            <tr><td>min_price, max_price, min_area, max_area</td><td>السعر والمساحة</td><td>...</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== MARK AS RENTED ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method POST">POST</span>
+                    <span class="endpoint-url">/properties/{id}/rented</span>
+                    <span class="badge badge-auth">مطلوب Token</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>تعليم العقار كمؤجر. يمكن للمالك أو الأدمن.</p>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "message": "تم تعليم العقار كمؤجر"
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== MARK AS SOLD ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method POST">POST</span>
+                    <span class="endpoint-url">/properties/{id}/sold</span>
+                    <span class="badge badge-auth">مطلوب Token</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>تعليم العقار كمباع. يمكن للمالك أو الأدمن.</p>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "message": "تم تعليم العقار كمباع"
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== DELETE IMAGE ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method DELETE">DELETE</span>
+                    <span class="endpoint-url">/properties/{id}/images/{imageId}</span>
+                    <span class="badge badge-auth">مطلوب Token</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>حذف صورة من عقار. يمكن للمالك أو الأدمن.</p>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "message": "تم حذف الصورة بنجاح"
+}</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- ==================== CONTACT ==================== -->
             <div id="contact" class="endpoint">
                 <div class="endpoint-header">
@@ -803,6 +1118,109 @@
   "message": "Validation error",
   "errors": {
     "property_id": ["The selected property id is invalid."]
+  }
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== MY REQUESTS ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method GET">GET</span>
+                    <span class="endpoint-url">/contact/my-requests</span>
+                    <span class="badge badge-auth">مطلوب Token</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>عرض طلبات التواصل المرسلة من المستخدم.</p>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📋 Query Parameters</h3>
+                        <table>
+                            <tr><th>المعامل</th><th>الوصف</th></tr>
+                            <tr><td>status</td><td>pending, approved, rejected</td></tr>
+                            <tr><td>per_page</td><td>عدد النتائج</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "data": {
+    "current_page": 1,
+    "data": [
+      {
+        "id": 1,
+        "property_id": 5,
+        "status": "approved",
+        "created_at": "2026-03-10"
+      }
+    ]
+  }
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== MY RECEIVED REQUESTS ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method GET">GET</span>
+                    <span class="endpoint-url">/contact/my-received</span>
+                    <span class="badge badge-auth">مطلوب Token</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>عرض طلبات التواصل المستلمة لعقارات المستخدم (كمالك).</p>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "data": {...}
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== CHECK STATUS ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method GET">GET</span>
+                    <span class="endpoint-url">/contact/status/{propertyId}</span>
+                    <span class="badge badge-auth">مطلوب Token</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>فحص حالة طلب التواصل لعقار معين.</p>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح (لديه طلب)</h3>
+                        <div class="code-block">{
+  "success": true,
+  "data": {
+    "has_request": true,
+    "status": "approved",
+    "created_at": "2026-03-10 10:00:00"
+  }
+}</div>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح (لا يوجد طلب)</h3>
+                        <div class="code-block">{
+  "success": true,
+  "data": {
+    "has_request": false,
+    "status": null
   }
 }</div>
                     </div>
@@ -938,6 +1356,88 @@
                 </div>
             </div>
 
+            <!-- ==================== ADMIN CONTACT REQUESTS LIST ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method GET">GET</span>
+                    <span class="endpoint-url">/admin/contact-requests</span>
+                    <span class="badge badge-admin">أدمن فقط</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>عرض جميع طلبات التواصل مع الفلترة.</p>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "data": {
+    "data": [
+      { "id": 1, "status": "pending" }
+    ]
+  }
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== ADMIN APPROVE CONTACT ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method POST">POST</span>
+                    <span class="endpoint-url">/admin/contact-requests/{id}/approve</span>
+                    <span class="badge badge-admin">أدمن فقط</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>الموافقة على طلب تواصل. بعد الموافقة يظهر رقم مالك العقار للمستخدم.</p>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "message": "تم الموافقة على طلب التواصل بنجاح",
+  "data": { "status": "approved" }
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== ADMIN REJECT CONTACT ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method POST">POST</span>
+                    <span class="endpoint-url">/admin/contact-requests/{id}/reject</span>
+                    <span class="badge badge-admin">أدمن فقط</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>رفض طلب تواصل مع سبب.</p>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📦 Request Body</h3>
+                        <table>
+                            <tr><th>الحقل</th><th>النوع</th><th>مطلوب</th></tr>
+                            <tr><td>reason</td><td>string</td><td class="required">نعم</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "message": "تم رفض طلب التواصل بنجاح"
+}</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- ==================== ADMIN STATISTICS ==================== -->
             <div class="endpoint">
                 <div class="endpoint-header">
@@ -951,11 +1451,23 @@
                         <div class="code-block">{
   "success": true,
   "data": {
-    "users": 25,
-    "properties": 50,
-    "approved_properties": 40,
-    "pending_properties": 8,
-    "contact_requests": 15
+    "users": {
+      "total": 25,
+      "offices": 20
+    },
+    "properties": {
+      "total": 50,
+      "today": 5,
+      "active": 30,
+      "rented": 5,
+      "sold": 3,
+      "pending": 5,
+      "rejected": 2
+    },
+    "contact_requests": {
+      "total": 15,
+      "pending": 8
+    }
   }
 }</div>
                     </div>
@@ -1060,16 +1572,31 @@
                     
                     <li style="margin-top:15px"><a href="#properties"><strong>العقارات</strong></a></li>
                     <li class="sub">GET /properties</li>
+                    <li class="sub">GET /properties/search</li>
+                    <li class="sub">GET /properties/advanced-search</li>
                     <li class="sub">GET /properties/{id}</li>
+                    <li class="sub">POST /properties</li>
+                    <li class="sub">PUT /properties/{id}</li>
+                    <li class="sub">DELETE /properties/{id}</li>
+                    <li class="sub">GET /properties/my-properties</li>
+                    <li class="sub">POST /properties/{id}/rented</li>
+                    <li class="sub">POST /properties/{id}/sold</li>
+                    <li class="sub">DELETE /properties/{id}/images/{imageId}</li>
                     
                     <li style="margin-top:15px"><a href="#contact"><strong>طلبات التواصل</strong></a></li>
                     <li class="sub">POST /contact</li>
+                    <li class="sub">GET /contact/my-requests</li>
+                    <li class="sub">GET /contact/my-received</li>
+                    <li class="sub">GET /contact/status/{propertyId}</li>
                     
                     <li style="margin-top:15px"><a href="#admin"><strong>الأدمن</strong></a></li>
                     <li class="sub">GET /users</li>
                     <li class="sub">GET /admin/properties</li>
                     <li class="sub">POST /admin/properties/{id}/approve</li>
                     <li class="sub">POST /admin/properties/{id}/reject</li>
+                    <li class="sub">GET /admin/contact-requests</li>
+                    <li class="sub">POST /admin/contact-requests/{id}/approve</li>
+                    <li class="sub">POST /admin/contact-requests/{id}/reject</li>
                     <li class="sub">GET /admin/statistics</li>
                     <li class="sub">POST /admin/regions</li>
                     <li class="sub">PUT /admin/regions/{id}</li>

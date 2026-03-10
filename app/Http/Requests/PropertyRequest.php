@@ -27,6 +27,8 @@ class PropertyRequest extends FormRequest
                 'location' => 'required|string|max:255',
                 'latitude' => 'nullable|numeric|between:-90,90',
                 'longitude' => 'nullable|numeric|between:-180,180',
+                'images' => 'nullable|array',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             ],
             'update' => [
                 'title' => 'sometimes|string|max:255',
@@ -39,6 +41,8 @@ class PropertyRequest extends FormRequest
                 'location' => 'sometimes|string|max:255',
                 'latitude' => 'nullable|numeric|between:-90,90',
                 'longitude' => 'nullable|numeric|between:-180,180',
+                'images' => 'sometimes|array',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             ],
             default => [],
         };
@@ -61,6 +65,10 @@ class PropertyRequest extends FormRequest
             'region_id.required' => 'المنطقة مطلوبة',
             'region_id.exists' => 'المنطقة غير موجودة',
             'location.required' => 'الموقع مطلوب',
+            'images.array' => 'الصور يجب أن تكون مصفوفة',
+            'images.*.image' => 'الملف يجب أن يكون صورة',
+            'images.*.mimes' => 'صيغة الصورة يجب أن تكون jpeg, png, jpg, gif, أو webp',
+            'images.*.max' => 'حجم الصورة يجب ألا يتجاوز 2 ميجابايت',
         ];
     }
 }

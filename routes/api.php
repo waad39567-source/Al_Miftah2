@@ -47,15 +47,37 @@ Route::prefix('regions')->group(function () {
 */
 Route::prefix('properties')->group(function () {
     Route::get('/', [PropertyController::class, 'index']);
+    Route::get('/search', [PropertyController::class, 'search']);
+    Route::get('/advanced-search', [PropertyController::class, 'advancedSearch']);
     Route::get('/{id}', [PropertyController::class, 'show']);
 });
 
 /*
 |--------------------------------------------------------------------------
-| Contact Routes (Public: Create Only)
+| Protected Property Routes (Require Authentication)
 |--------------------------------------------------------------------------
 */
-Route::post('/contact', [ContactController::class, 'store']);
+Route::middleware('auth:sanctum')->prefix('properties')->group(function () {
+    Route::post('/', [PropertyController::class, 'store']);
+    Route::put('/{id}', [PropertyController::class, 'update']);
+    Route::delete('/{id}', [PropertyController::class, 'destroy']);
+    Route::get('/my-properties', [PropertyController::class, 'myProperties']);
+    Route::delete('/{id}/images/{imageId}', [PropertyController::class, 'deleteImage']);
+    Route::post('/{id}/rented', [PropertyController::class, 'markAsRented']);
+    Route::post('/{id}/sold', [PropertyController::class, 'markAsSold']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Contact Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth:sanctum')->prefix('contact')->group(function () {
+    Route::post('/', [ContactController::class, 'store']);
+    Route::get('/my-requests', [ContactController::class, 'myRequests']);
+    Route::get('/my-received', [ContactController::class, 'myReceivedRequests']);
+    Route::get('/status/{propertyId}', [ContactController::class, 'checkStatus']);
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -64,10 +86,15 @@ Route::post('/contact', [ContactController::class, 'store']);
 */
 Route::middleware('auth:sanctum')->group(function () {
     
-    // Admin routes
-    Route::get('/users', [AdminController::class, 'getUsers']);
-    
     Route::prefix('admin')->group(function () {
+        // Users Management
+        Route::get('/users', [AdminController::class, 'getUsers']);
+        Route::get('/users/unverified', [AdminController::class, 'getUnverifiedUsers']);
+        Route::post('/users/{id}/verify', [AdminController::class, 'verifyUser']);
+        Route::post('/users/{id}/ban', [AdminController::class, 'banUser']);
+        Route::post('/users/{id}/unban', [AdminController::class, 'unbanUser']);
+        Route::post('/users/{id}/toggle-active', [AdminController::class, 'toggleUserActive']);
+        
         // Properties Management
         Route::get('/properties', [AdminController::class, 'getProperties']);
         Route::post('/properties/{id}/approve', [AdminController::class, 'approveProperty']);
@@ -75,6 +102,8 @@ Route::middleware('auth:sanctum')->group(function () {
         
         // Contact Requests
         Route::get('/contact-requests', [AdminController::class, 'getContactRequests']);
+        Route::post('/contact-requests/{id}/approve', [AdminController::class, 'approveContactRequest']);
+        Route::post('/contact-requests/{id}/reject', [AdminController::class, 'rejectContactRequest']);
         
         // Regions CRUD (Admin Only)
         Route::post('/regions', [RegionController::class, 'store']);
