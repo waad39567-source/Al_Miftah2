@@ -90,6 +90,10 @@ class AuthController extends Controller
                 return $this->errorResponse('الحساب غير نشط', 403);
             }
 
+            if ($result === 'banned') {
+                return $this->errorResponse('الحساب محظور. يرجى التواصل مع الإدارة', 403);
+            }
+
             if ($result === 'unverified') {
                 return $this->errorResponse('لم يتم توثيق حسابك بعد يرجى التحقق من بريدك الالكتروني لتوثيق الحساب', 403);
             }

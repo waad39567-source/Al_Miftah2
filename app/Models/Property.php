@@ -14,6 +14,17 @@ class Property extends Model
         'is_active','approved_by','approved_at'
     ];
 
+    protected $casts = [
+        'approved_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'price' => 'float',
+        'area' => 'float',
+        'latitude' => 'float',
+        'longitude' => 'float',
+        'is_active' => 'boolean',
+    ];
+
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');

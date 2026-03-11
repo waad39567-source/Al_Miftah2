@@ -207,7 +207,9 @@ class AdminService
         $today = now()->startOfDay();
         
         $usersCount = User::count();
-        $officesCount = User::where('role', '!=', 'admin')->count();
+        $ownersCount = User::whereHas('properties')->count();
+        $unverifiedUsers = User::whereNull('email_verified_at')->count();
+        $bannedUsers = User::where('is_banned', true)->count();
         $propertiesCount = Property::count();
         $propertiesToday = Property::where('created_at', '>=', $today)->count();
         
@@ -224,7 +226,9 @@ class AdminService
         return [
             'users' => [
                 'total' => $usersCount,
-                'offices' => $officesCount,
+                'owners' => $ownersCount,
+                'unverified' => $unverifiedUsers,
+                'banned' => $bannedUsers,
             ],
             'properties' => [
                 'total' => $propertiesCount,

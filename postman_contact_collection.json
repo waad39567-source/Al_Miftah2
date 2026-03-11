@@ -1,0 +1,933 @@
+{
+  "info": {
+    "name": "شركة المفتاح - اختبار طلبات التواصل",
+    "description": "مجموعة اختبار شاملة لطلبات التواصل\n\n# سير العمل:\n1. مستخدم يرسل طلب تواصل لعقار\n2. الأدمن يوافق أو يرفض الطلب\n3. مالك العقار يرى الطلبات المستلمة\n4. المستخدم يرى حالة طلباته\n\n# الطريقة:\n1. أنشئ متغير baseUrl: http://127.0.0.1:8000/api\n2. ضع التوكنات المناسبة\n3. شغل السيناريوهات بالترتيب",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8000/api" },
+    { "key": "adminToken", "value": "" },
+    { "key": "ownerToken", "value": "" },
+    { "key": "userToken", "value": "" },
+    { "key": "propertyId", "value": "" },
+    { "key": "contactRequestId", "value": "" },
+    { "key": "ownerId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. إعداد - تسجيل الدخول",
+      "item": [
+        {
+          "name": "1.1 تسجيل دخول الأدمن",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم تسجيل الدخول', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "if (pm.response.json().data && pm.response.json().data.token) {",
+                  "    pm.environment.set('adminToken', pm.response.json().data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@almiftah.com\",\n  \"password\": \"admin123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "1.2 تسجيل دخول مالك العقار (Owner)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم تسجيل الدخول', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "if (pm.response.json().data && pm.response.json().data.token) {",
+                  "    pm.environment.set('ownerToken', pm.response.json().data.token);",
+                  "    pm.environment.set('ownerId', pm.response.json().data.user.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@test.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "1.3 تسجيل دخول المستخدم",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم تسجيل الدخول', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "if (pm.response.json().data && pm.response.json().data.token) {",
+                  "    pm.environment.set('userToken', pm.response.json().data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@test.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. إعداد - إنشاء عقار للاختبار",
+      "item": [
+        {
+          "name": "2.1 مالك العقار ينشئ عقار",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم إنشاء العقار', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('propertyId', pm.response.json().data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/properties",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"شقة للاختبار\",\n  \"description\": \"شقة فاخرة 3 غرف نوم\",\n  \"price\": 150000,\n  \"type\": \"sale\",\n  \"property_type\": \"apartment\",\n  \"area\": 120,\n  \"region_id\": 1,\n  \"location\": \"دمشق - المزة\"\n}"
+            }
+          }
+        },
+        {
+          "name": "2.2 الأدمن يوافق على العقار",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم الموافقة', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/properties/{{propertyId}}/approve",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. إرسال طلب تواصل",
+      "item": [
+        {
+          "name": "3.1 مستخدم يرسل طلب تواصل - نجاح",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم إرسال الطلب', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('contactRequestId', pm.response.json().data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/contact",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"property_id\": {{propertyId}},\n  \"name\": \"أحمد محمد\",\n  \"phone\": \"966501234567\",\n  \"message\": \"أريد معرفة المزيد عن هذه الشقة\"\n}"
+            }
+          }
+        },
+        {
+          "name": "3.2 مستخدم يرسل طلب تواصل بدون رسالة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم إرسال الطلب', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/contact",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"property_id\": {{propertyId}},\n  \"name\": \"خالد عمر\",\n  \"phone\": \"966509999999\"\n}"
+            }
+          }
+        },
+        {
+          "name": "3.3 إرسال طلب لعقار غير موجود",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('فشل - عقار غير موجود', function() {",
+                  "    pm.expect(pm.response.status).to.eq(422);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/contact",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"property_id\": 999999,\n  \"name\": \"مستخدم\",\n  \"phone\": \"966501234567\"\n}"
+            }
+          }
+        },
+        {
+          "name": "3.4 إرسال طلب بدون بيانات مطلوبة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('فشل - بيانات ناقصة', function() {",
+                  "    pm.expect(pm.response.status).to.eq(422);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/contact",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"property_id\": {{propertyId}}\n}"
+            }
+          }
+        },
+        {
+          "name": "3.5 مستخدم غير موثق يرسل طلب - يفشل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('يفشل بدون توكن', function() {",
+                  "    pm.expect(pm.response.status).to.eq(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/contact",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"property_id\": {{propertyId}},\n  \"name\": \"غير موثق\",\n  \"phone\": \"966501234567\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. عرض طلبات المستخدم",
+      "item": [
+        {
+          "name": "4.1 المستخدم يرى طلباته المرسلة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('يوجد طلبات', function() {",
+                  "    pm.expect(pm.response.json().data.total).to.greaterThan(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/my-requests",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "4.2 فلترة طلبات المستخدم حسب الحالة - معلق",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/contact/my-requests?status=pending",
+              "host": ["{{baseUrl}}"],
+              "path": ["contact", "my-requests"],
+              "query": [
+                { "key": "status", "value": "pending" }
+              ]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "4.3 فحص حالة طلب معين",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('لديه طلب', function() {",
+                  "    pm.expect(pm.response.json().data.has_request).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/status/{{propertyId}}",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. عرض طلبات مالك العقار",
+      "item": [
+        {
+          "name": "5.1 مالك العقار يرى الطلبات المستلمة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('يوجد طلبات', function() {",
+                  "    pm.expect(pm.response.json().data.total).to.greaterThan(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/my-received",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "5.2 فلترة الطلبات المستلمة حسب الحالة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/contact/my-received?status=pending",
+              "host": ["{{baseUrl}}"],
+              "path": ["contact", "my-received"],
+              "query": [
+                { "key": "status", "value": "pending" }
+              ]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "5.3 مستخدم عادي يرى طلبات الآخرين - يفشل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('فشل', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/my-received",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. إدارة الأدمن لطلبات التواصل",
+      "item": [
+        {
+          "name": "6.1 الأدمن يرى جميع طلبات التواصل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('يوجد طلبات', function() {",
+                  "    pm.expect(pm.response.json().data.total).to.greaterThan(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/contact-requests",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "6.2 الأدمن يفلتر الطلبات المعلقة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/contact-requests?status=pending",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "contact-requests"],
+              "query": [
+                { "key": "status", "value": "pending" }
+              ]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "6.3 الأدمن يوافق على طلب تواصل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم الموافقة', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('الحالة موافق', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('approved');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/contact-requests/{{contactRequestId}}/approve",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "6.4 الأدمن يرفض طلب تواصل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم الرفض', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/contact-requests/{{contactRequestId}}/reject",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"العقار غير متاح حالياً\"\n}"
+            }
+          }
+        },
+        {
+          "name": "6.5 رفض طلب بدون سبب",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('نجاح - السبب اختياري', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/contact-requests/{{contactRequestId}}/reject",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          }
+        },
+        {
+          "name": "6.6 الموافقة على طلب مرفوض مسبقاً - يفشل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('فشل - تم معالجته', function() {",
+                  "    pm.expect(pm.response.status).to.eq(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/contact-requests/{{contactRequestId}}/approve",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. سير العمل الكامل - سيناريو 1",
+      "item": [
+        {
+          "name": "7.1 إنشاء طلب تواصل جديد",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم إنشاء الطلب', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/contact",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"property_id\": {{propertyId}},\n  \"name\": \"عميل جديد\",\n  \"phone\": \"966501111111\",\n  \"message\": \"مهتم بالعقار\"\n}"
+            }
+          }
+        },
+        {
+          "name": "7.2 المستخدم يفحص حالة الطلب - معلق",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('الحالة معلق', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('pending');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/status/{{propertyId}}",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "7.3 الأدمن يوافق على الطلب",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم الموافقة', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/contact-requests/4/approve",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "7.4 المستخدم يفحص حالة الطلب - موافق",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('الحالة موافق', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('approved');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/status/{{propertyId}}",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "7.5 مالك العقار يرى الطلبات - موافق عليها",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('يوجد طلب موافق', function() {",
+                  "    var data = pm.response.json().data.data;",
+                  "    var approved = data.filter(function(r) { return r.status === 'approved'; });",
+                  "    pm.expect(approved.length).to.greaterThan(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/my-received",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. سير العمل الكامل - سيناريو 2 (رفض)",
+      "item": [
+        {
+          "name": "8.1 إنشاء طلب تواصل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم إنشاء الطلب', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/contact",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"property_id\": {{propertyId}},\n  \"name\": \"عميل 2\",\n  \"phone\": \"966502222222\"\n}"
+            }
+          }
+        },
+        {
+          "name": "8.2 الأدمن يرفض الطلب",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم الرفض', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/contact-requests/5/reject",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"العقار مؤجر حالياً\"\n}"
+            }
+          }
+        },
+        {
+          "name": "8.3 المستخدم يفحص حالة الطلب - مرفوض",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('الحالة مرفوض', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('rejected');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/status/{{propertyId}}",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. صلاحيات المستخدمين",
+      "item": [
+        {
+          "name": "9.1 المستخدم يرى طلباته فقط",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/my-requests",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "9.2 المستخدم لا يستطيع إدارة الطلبات",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('فشل - ليس أدمن', function() {",
+                  "    pm.expect(pm.response.status).to.eq(403);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/contact-requests",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "9.3 المكتب العقاري يرى طلباته المستلمة فقط",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/my-received",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. ملخص Contact API",
+      "item": [
+        {
+          "name": "جدول Contact API",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "",
+              "host": [],
+              "path": []
+            },
+            "description": "#Contact API - ملخص\n\n## سير العمل:\n\n```\nمستخدم يطلب تواصل ──► الأدمن يوافق/يرفض ──► مالك العقار يرى\n```\n\n## نقاط النهاية:\n\n### المستخدم:\n| الطريقة | الوصف |\n|---------|-------|\n| POST /contact | إرسال طلب تواصل |\n| GET /contact/my-requests | طلباتي المرسلة |\n| GET /contact/status/{propertyId} | فحص حالة طلبي |\n\n### مالك العقار:\n| الطريقة | الوصف |\n|---------|-------|\n| GET /contact/my-received | الطلبات المستلمة |\n\n### الأدمن:\n| الطريقة | الوصف |\n|---------|-------|\n| GET /admin/contact-requests | جميع الطلبات |\n| POST /admin/contact-requests/{id}/approve | موافقة |\n| POST /admin/contact-requests/{id}/reject | رفض (مع سبب) |\n\n## حالات الطلب:\n- **pending**: معلق (في انتظار المراجعة)\n- **approved**: موافق عليه\n- **rejected**: مرفوض\n\n## حقول طلب التواصل:\n- property_id: معرف العقار (مطلوب)\n- name: اسم المرسل (مطلوب)\n- phone: رقم الهاتف (مطلوب)\n- message: الرسالة (اختياري)"
+          }
+        }
+      ]
+    }
+  ]
+}

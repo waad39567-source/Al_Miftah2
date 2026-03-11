@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AdminPropertyRequest;
 use App\Http\Resources\PropertyResource;
 use App\Http\Resources\ContactResource;
+use App\Http\Resources\UserResource;
 use App\Models\Property;
 use App\Models\Region;
 use App\Models\ContactRequest;
@@ -69,7 +70,7 @@ class AdminController extends Controller
 
         $user = $this->adminService->verifyUser($user);
 
-        return $this->successResponse($user, 'تم توثيق المستخدم بنجاح');
+        return $this->successResponse(new UserResource($user), 'تم توثيق المستخدم بنجاح');
     }
 
     public function banUser(Request $request, $id)
@@ -94,7 +95,7 @@ class AdminController extends Controller
         $reason = $request->input('reason');
         $user = $this->adminService->banUser($user, $reason);
 
-        return $this->successResponse($user, 'تم حظر المستخدم بنجاح');
+        return $this->successResponse(new UserResource($user), 'تم حظر المستخدم بنجاح');
     }
 
     public function unbanUser($id)
@@ -114,7 +115,7 @@ class AdminController extends Controller
 
         $user = $this->adminService->unbanUser($user);
 
-        return $this->successResponse($user, 'تم إلغاء حظر المستخدم بنجاح');
+        return $this->successResponse(new UserResource($user), 'تم إلغاء حظر المستخدم بنجاح');
     }
 
     public function toggleUserActive($id)
@@ -132,7 +133,7 @@ class AdminController extends Controller
 
         $message = $user->is_active ? 'تم تفعيل المستخدم بنجاح' : 'تم إلغاء تفعيل المستخدم بنجاح';
 
-        return $this->successResponse($user, $message);
+        return $this->successResponse(new UserResource($user), $message);
     }
 
     public function getProperties(Request $request)

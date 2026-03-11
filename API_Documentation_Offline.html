@@ -1453,7 +1453,9 @@
   "data": {
     "users": {
       "total": 25,
-      "offices": 20
+      "offices": 20,
+      "unverified": 5,
+      "banned": 2
     },
     "properties": {
       "total": 50,
@@ -1549,6 +1551,293 @@
                 </div>
             </div>
 
+            <!-- ==================== ADMIN GET USERS ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method GET">GET</span>
+                    <span class="endpoint-url">/admin/users</span>
+                    <span class="badge badge-admin">أدمن فقط</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>عرض جميع المستخدمين مع الفلترة المتقدمة.</p>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📋 Query Parameters</h3>
+                        <table>
+                            <tr><th>المعامل</th><th>الوصف</th><th>القيم</th><th>مثال</th></tr>
+                            <tr><td>search</td><td>البحث بالاسم أو البريد أو الهاتف</td><td>نص</td><td>?search=أحمد</td></tr>
+                            <tr><td>role</td><td>فلترة حسب الدور</td><td>user, owner, admin</td><td>?role=owner</td></tr>
+                            <tr><td>is_verified</td><td>حالة التوثيق</td><td>true, false</td><td>?is_verified=false</td></tr>
+                            <tr><td>is_banned</td><td>حالة الحظر</td><td>true, false</td><td>?is_banned=true</td></tr>
+                            <tr><td>is_active</td><td>حالة التفعيل</td><td>true, false</td><td>?is_active=false</td></tr>
+                            <tr><td>sort_by</td><td>ترتيب حسب</td><td>name, created_at, email_verified_at</td><td>?sort_by=created_at</td></tr>
+                            <tr><td>sort_order</td><td>اتجاه الترتيب</td><td>asc, desc</td><td>?sort_order=desc</td></tr>
+                            <tr><td>per_page</td><td>عدد النتائج</td><td>رقم</td><td>?per_page=15</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "data": {
+    "current_page": 1,
+    "data": [
+      {
+        "id": 1,
+        "name": "أحمد محمد",
+        "email": "ahmed@test.com",
+        "phone": "966501234567",
+        "role": "user",
+        "is_active": true,
+        "is_banned": false,
+        "email_verified_at": "2026-03-09T10:30:00",
+        "created_at": "2026-03-09T10:30:00"
+      }
+    ]
+  }
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== ADMIN GET UNVERIFIED USERS ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method GET">GET</span>
+                    <span class="endpoint-url">/admin/users/unverified</span>
+                    <span class="badge badge-admin">أدمن فقط</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>عرض الحسابات غير الموثقة فقط.</p>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "data": {
+    "current_page": 1,
+    "data": [
+      {
+        "id": 2,
+        "name": "خالد عمر",
+        "email": "khaled@test.com",
+        "phone": "966509999999",
+        "role": "user",
+        "is_active": true,
+        "is_banned": false,
+        "email_verified_at": null,
+        "created_at": "2026-03-10T08:00:00"
+      }
+    ]
+  }
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== ADMIN VERIFY USER ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method POST">POST</span>
+                    <span class="endpoint-url">/admin/users/{id}/verify</span>
+                    <span class="badge badge-admin">أدمن فقط</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>توثيق مستخدم يدوياً من قبل الأدمن (بدون الحاجة للتحقق من البريد الإلكتروني).</p>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📋 Parameters</h3>
+                        <table>
+                            <tr><th>المعامل</th><th>في</th><th>النوع</th><th>الوصف</th></tr>
+                            <tr><td>id</td><td>path</td><td>integer</td><td>معرف المستخدم</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "message": "تم توثيق المستخدم بنجاح",
+  "data": {
+    "id": 2,
+    "name": "خالد عمر",
+    "email": "khaled@test.com",
+    "email_verified_at": "2026-03-10T12:00:00"
+  }
+}</div>
+                    </div>
+                    
+                    <div class="section error">
+                        <h3>❌ 400 - موثق مسبقاً</h3>
+                        <div class="code-block">{"success": false, "message": "المستخدم موثق مسبقاً"}</div>
+                    </div>
+                    
+                    <div class="section error">
+                        <h3>❌ 404 - غير موجود</h3>
+                        <div class="code-block">{"success": false, "message": "المستخدم غير موجود"}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== ADMIN BAN USER ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method POST">POST</span>
+                    <span class="endpoint-url">/admin/users/{id}/ban</span>
+                    <span class="badge badge-admin">أدمن فقط</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>حظر مستخدم ومنعه من تسجيل الدخول.</p>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📋 Parameters</h3>
+                        <table>
+                            <tr><th>المعامل</th><th>في</th><th>النوع</th><th>الوصف</th></tr>
+                            <tr><td>id</td><td>path</td><td>integer</td><td>معرف المستخدم</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📦 Request Body</h3>
+                        <table>
+                            <tr><th>الحقل</th><th>النوع</th><th>مطلوب</th><th>الوصف</th><th>مثال</th></tr>
+                            <tr>
+                                <td>reason</td>
+                                <td>string</td>
+                                <td class="optional">لا</td>
+                                <td>سبب الحظر</td>
+                                <td>"انتهاك شروط الاستخدام"</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "message": "تم حظر المستخدم بنجاح",
+  "data": {
+    "id": 2,
+    "name": "خالد عمر",
+    "is_banned": true,
+    "banned_at": "2026-03-10T12:00:00",
+    "ban_reason": "انتهاك شروط الاستخدام",
+    "is_active": false
+  }
+}</div>
+                    </div>
+                    
+                    <div class="section error">
+                        <h3>❌ 400 - محظور مسبقاً</h3>
+                        <div class="code-block">{"success": false, "message": "المستخدم محظور مسبقاً"}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== ADMIN UNBAN USER ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method POST">POST</span>
+                    <span class="endpoint-url">/admin/users/{id}/unban</span>
+                    <span class="badge badge-admin">أدمن فقط</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>إلغاء حظر مستخدم والسماح له بتسجيل الدخول.</p>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📋 Parameters</h3>
+                        <table>
+                            <tr><th>المعامل</th><th>في</th><th>النوع</th><th>الوصف</th></tr>
+                            <tr><td>id</td><td>path</td><td>integer</td><td>معرف المستخدم</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "message": "تم إلغاء حظر المستخدم بنجاح",
+  "data": {
+    "id": 2,
+    "name": "خالد عمر",
+    "is_banned": false,
+    "banned_at": null,
+    "ban_reason": null,
+    "is_active": true
+  }
+}</div>
+                    </div>
+                    
+                    <div class="section error">
+                        <h3>❌ 400 - غير محظور</h3>
+                        <div class="code-block">{"success": false, "message": "المستخدم غير محظور"}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== ADMIN TOGGLE USER ACTIVE ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method POST">POST</span>
+                    <span class="endpoint-url">/admin/users/{id}/toggle-active</span>
+                    <span class="badge badge-admin">أدمن فقط</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>تفعيل أو إلغاء تفعيل مستخدم (بدون حظر).</p>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📋 Parameters</h3>
+                        <table>
+                            <tr><th>المعامل</th><th>في</th><th>النوع</th><th>الوصف</th></tr>
+                            <tr><td>id</td><td>path</td><td>integer</td><td>معرف المستخدم</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح (تم التفعيل)</h3>
+                        <div class="code-block">{
+  "success": true,
+  "message": "تم تفعيل المستخدم بنجاح",
+  "data": {
+    "id": 2,
+    "is_active": true
+  }
+}</div>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح (تم إلغاء التفعيل)</h3>
+                        <div class="code-block">{
+  "success": true,
+  "message": "تم إلغاء تفعيل المستخدم بنجاح",
+  "data": {
+    "id": 2,
+    "is_active": false
+  }
+}</div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Table of Contents -->
@@ -1590,7 +1879,12 @@
                     <li class="sub">GET /contact/status/{propertyId}</li>
                     
                     <li style="margin-top:15px"><a href="#admin"><strong>الأدمن</strong></a></li>
-                    <li class="sub">GET /users</li>
+                    <li class="sub">GET /admin/users</li>
+                    <li class="sub">GET /admin/users/unverified</li>
+                    <li class="sub">POST /admin/users/{id}/verify</li>
+                    <li class="sub">POST /admin/users/{id}/ban</li>
+                    <li class="sub">POST /admin/users/{id}/unban</li>
+                    <li class="sub">POST /admin/users/{id}/toggle-active</li>
                     <li class="sub">GET /admin/properties</li>
                     <li class="sub">POST /admin/properties/{id}/approve</li>
                     <li class="sub">POST /admin/properties/{id}/reject</li>

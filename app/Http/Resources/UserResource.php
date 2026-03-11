@@ -16,6 +16,10 @@ class UserResource extends JsonResource
             'phone' => $this->phone,
             'role' => $this->role,
             'is_active' => $this->is_active,
+            'is_banned' => $this->is_banned,
+            'banned_at' => $this->banned_at ? $this->banned_at->toDateTimeString() : null,
+            'ban_reason' => $this->ban_reason,
+            'email_verified_at' => $this->email_verified_at ? $this->email_verified_at->toDateTimeString() : null,
             'created_at' => $this->created_at->toDateTimeString(),
         ];
     }

@@ -36,6 +36,10 @@ class AuthService
             return false;
         }
 
+        if ($user->is_banned) {
+            return 'banned';
+        }
+
         if (is_null($user->email_verified_at)) {
             return 'unverified';
         }
