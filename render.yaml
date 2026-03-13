@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: al-miftah
+    env: docker
+    buildCommand: npm install && npm run build && composer install --no-dev --optimize-autoloader
+    startCommand: /start.sh
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+
+  - type: worker
+    name: queue-worker
+    env: docker
+    buildCommand: composer install --no-dev --optimize-autoloader
+    startCommand: php artisan queue:work --sleep=3 --tries=3
+    envVars:
+      - key: APP_ENV
+        value: production
