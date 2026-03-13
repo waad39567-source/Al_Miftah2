@@ -1,0 +1,1492 @@
+{
+  "info": {
+    "name": "شركة المفتاح - اختبار شامل",
+    "description": "# شركة المفتاح - مجموعة اختبار API شاملة\n\n## السيناريوهات:\n\n### السيناريو 1: تسجيل مستخدم → توثيق الأدمن → تسجيل دخول\n### السيناريو 2: تسجيل → إيميل توثيق → تسجيل دخول\n### السيناريو 3: سير العمل الكامل للعقارات وطلبات التواصل\n### السيناريو 4: إدارة المستخدمين (حظر وإلغاء)\n### السيناريو 5: إدارة المناطق (أدمن)\n### السيناريو 6: تغيير كلمة المرور\n### السيناريو 7: إدارة العقارات (تحديث، حذف، مؤجر، مباع)\n### السيناريو 8: طلبات التواصل (رفض، فحص حالة)\n### السيناريو 9: التحقق من صحة البيانات (Validation)\n### السيناريو 10: صلاحيات الأدمن الإضافية\n### السيناريو 11: Regions وطلبات التواصل الإضافية\n\n---\n\n## credentials:\n- Admin: admin@almiftah.com / admin123\n- Owner: owner1@almiftah.com / password123\n- User: user1@test.com / password123",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://al-miftah-master-enqeji.free.laravel.cloud/api" },
+    { "key": "adminToken", "value": "" },
+    { "key": "ownerToken", "value": "" },
+    { "key": "userToken", "value": "" },
+    { "key": "newUserToken", "value": "" },
+    { "key": "adminEmail", "value": "admin@almiftah.com" },
+    { "key": "ownerEmail", "value": "owner1@almiftah.com" },
+    { "key": "userEmail", "value": "user1@test.com" },
+    { "key": "newUserEmail", "value": "" },
+    { "key": "newUserEmail2", "value": "" },
+    { "key": "newUserId", "value": "" },
+    { "key": "propertyId", "value": "" },
+    { "key": "contactRequestId", "value": "" },
+    { "key": "newContactId", "value": "" },
+    { "key": "newRegionId", "value": "" },
+    { "key": "testUserEmail", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "السيناريو 1: تسجيل مستخدم → توثيق الأدمن → تسجيل دخول",
+      "item": [
+        {
+          "name": "1.1 تسجيل مستخدم جديد",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم التسجيل بنجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('newUserEmail', pm.response.json().data.user.email);",
+                  "pm.environment.set('newUserId', pm.response.json().data.user.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"مستخدم جديد للاختبار\",\n  \"email\": \"newuser_{{$randomInt}}@test.com\",\n  \"phone\": \"96655{{$randomInt}}\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "1.2 محاولة تسجيل دخول - ❌ تفشل (غير موثق)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ فشل كما متوقع - الحساب غير موثق', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.false;",
+                  "    pm.expect(pm.response.json().message).to.contain('موثق');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{newUserEmail}}\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "1.3 تسجيل دخول الأدمن",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تسجيل دخول الأدمن', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('adminToken', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@almiftah.com\",\n  \"password\": \"admin123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "1.4 الأدمن يوثق المستخدم",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم توثيق المستخدم', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/users/{{newUserId}}/verify",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "1.5 تسجيل دخول المستخدم بعد التوثيق - ✅ نجاح",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تسجيل دخول ناجح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('newUserToken', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{newUserEmail}}\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "السيناريو 2: تسجيل → إيميل توثيق → تسجيل دخول",
+      "item": [
+        {
+          "name": "2.1 تسجيل مستخدم جديد",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم التسجيل', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('newUserEmail2', pm.response.json().data.user.email);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"مستخدم 2\",\n  \"email\": \"newuser2_{{$randomInt}}@test.com\",\n  \"phone\": \"96666{{$randomInt}}\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "2.2 إرسال رابط التوثيق",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم إرسال رابط التوثيق', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/send-verification-email",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{newUserEmail2}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "2.3 توثيق الحساب (بدون إيميل)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم توثيق الحساب', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/verify-email",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{newUserEmail2}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "2.4 تسجيل دخول بعد التوثيق - ✅ نجاح",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تسجيل دخول ناجح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{newUserEmail2}}\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "السيناريو 3: سير العمل الكامل للعقارات وطلبات التواصل",
+      "item": [
+        {
+          "name": "3.1 تسجيل دخول المالك",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.environment.set('ownerToken', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner1@almiftah.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "3.2 المالك ينشئ عقار",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم إنشاء العقار - حالة: معلق', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('propertyId', pm.response.json().data.id);",
+                  "pm.test('الحالة pending', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('pending');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/properties",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"شقة للاختبار\",\n  \"description\": \"شقة جديدة 3 غرف\",\n  \"price\": 150000,\n  \"type\": \"sale\",\n  \"property_type\": \"apartment\",\n  \"area\": 120,\n  \"region_id\": 1,\n  \"location\": \"دمشق - المزة\"\n}"
+            }
+          }
+        },
+        {
+          "name": "3.3 المستخدم يرى العقار في القائمة العامة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ لا يظهر العقار المعلق في القائمة', function() {",
+                  "    var found = pm.response.json().data.data.find(function(p) { return p.id == pm.environment.get('propertyId'); });",
+                  "    pm.expect(found).to.be.undefined;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/properties"
+          }
+        },
+        {
+          "name": "3.4 الأدمن يوافق على العقار",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم الموافقة - حالة: نشط', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('الحالة active', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('active');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/properties/{{propertyId}}/approve",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "3.5 المستخدم يرى العقار النشط",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ يظهر العقار النشط', function() {",
+                  "    var found = pm.response.json().data.data.find(function(p) { return p.id == pm.environment.get('propertyId'); });",
+                  "    pm.expect(found).to.not.be.undefined;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/properties"
+          }
+        },
+        {
+          "name": "3.6 تسجيل دخول المستخدم العادي",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.environment.set('userToken', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user1@test.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "3.7 المستخدم يرسل طلب تواصل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم إرسال طلب التواصل - حالة: معلق', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('contactRequestId', pm.response.json().data.id);",
+                  "pm.test('الحالة pending', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('pending');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/contact",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"property_id\": {{propertyId}},\n  \"name\": \"أحمد محمد\",\n  \"phone\": \"966501234567\",\n  \"message\": \"أريد معرفة المزيد\"\n}"
+            }
+          }
+        },
+        {
+          "name": "3.8 الأدمن يوافق على طلب التواصل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم الموافقة على الطلب', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('الحالة approved', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('approved');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/contact-requests/{{contactRequestId}}/approve",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "3.9 المالك يرى الطلبات المستلمة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ يرى الطلبات المعتمدة', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/my-received",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "السيناريو 4: إدارة المستخدمين (حظر وإلغاء)",
+      "item": [
+        {
+          "name": "4.1 تسجيل دخول مستخدم للاختبار",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.environment.set('testUserEmail', pm.response.json().data.user.email);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user2@test.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "4.2 الأدمن يحظر المستخدم",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم حظر المستخدم', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('is_banned = true', function() {",
+                  "    pm.expect(pm.response.json().data.is_banned).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/users/35/ban",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"اختبار السيناريو\"\n}"
+            }
+          }
+        },
+        {
+          "name": "4.3 ❌ المستخدم المحظور يحاول تسجيل الدخول - يفشل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ فشل - الحساب محظور', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.false;",
+                  "});",
+                  "pm.test('رسالة الحظر', function() {",
+                  "    pm.expect(pm.response.json().message).to.contain('محظور');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user2@test.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "4.4 الأدمن يفك الحظر",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم فك الحظر', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('is_banned = false', function() {",
+                  "    pm.expect(pm.response.json().data.is_banned).to.be.false;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/users/35/unban",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "4.5 ✅ المستخدم يسجل دخول بعد فك الحظر - نجاح",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تسجيل دخول ناجح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user2@test.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "سيناريوهات إضافية - نجاح وفشل",
+      "item": [
+        {
+          "name": "5.1 تسجيل دخول - بيانات خاطئة - ❌ يفشل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ فشل - بيانات خاطئة', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"wrong@test.com\",\n  \"password\": \"wrongpass\"\n}"
+            }
+          }
+        },
+        {
+          "name": "5.2 تسجيل دخول مستخدم غير نشط - ❌ يفشل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ فشل - الحساب غير نشط', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"inactive@test.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "5.3 المناطق - عرض عام - ✅ نجاح",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/regions"
+          }
+        },
+        {
+          "name": "5.4 العقارات - البحث - ✅ نجاح",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/properties/search?type=sale"
+          }
+        },
+        {
+          "name": "5.5 المستخدم العادي لا يرى لوحة الأدمن - ❌ يفشل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ فشل - ليس أدمن', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/users",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "5.6 الأدمن يرى الإحصائيات - ✅ نجاح",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/statistics",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "السيناريو 5: إدارة المناطق (أدمن)",
+      "item": [
+        {
+          "name": "5.1 الأدمن ينشئ منطقة جديدة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم إنشاء المنطقة', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('newRegionId', pm.response.json().data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/regions",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"منطقة اختبار\",\n  \"type\": \"city\"\n}"
+            }
+          }
+        },
+        {
+          "name": "5.2 الأدمن يحدث المنطقة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تحديث المنطقة', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/admin/regions/{{newRegionId}}",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"منطقة محدثة\"\n}"
+            }
+          }
+        },
+        {
+          "name": "5.3 المستخدم العادي ينشئ منطقة - ❌ يفشل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ فشل - ليس أدمن', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/regions",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"منطقة\",\n  \"type\": \"city\"\n}"
+            }
+          }
+        },
+        {
+          "name": "5.4 حذف المنطقة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم حذف المنطقة', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/admin/regions/{{newRegionId}}",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "السيناريو 6: تغيير كلمة المرور",
+      "item": [
+        {
+          "name": "6.1 تغيير كلمة المرور - كلمة المرور الحالية صحيحة ✅",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تغيير كلمة المرور', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/change-password",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"password123\",\n  \"password\": \"newpassword123\",\n  \"password_confirmation\": \"newpassword123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "6.2 تغيير كلمة المرور - كلمة المرور الحالية خطأ ❌",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ فشل - كلمة المرور الحالية خطأ', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.false;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/change-password",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"wrongpass\",\n  \"password\": \"newpassword123\",\n  \"password_confirmation\": \"newpassword123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "السيناريو 7: إدارة العقارات (تحديث، حذف، مؤجر، مباع)",
+      "item": [
+        {
+          "name": "7.1 المالك يحدث عقاره",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تحديث العقار', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/properties/{{propertyId}}",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"شقة محدثة\",\n  \"price\": 160000\n}"
+            }
+          }
+        },
+        {
+          "name": "7.2 تعليم العقار كمؤجر",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تعليم العقار كمؤجر', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('الحالة rented', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('rented');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/properties/{{propertyId}}/rented",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "7.3 تعليم العقار كمباع",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تعليم العقار كمباع', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/properties/{{propertyId}}/sold",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "7.4 حذف العقار",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم حذف العقار', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/properties/{{propertyId}}",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "السيناريو 8: طلبات التواصل (رفض، فحص حالة)",
+      "item": [
+        {
+          "name": "8.1 إرسال طلب تواصل جديد",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم إرسال الطلب', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('newContactId', pm.response.json().data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/contact",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"property_id\": 1,\n  \"name\": \"عميل جديد\",\n  \"phone\": \"966501234567\"\n}"
+            }
+          }
+        },
+        {
+          "name": "8.2 فحص حالة الطلب",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/status/1",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "8.3 الأدمن يرفض طلب تواصل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم رفض الطلب', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('الحالة rejected', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('rejected');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/contact-requests/{{newContactId}}/reject",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"العقار غير متاح\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "السيناريو 9: التحقق من صحة البيانات (Validation)",
+      "item": [
+        {
+          "name": "9.1 تسجيل - بريد إلكتروني مكرر ❌",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ فشل - بريد مكرر', function() {",
+                  "    pm.expect(pm.response.status).to.eq(422);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"مستخدم\",\n  \"email\": \"admin@almiftah.com\",\n  \"phone\": \"966501111111\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "9.2 تسجيل - كلمة مرور غير متطابقة ❌",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ فشل - كلمة مرور مختلفة', function() {",
+                  "    pm.expect(pm.response.status).to.eq(422);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"مستخدم\",\n  \"email\": \"new@test.com\",\n  \"phone\": \"966501111111\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"different\"\n}"
+            }
+          }
+        },
+        {
+          "name": "9.3 تسجيل - بريد إلكتروني غير صالح ❌",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ فشل - بريد غير صالح', function() {",
+                  "    pm.expect(pm.response.status).to.eq(422);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"مستخدم\",\n  \"email\": \"not-an-email\",\n  \"phone\": \"966501111111\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "9.4 إنشاء عقار - بيانات ناقصة ❌",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ فشل - بيانات ناقصة', function() {",
+                  "    pm.expect(pm.response.status).to.eq(422);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/properties",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"شقة\"\n}"
+            }
+          }
+        },
+        {
+          "name": "9.5 إرسال طلب تواصل - عقار غير موجود ❌",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ فشل - عقار غير موجود', function() {",
+                  "    pm.expect(pm.response.status).to.eq(422);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/contact",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"property_id\": 999999,\n  \"name\": \"عميل\",\n  \"phone\": \"966501234567\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "السيناريو 10: صلاحيات الأدمن الإضافية",
+      "item": [
+        {
+          "name": "10.1 الأدمن يرى قائمة المستخدمين",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/users",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "10.2 الأدمن يفلتر المستخدمين حسب الدور",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users?role=user",
+              "query": [{ "key": "role", "value": "user" }]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "10.3 الأدمن يبحث عن مستخدم",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users?search=أحمد",
+              "query": [{ "key": "search", "value": "أحمد" }]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "10.4 الأدمن يtoggle تفعيل مستخدم",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/users/36/toggle-active",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "10.5 الأدمن يفلتر العقارات حسب الحالة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/properties?status=pending",
+              "query": [{ "key": "status", "value": "pending" }]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "10.6 الأدمن يرفض عقار",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم رفض العقار', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('الحالة rejected', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('rejected');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/properties/2/reject",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"المعلومات غير مكتملة\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "السيناريو 11:Regions وطلبات التواصل الإضافية",
+      "item": [
+        {
+          "name": "11.1 عرض تفاصيل منطقة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/regions/1"
+          }
+        },
+        {
+          "name": "11.2 عرض المناطق الفرعية",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/regions/1/children"
+          }
+        },
+        {
+          "name": "11.3 عرض أنواع المناطق",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/regions/types/list"
+          }
+        },
+        {
+          "name": "11.4 عرض طلباتي المرسلة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/my-requests",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ]
+          }
+        },
+        {
+          "name": "11.5 عرض طلباتي المستلمة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/my-received",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "ملخص - سيناريوهات HTTP",
+      "item": [
+        {
+          "name": "جدول السيناريوهات",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "", "host": [], "path": [] },
+            "description": "# ملخص سيناريوهات HTTP\n\n## سيناريو 1: المستخدم الجديد غير الموثق\n| الخطوة | الطريقة | النتيجة |\n|--------|--------|--------|\n| تسجيل مستخدم | POST /auth/register | ✅ 201 |\n| تسجيل دخول | POST /auth/login | ❌ 403 (غير موثق) |\n| توثيق | POST /admin/users/{id}/verify | ✅ 200 |\n| تسجيل دخول | POST /auth/login | ✅ 200 |\n\n## سيناريو 2: التوثيق عبر الإيميل\n| الخطوة | الطريقة | النتيجة |\n|--------|--------|--------|\n| تسجيل | POST /auth/register | ✅ 201 |\n| إرسال رابط | POST /auth/send-verification-email | ✅ 200 |\n| توثيق | POST /auth/verify-email | ✅ 200 |\n| تسجيل دخول | POST /auth/login | ✅ 200 |\n\n## سيناريو 3: سير العمل الكامل\n| الخطوة | الطريقة | النتيجة |\n|--------|--------|--------|\n| إنشاء عقار | POST /properties | ✅ 201 (pending) |\n| الموافقة | POST /admin/properties/{id}/approve | ✅ 200 (active) |\n| إرسال طلب | POST /contact | ✅ 201 (pending) |\n| الموافقة | POST /admin/contact-requests/{id}/approve | ✅ 200 (approved) |\n\n## سيناريو 4: الحظر\n| الخطوة | الطريقة | النتيجة |\n|--------|--------|--------|\n| حظر | POST /admin/users/{id}/ban | ✅ 200 |\n| تسجيل دخول | POST /auth/login | ❌ 403 (محظور) |\n| فك الحظر | POST /admin/users/{id}/unban | ✅ 200 |\n| تسجيل دخول | POST /auth/login | ✅ 200 |\n\n---\n\n## أكواد HTTP:\n- 200: نجاح\n- 201: تم الإنشاء\n- 400: خطأ في الطلب\n- 401: غير مصادق\n- 403: ممنوع\n- 404: غير موجود\n- 422: خطأ في التحقق\n\n---\n\n## الأدوار والصلاحيات:\n| الميزة | Admin | Owner | User |\n|--------|-------|-------|------|\n| تسجيل الدخول | ✅ | ✅ | ✅ |\n| إنشاء عقار | ✅ | ✅ | ✅ (موثق) |\n| الموافقة على عقار | ✅ | ❌ | ❌ |\n| إدارة المستخدمين | ✅ | ❌ | ❌ |\n| الإحصائيات | ✅ | ❌ | ❌ |"
+          }
+        }
+      ]
+    }
+  ]
+}
