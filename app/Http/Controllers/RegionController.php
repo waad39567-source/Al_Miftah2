@@ -53,7 +53,7 @@ class RegionController extends Controller
         $check = $this->checkAdmin($request);
         if ($check) return $check;
 
-        if ($request->parent_id == $request->id) {
+        if ($request->parent_id && $request->parent_id == $request->id) {
             return $this->errorResponse('لا يمكن جعل المنطقة كأب لنفسها', 422);
         }
 
@@ -77,7 +77,7 @@ class RegionController extends Controller
             return $this->errorResponse('المنطقة غير موجودة', 404);
         }
 
-        if ($request->parent_id == $id) {
+        if ($request->parent_id && $request->parent_id == $id) {
             return $this->errorResponse('لا يمكن جعل المنطقة كأب لنفسها', 422);
         }
 

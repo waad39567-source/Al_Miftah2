@@ -303,9 +303,33 @@
               "raw": "{\n  \"title\": \"شقة للاختبار\",\n  \"description\": \"شقة جديدة 3 غرف\",\n  \"price\": 150000,\n  \"type\": \"sale\",\n  \"property_type\": \"apartment\",\n  \"area\": 120,\n  \"region_id\": 1,\n  \"location\": \"دمشق - المزة\"\n}"
             }
           }
+          },
+        {
+          "name": "3.3 تسجيل دخول الأدمن",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تسجيل دخول الأدمن', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('adminToken', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@almiftah.com\",\n  \"password\": \"admin123\"\n}"
+            }
+          }
         },
         {
-          "name": "3.3 المستخدم يرى العقار في القائمة العامة",
+          "name": "3.4 المستخدم يرى العقار في القائمة العامة",
           "event": [
             {
               "listen": "test",
