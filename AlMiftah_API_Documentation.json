@@ -1,0 +1,543 @@
+{
+  "info": {
+    "name": "شركة المفتاح - توثيق API الشامل",
+    "description": "# شركة المفتاح للعقارات - API Documentation\nn## نظرة عامةnواجهة برمجة التطبيقات (API) الخاصة بشركة المفتاح للعقارات.nn## Base URLn```\n{{baseUrl}}\n```\n\n---\n\n## المصادقةnn### بيانات الاختبارn| الدور | البريد الإلكتروني | كلمة المرور |n|------|------------------|-------------|\n| أدمن | admin@almiftah.com | admin123 |\n| مالك | owner1@almiftah.com | password123 |\n| مستخدم | user1@test.com | password123 |\n\n### Headers المطلوبnnجميع الطلبات تتطلب:n```\nAccept: application/json\nContent-Type: application/json\n```nnالطلبات المحمية تتطلب:n```\nAuthorization: Bearer {token}\n```\n\n---\n\n## جدول المحتويات\nn1. [المصادقة (Auth)](#المصادقة-auth)\n2. [المناطق (Regions)](#المناطق-regions)\n3. [العقارات (Properties)](#العقارات-properties)\n4. [طلبات التواصل (Contact)](#طلبات-التواصل-contact)\n5. [إدارة النظام (Admin)](#إدارة-النظام-admin)\nn---\n\n## المصادقة (Auth)\n\n### تسجيل مستخدم جديدn```\nPOST /api/auth/register\n```\nn**Body:**\n```json\n{\n  \"name\": \"اسم المستخدم\",\n  \"email\": \"email@test.com\",\n  \"phone\": \"966501234567\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"role\": \"user\"  // أو \"owner\"\n}\n```\n\n**الرد (نجاح - 201):**\n```json\n{\n  \"success\": true,\n  \"message\": \"تم التسجيل بنجاح\",\n  \"data\": {\n    \"user\": {\n      \"id\": 1,\n      \"name\": \"اسم المستخدم\",\n      \"email\": \"email@test.com\",\n      \"phone\": \"966501234567\",\n      \"role\": \"user\",\n      \"is_active\": true,\n      \"is_banned\": false,\n      \"email_verified_at\": null,\n      \"created_at\": \"2026-03-14T04:14:35.000000Z\"\n    }\n  }\n}\n```\n\n---\n\n### تسجيل دخولn```\nPOST /api/auth/login\n```\n\n**Body:**\n```json\n{\n  \"email\": \"email@test.com\",\n  \"password\": \"password123\"\n}\n```\n\n**الرد (نجاح):**\n```json\n{\n  \"success\": true,\n  \"message\": \"تم تسجيل الدخول بنجاح\",\n  \"data\": {\n    \"user\": {\n      \"id\": 1,\n      \"name\": \"اسم المستخدم\",\n      \"email\": \"email@test.com\",\n      \"phone\": \"966501234567\",\n      \"role\": \"user\",\n      \"is_active\": true,\n      \"is_banned\": false,\n      \"email_verified_at\": \"2026-03-14T04:14:35.000000Z\"\n    },\n    \"token\": \"1|abc123...\"\n  }\n}\n```\n\n**ردود الخطأ:**\n- غير موثق: `\"message\": \"...موثق...\"`\n- محظور: `\"message\": \"...محظور...\"`\n- غير نشط: `\"message\": \"...نشط...\"`\n- بيانات خاطئة: `\"success\": false`\n\n---\n\n### إرسال رابط التوثيقn```\nPOST /api/auth/send-verification-email\n```\n\n**Body:**\n```json\n{\n  \"email\": \"email@test.com\"\n}\n```\n\n---\n\n### توثيق الإيميل (للاختبار)n```\nPOST /api/auth/verify-email\n```\n\n**Body:**\n```json\n{\n  \"email\": \"email@test.com\"\n}\n```\n\n---\n\n### تغيير كلمة المرورn```\nPOST /api/auth/change-password\n```\nn**Headers:**\n```\nAuthorization: Bearer {token}\n```\n\n**Body:**\n```json\n{\n  \"current_password\": \"oldpassword123\",\n  \"password\": \"newpassword123\",\n  \"password_confirmation\": \"newpassword123\"\n}\n```\n\n---\n\n## المناطق (Regions)\n\n### عرض جميع المناطقn```\nGET /api/regions\n```\n\n**Query Parameters:**\n| المعامل | الوصف | مثال |\n|---------|-------|------|\n| type | نوع المنطقة | country, governorate, city, neighborhood |\n| parent_id | المنطقة الأب | 1 |\n| search | البحث بالاسم | دمشق |\n| include_children | جلب الأطفال | true |\n\n---\n\n### عرضRegions بشكل هرمي (شجرة)n```\nGET /api/regions/tree\n```\n\n---\n\n### عرض المناطق الرئيسية (الدول)n```\nGET /api/regions/root/list\n```\n\n---\n\n### عرض أنواع المناطقn```\nGET /api/regions/types/list\n```\n\n---\n\n### عرض تفاصيل منطقة\n```\nGET /api/regions/{id}\n```\n\n---\n\n### عرض المناطق الفرعيةn```\nGET /api/regions/{id}/children\n```\n\n---\n\n## العقارات (Properties)\n\n### قائمة العقارات (عام)n```\nGET /api/properties\n```\n\n**Query Parameters:**\n| المعامل | الوصف | مثال |\n|---------|-------|------|\n| type | نوع العرض | sale, rent |\n| property_type | نوع العقار | apartment, villa, house, land, shop, office, warehouse, building |\n| region_id | المنطقة (يشمل الأطفال) | 1 |\n| status | الحالة | active, pending, rented, sold, rejected |\n| min_price | الحد الأدنى للسعر | 100000 |\n| max_price | الحد الأقصى للسعر | 500000 |\n| min_area | الحد الأدنى للمساحة | 50 |\n| max_area | الحد الأقصى للمساحة | 200 |\n| search | البحث بالنص | شقة |\n| sort_by | الترتيب | created_at, price, area |\n| sort_order | اتجاه الترتيب | asc, desc |\n| per_page | عدد بالصفحة | 15 |\n\n---\n\n### البحث.basic\n```\nGET /api/properties/search?search=شقة\n```\n\n---\n\n### البحث المتقدم\n```\nGET /api/properties/advanced-search\n```\n\n**Query Parameters:**\n| المعامل | الوصف | مثال |\n|---------|-------|------|\n| type | نوع العرض | sale, rent |\n| property_type | نوع العقار | apartment |\n| governorate_id | المحافظة (يشمل المدن والأحياء) | 2 |\n| city_id | المدينة (يشمل الأحياء) | 3 |\n| neighborhood_id | الحي | 4 |\n| region_ids | مناطق متعددة | 1,2,3 |\n| region_names | أسماء مناطق | Damascus,Aleppo |\n| min_price | الحد الأدنى | 100000 |\n| max_price | الحد الأقصى | 500000 |\n| min_area | الحد الأدنى للمساحة | 50 |\n| max_area | الحد الأقصى للمساحة | 200 |\n| status | الحالة | active |\n| search | بحث نصي | شقة |\n\n---\n\n### عرض تفاصيل عقار\n```\nGET /api/properties/{id}\n```\n\n---\n\n### عقاراتي (المستخدم الحالي)n```\nGET /api/properties/my-properties\n```\n\n**Headers:**\n```\nAuthorization: Bearer {token}\n```\n\n---\n\n### إنشاء عقار\n```\nPOST /api/properties\n```\n\n**Headers:**\n```\nAuthorization: Bearer {token}\n```\n\n**Body:**\n```json\n{\n  \"title\": \"شقة فاخرة في المزة\",\n  \"description\": \"شقة حديثة 3 غرف نوم\",\n  \"price\": 150000,\n  \"type\": \"sale\",\n  \"property_type\": \"apartment\",\n  \"area\": 120,\n  \"region_id\": 4,\n  \"location\": \"دمشق - المزة\",\n  \"latitude\": 33.8321,\n  \"longitude\": 36.1067\n}\n```\n\n**الرد:**\n```json\n{\n  \"success\": true,\n  \"message\": \"تم إنشاء العقار بنجاح\",\n  \"data\": {\n    \"id\": 1,\n    \"owner_id\": 2,\n    \"title\": \"شقة فاخرة في المزة\",\n    \"status\": \"pending\",\n    \"created_at\": \"2026-03-14T04:14:37\"\n  }\n}\n```\n\n---\n\n### تحديث عقار\n```\nPUT /api/properties/{id}\n```\n\n**Headers:**\n```\nAuthorization: Bearer {token}\n```\n\n**Body:**\n```json\n{\n  \"title\": \"عنوان محدث\",\n  \"price\": 160000\n}\n```\n\n---\n\n### حذف عقار\n```\nDELETE /api/properties/{id}\n```\n\n**Headers:**\n```\nAuthorization: Bearer {token}\n```\n\n---\n\n### تعليم العقار كمؤجر\n```\nPOST /api/properties/{id}/rented\n```\n\n---\n\n### تعليم العقار كمباع\n```\nPOST /api/properties/{id}/sold\n```\n\n---\n\n### حذف صورة\n```\nDELETE /api/properties/{id}/images/{imageId}\n```\n\n---\n\n## طلبات التواصل (Contact)\n\n### إرسال طلب تواصل\n```\nPOST /api/contact\n```\n\n**Headers:**\n```\nAuthorization: Bearer {token}\n```\n\n**Body:**\n```json\n{\n  \"property_id\": 1,\n  \"name\": \"أحمد محمد\",\n  \"phone\": \"966501234567\",\n  \"message\": \"أريد معرفة المزيد\"\n}\n```\n\n---\n\n### عرض طلباتي المرسلة\n```\nGET /api/contact/my-requests\n```\n\n**Headers:**\n```\nAuthorization: Bearer {token}\n```\n\n---\n\n### عرض الطلبات المستلمة (للمالك)n```\nGET /api/contact/my-received\n```\n\n**Headers:**\n```\nAuthorization: Bearer {token}\n```\n\n---\n\n### فحص حالة طلب لعقار\n```\nGET /api/contact/status/{propertyId}\n```\n\n**Headers:**\n```\nAuthorization: Bearer {token}\n```\n\n---\n\n## إدارة النظام (Admin)\n\n### عرض جميع المستخدمين\n```\nGET /api/admin/users\n```\n\n**Headers:**\n```\nAuthorization: Bearer {adminToken}\n```\n\n**Query Parameters:**\n| المعامل | الوصف | مثال |\n|---------|-------|------|\n| role | الدور | user, owner, admin |\n| search | بحث | أحمد |\n| is_active | التفعيل | true, false |\n| is_banned | الحظر | true, false |\n\n---\n\n### المستخدمين غير الموثقين\n```\nGET /api/admin/users/unverified\n```\n\n---\n\n### توثيق مستخدم\n```\nPOST /api/admin/users/{id}/verify\n```\n\n---\n\n### حظر مستخدم\n```\nPOST /api/admin/users/{id}/ban\n```\n\n**Body:**\n```json\n{\n  \"reason\": \"سبب الحظر\"\n}\n```\n\n---\n\n### فك الحظر\n```\nPOST /api/admin/users/{id}/unban\n```\n\n---\n\n### تبديل التفعيل\n```\nPOST /api/admin/users/{id}/toggle-active\n```\n\n---\n\n### عرض العقارات (الأدمن)\n```\nGET /api/admin/properties\n```\n\n**Query Parameters:**\n| المعامل | الوصف | مثال |\n|---------|-------|------|\n| status | الحالة | pending, active, rented, sold, rejected |\n| owner_id | المالك | 1 |\n| region_id | المنطقة | 1 |\n| type | نوع العرض | sale, rent |\n\n---\n\n### موافقة على عقار\n```\nPOST /api/admin/properties/{id}/approve\n```\n\n---\n\n### رفض عقار\n```\nPOST /api/admin/properties/{id}/reject\n```\n\n**Body:**\n```json\n{\n  \"reason\": \"سبب الرفض\"\n}\n```\n\n---\n\n### عرض طلبات التواصل\n```\nGET /api/admin/contact-requests\n```\n\n---\n\n### موافقة على طلب تواصل\n```\nPOST /api/admin/contact-requests/{id}/approve\n```\n\n---\n\n### رفض طلب تواصل\n```\nPOST /api/admin/contact-requests/{id}/reject\n```\n\n**Body:**\n```json\n{\n  \"reason\": \"سبب الرفض\"\n}\n```\n\n---\n\n### إنشاء منطقة\n```\nPOST /api/admin/regions\n```\n\n**Body:**\n```json\n{\n  \"name\": \"اسم المنطقة\",\n  \"type\": \"neighborhood\",\n  \"parent_id\": 3\n}\n```\n\n---\n\n### تحديث منطقة\n```\nPUT /api/admin/regions/{id}\n```\n\n---\n\n### حذف منطقة\n```\nDELETE /api/admin/regions/{id}\n```\n\n---\n\n### الإحصائيات\n```\nGET /api/admin/statistics\n```\n\n---\n\n### ترقية مستخدم لأدمن\n```\nPOST /api/auth/promote-to-admin\n```\n\n**Body:**\n```json\n{\n  \"email\": \"user@test.com\"\n}\n```\n\n---\n\n### إنشاء مستخدم (بما فيها أدمن)\n```\nPOST /api/admin/users/create\n```\n\n**Body:**\n```json\n{\n  \"name\": \"اسم المستخدم\",\n  \"email\": \"email@test.com\",\n  \"phone\": \"966501234567\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"role\": \"admin\",\n  \"is_active\": true\n}\n```\n\n---\n\n## الأنواع والثوابت\n\n### أدوار المستخدمين (role)\n| القيمة | الوصف |\n|--------|-------|\n| user | مستخدم عادي |\n| owner | مالك عقارات |\n| admin | مدير نظام |\n\n### أنواع المناطق (type)\n| القيمة | الوصف |\n|--------|-------|\n| country | دولة |\n| governorate | محافظة |\n| city | مدينة |\n| neighborhood | حي |\n\n### أنواع العقارات (property_type)\n| القيمة | الوصف |\n|--------|-------|\n| apartment | شقة |\n| villa | فيلا |\n| house | منزل |\n| land | أرض |\n| shop | محل |\n| office | مكتب |\n| warehouse | مستودع |\n| building | عمارة |\n\n### نوع العرض (type)\n| القيمة | الوصف |\n|--------|-------|\n| sale | للبيع |\n| rent | للإيجار |\n\n### حالة العقار (status)\n| القيمة | الوصف |\n|--------|-------|\n| pending | معلق (بانتظار الموافقة) |\n| active | نشط (معتمد) |\n| rented | مؤجر |\n| sold | مباع |\n| rejected | مرفوض |\n\n### حالة طلب التواصل\n| القيمة | الوصف |\n|--------|-------|\n| pending | معلق |\n| approved | معتمد |\n| rejected | مرفوض |\n\n---\n\n## أكواد HTTP\n\n| الكود | الوصف |\n|-------|-------|\n| 200 | نجاح |\n| 201 | تم الإنشاء |\n| 400 | خطأ في الطلب |\n| 401 | غير مصادق |\n| 403 | ممنوع (ليس لديك صلاحيات) |\n| 404 | غير موجود |\n| 422 | خطأ في التحقق (validation) |\n| 500 | خطأ في الخادم |\n\n---\n\n## هيكل الردود\n\n### رد النجاح\n```json\n{\n  \"success\": true,\n  \"message\": \"الرسالة\",\n  \"data\": { }\n}\n```\n\n### رد الخطأ\n```json\n{\n  \"success\": false,\n  \"message\": \"رسالة الخطأ\"\n}\n```\n\n### رد مع ترقيم (Pagination)\n```json\n{\n  \"success\": true,\n  \"data\": {\n    \"current_page\": 1,\n    \"data\": [ ],\n    \"first_page_url\": \"...\",\n    \"from\": 1,\n    \"last_page\": 5,\n    \"last_page_url\": \"...\",\n    \"links\": [ ],\n    \"next_page_url\": \"...\",\n    \"path\": \"...\",\n    \"per_page\": 15,\n    \"prev_page_url\": null,\n    \"to\": 15,\n    \"total\": 75\n  }\n}\n```\n\n---\n\n## ملاحظات للـ Frontend\n\n### تخزين Token\n```javascript\n// بعد تسجيل الدخول\nlocalStorage.setItem('token', response.data.data.token);\n```\n\n### استخدام Token\n```javascript\nconst token = localStorage.getItem('token');\n\nfetch(url, {\n  headers: {\n    'Authorization': `Bearer ${token}`,\n    'Accept': 'application/json',\n    'Content-Type': 'application/json'\n  }\n});\n```\n\n### معالجة الأخطاء\n```javascript\ntry {\n  const response = await fetch(url, options);\n  const data = await response.json();\n  \n  if (data.success) {\n    // نجاح\n    console.log(data.data);\n  } else {\n    // خطأ من السيرفر\n    alert(data.message);\n  }\n} catch (error) {\n  // خطأ في الاتصال\n  console.error(error);\n}\n```\n\n### سير عمل العقار\n```\n1. المستخدم ينشئ عقار\n   → status = \"pending\"\n   \n2. العقار يظهر في قائمة \"عقاراتي\" للمالك\n   \n3. العقار لا يظهر في القائمة العامة\n   \n4. الأدمن يوافق على العقار\n   → status = \"active\"\n   \n5. الآن العقار يظهر في القائمة العامة\n```\n\n### سير عمل طلب التواصل\n```\n1. المستخدم يرسل طلب تواصل\n   → status = \"pending\"\n   \n2. المالك يرى الطلب (phone = null)\n   \n3. الأدمن يوافق\n   → status = \"approved\"\n   → phone يظهر للمالك\n   \n4. أو الأدمن يرفض\n   → status = \"rejected\"\n```\n\n### اختيار المنطقة (Hierarchical)\n```javascript\n// 1. اختر الدولة\nconst countries = await fetch('/api/regions/root/list');\n\n// 2. اختر المحافظة\nconst governorates = await fetch(`/api/regions/${countryId}/children`);\n\n// 3. اختر المدينة\nconst cities = await fetch(`/api/regions/${governorateId}/children`);\n\n// 4. اختر الحي\nconst neighborhoods = await fetch(`/api/regions/${cityId}/children`);\n\n// 5. استخدم الـ id الأخير كـ region_id\n```",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://al-miftah-master-enqeji.free.laravel.cloud/api" },
+    { "key": "adminToken", "value": "" },
+    { "key": "ownerToken", "value": "" },
+    { "key": "userToken", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. المصادقة",
+      "item": [
+        {
+          "name": "1.1 تسجيل مستخدم جديد",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم التسجيل', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"مستخدم جديد\",\n  \"email\": \"newuser_{{$randomInt}}@test.com\",\n  \"phone\": \"96655{{$randomInt}}\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"role\": \"user\"\n}"
+            }
+          }
+        },
+        {
+          "name": "1.2 تسجيل دخول",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تسجيل الدخول', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('userToken', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user1@test.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "1.3 تسجيل دخول الأدمن",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تسجيل دخول الأدمن', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('adminToken', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@almiftah.com\",\n  \"password\": \"admin123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "1.4 تسجيل دخول المالك",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تسجيل دخول المالك', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('ownerToken', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner1@almiftah.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. المناطق",
+      "item": [
+        {
+          "name": "2.1 عرض جميع المناطق",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/regions",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "2.2 عرضRegions بشكل هرمي",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/regions/tree",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "2.3 عرض المناطق الرئيسية",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/regions/root/list",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "2.4 أنواع المناطق",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/regions/types/list",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "2.5 تفاصيل منطقة",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/regions/3",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "2.6 المناطق الفرعية",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/regions/3/children",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. العقارات",
+      "item": [
+        {
+          "name": "3.1 قائمة العقارات (عام)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/properties",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "3.2 البحث",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/properties/search?type=sale",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "3.3 البحث المتقدم",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/properties/advanced-search?governorate_id=2",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "3.4 تفاصيل عقار",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/properties/1",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "3.5 عقاراتي",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/properties/my-properties",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "3.6 إنشاء عقار",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/properties",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"شقة للاختبار\",\n  \"description\": \"شقة حديثة\",\n  \"price\": 150000,\n  \"type\": \"sale\",\n  \"property_type\": \"apartment\",\n  \"area\": 120,\n  \"region_id\": 4,\n  \"location\": \"دمشق - المزة\"\n}"
+            }
+          }
+        },
+        {
+          "name": "3.7 تحديث عقار",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/properties/1",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"شقة محدثة\",\n  \"price\": 160000\n}"
+            }
+          }
+        },
+        {
+          "name": "3.8 حذف عقار",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/properties/1",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. طلبات التواصل",
+      "item": [
+        {
+          "name": "4.1 إرسال طلب تواصل",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/contact",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"property_id\": 1,\n  \"name\": \"أحمد\",\n  \"phone\": \"966501234567\",\n  \"message\": \"معرف\"\n}"
+            }
+          }
+        },
+        {
+          "name": "4.2 طلباتي المرسلة",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/my-requests",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "4.3 الطلبات المستلمة",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/my-received",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "4.4 فحص الحالة",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/contact/status/1",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. الأدمن - المستخدمون",
+      "item": [
+        {
+          "name": "5.1 قائمة المستخدمين",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/users",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "5.2 المستخدمين غير الموثقين",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/users/unverified",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "5.3 توثيق مستخدم",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/users/2/verify",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "5.4 حظر مستخدم",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/users/3/ban",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"اختبار\"\n}"
+            }
+          }
+        },
+        {
+          "name": "5.5 فك الحظر",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/users/3/unban",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. الأدمن - العقارات",
+      "item": [
+        {
+          "name": "6.1 قائمة العقارات",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/properties",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "6.2 العقارات المعلقة",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/properties?status=pending",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "6.3 موافقة على عقار",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/properties/1/approve",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "6.4 رفض عقار",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/properties/2/reject",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"اختبار\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. الأدمن - طلبات التواصل",
+      "item": [
+        {
+          "name": "7.1 قائمة طلبات التواصل",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/contact-requests",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "7.2 موافقة على طلب",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/contact-requests/1/approve",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        },
+        {
+          "name": "7.3 رفض طلب",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/contact-requests/2/reject",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"اختبار\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. الأدمن - المناطق والإحصائيات",
+      "item": [
+        {
+          "name": "8.1 إنشاء منطقة",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/admin/regions",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"حي اختبار\",\n  \"type\": \"neighborhood\",\n  \"parent_id\": 3\n}"
+            }
+          }
+        },
+        {
+          "name": "8.2 الإحصائيات",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/admin/statistics",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
