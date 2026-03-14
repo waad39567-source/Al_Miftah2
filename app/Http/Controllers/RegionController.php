@@ -57,6 +57,12 @@ class RegionController extends Controller
             return $this->errorResponse('لا يمكن جعل المنطقة كأب لنفسها', 422);
         }
 
+        // Validate region hierarchy
+        $validationError = $this->validateRegionHierarchy($request->type, $request->parent_id);
+        if ($validationError) {
+            return $validationError;
+        }
+
         $region = $this->regionService->create($request->validated());
 
         return $this->successResponse(
@@ -64,6 +70,53 @@ class RegionController extends Controller
             'تم إنشاء المنطقة بنجاح',
             201
         );
+    }
+
+    private function validateRegionHierarchy(?string $type, ?int $parentId): ?JsonResponse
+    {
+        if (!$type) {
+            return null;
+        }
+
+        switch ($type) {
+            case 'country':
+                if ($parentId !== null) {
+                    return $this->errorResponse('الدولة لا يمكن أن تكون لها منطقة أب', 422);
+                }
+                break;
+
+            case 'governorate':
+                if ($parentId === null) {
+                    return $this->errorResponse('المحافظة تحتاج إلى تحديد دولة كمنطقة أب', 422);
+                }
+                $parent = Region::find($parentId);
+                if (!$parent || $parent->type !== 'country') {
+                    return $this->errorResponse('المحافظة يجب أن تكون داخل دولة', 422);
+                }
+                break;
+
+            case 'city':
+                if ($parentId === null) {
+                    return $this->errorResponse('المدينة تحتاج إلى تحديد محافظة كمنطقة أب', 422);
+                }
+                $parent = Region::find($parentId);
+                if (!$parent || $parent->type !== 'governorate') {
+                    return $this->errorResponse('المدينة يجب أن تكون داخل محافظة', 422);
+                }
+                break;
+
+            case 'neighborhood':
+                if ($parentId === null) {
+                    return $this->errorResponse('الحي يحتاج إلى تحديد مدينة كمنطقة أب', 422);
+                }
+                $parent = Region::find($parentId);
+                if (!$parent || $parent->type !== 'city') {
+                    return $this->errorResponse('الحي يجب أن يكون داخل مدينة', 422);
+                }
+                break;
+        }
+
+        return null;
     }
 
     public function update(RegionRequest $request, int $id): JsonResponse
