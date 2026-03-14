@@ -121,7 +121,9 @@
             "method": "POST",
             "url": "{{baseUrl}}/admin/users/{{newUserId}}/verify",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         },
@@ -296,7 +298,8 @@
             "url": "{{baseUrl}}/properties",
             "header": [
               { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
@@ -344,32 +347,10 @@
             }
           ],
           "request": {
-            "method": "GET",
-            "url": "{{baseUrl}}/properties"
-          }
-        },
-        {
-          "name": "3.4 الأدمن يوافق على العقار",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('✓ تم الموافقة - حالة: نشط', function() {",
-                  "    pm.expect(pm.response.json().success).to.be.true;",
-                  "});",
-                  "pm.test('الحالة active', function() {",
-                  "    pm.expect(pm.response.json().data.status).to.eq('active');",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "url": "{{baseUrl}}/admin/properties/{{propertyId}}/approve",
+"method": "GET",
+            "url": "{{baseUrl}}/properties",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         },
@@ -437,7 +418,8 @@
             "url": "{{baseUrl}}/contact",
             "header": [
               { "key": "Authorization", "value": "Bearer {{userToken}}" },
-              { "key": "Content-Type", "value": "application/json" }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
             ],
             "body": {
               "mode": "raw",
@@ -465,87 +447,11 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/admin/contact-requests/{{contactRequestId}}/approve",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
-            ]
-          }
-        },
-        {
-          "name": "3.9 المالك يرى الطلبات المستلمة",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('✓ يرى الطلبات المعتمدة', function() {",
-                  "    pm.expect(pm.response.json().success).to.be.true;",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "url": "{{baseUrl}}/contact/my-received",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "السيناريو 4: إدارة المستخدمين (حظر وإلغاء)",
-      "item": [
-        {
-          "name": "4.1 تسجيل دخول مستخدم للاختبار",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.environment.set('testUserEmail', pm.response.json().data.user.email);"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "url": "{{baseUrl}}/auth/login",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"user2@test.com\",\n  \"password\": \"password123\"\n}"
-            }
-          }
-        },
-        {
-          "name": "4.2 الأدمن يحظر المستخدم",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('✓ تم حظر المستخدم', function() {",
-                  "    pm.expect(pm.response.json().success).to.be.true;",
-                  "});",
-                  "pm.test('is_banned = true', function() {",
-                  "    pm.expect(pm.response.json().data.is_banned).to.be.true;",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "url": "{{baseUrl}}/admin/users/35/ban",
-            "header": [
+"header": [
               { "key": "Authorization", "value": "Bearer {{adminToken}}" },
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"reason\": \"اختبار السيناريو\"\n}"
-            }
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ]
           }
         },
         {
@@ -595,7 +501,8 @@
             "method": "POST",
             "url": "{{baseUrl}}/admin/users/35/unban",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         },
@@ -689,7 +596,10 @@
           ],
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/regions"
+            "url": "{{baseUrl}}/regions",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ]
           }
         },
         {
@@ -708,7 +618,10 @@
           ],
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/properties/search?type=sale"
+            "url": "{{baseUrl}}/properties/search?type=sale",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ]
           }
         },
         {
@@ -729,7 +642,8 @@
             "method": "GET",
             "url": "{{baseUrl}}/admin/users",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         },
@@ -751,7 +665,8 @@
             "method": "GET",
             "url": "{{baseUrl}}/admin/statistics",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         }
@@ -780,6 +695,7 @@
             "url": "{{baseUrl}}/admin/regions",
             "header": [
               { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" },
               { "key": "Content-Type", "value": "application/json" }
             ],
             "body": {
@@ -807,6 +723,7 @@
             "url": "{{baseUrl}}/admin/regions/{{newRegionId}}",
             "header": [
               { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" },
               { "key": "Content-Type", "value": "application/json" }
             ],
             "body": {
@@ -834,6 +751,7 @@
             "url": "{{baseUrl}}/admin/regions",
             "header": [
               { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Accept", "value": "application/json" },
               { "key": "Content-Type", "value": "application/json" }
             ],
             "body": {
@@ -860,7 +778,8 @@
             "method": "DELETE",
             "url": "{{baseUrl}}/admin/regions/{{newRegionId}}",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         }
@@ -888,6 +807,7 @@
             "url": "{{baseUrl}}/auth/change-password",
             "header": [
               { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Accept", "value": "application/json" },
               { "key": "Content-Type", "value": "application/json" }
             ],
             "body": {
@@ -915,6 +835,7 @@
             "url": "{{baseUrl}}/auth/change-password",
             "header": [
               { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Accept", "value": "application/json" },
               { "key": "Content-Type", "value": "application/json" }
             ],
             "body": {
@@ -947,6 +868,7 @@
             "url": "{{baseUrl}}/properties/{{propertyId}}",
             "header": [
               { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Accept", "value": "application/json" },
               { "key": "Content-Type", "value": "application/json" }
             ],
             "body": {
@@ -976,7 +898,8 @@
             "method": "POST",
             "url": "{{baseUrl}}/properties/{{propertyId}}/rented",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         },
@@ -998,7 +921,8 @@
             "method": "POST",
             "url": "{{baseUrl}}/properties/{{propertyId}}/sold",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         },
@@ -1020,7 +944,8 @@
             "method": "DELETE",
             "url": "{{baseUrl}}/properties/{{propertyId}}",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         }
@@ -1049,6 +974,7 @@
             "url": "{{baseUrl}}/contact",
             "header": [
               { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Accept", "value": "application/json" },
               { "key": "Content-Type", "value": "application/json" }
             ],
             "body": {
@@ -1075,7 +1001,8 @@
             "method": "GET",
             "url": "{{baseUrl}}/contact/status/1",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         },
@@ -1101,6 +1028,7 @@
             "url": "{{baseUrl}}/admin/contact-requests/{{newContactId}}/reject",
             "header": [
               { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" },
               { "key": "Content-Type", "value": "application/json" }
             ],
             "body": {
@@ -1202,6 +1130,7 @@
             "url": "{{baseUrl}}/properties",
             "header": [
               { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Accept", "value": "application/json" },
               { "key": "Content-Type", "value": "application/json" }
             ],
             "body": {
@@ -1229,6 +1158,7 @@
             "url": "{{baseUrl}}/contact",
             "header": [
               { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Accept", "value": "application/json" },
               { "key": "Content-Type", "value": "application/json" }
             ],
             "body": {
@@ -1260,7 +1190,8 @@
             "method": "GET",
             "url": "{{baseUrl}}/admin/users",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         },
@@ -1285,7 +1216,8 @@
               "query": [{ "key": "role", "value": "user" }]
             },
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         },
@@ -1310,7 +1242,8 @@
               "query": [{ "key": "search", "value": "أحمد" }]
             },
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         },
@@ -1332,7 +1265,8 @@
             "method": "POST",
             "url": "{{baseUrl}}/admin/users/36/toggle-active",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         },
@@ -1357,7 +1291,8 @@
               "query": [{ "key": "status", "value": "pending" }]
             },
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         },
@@ -1383,6 +1318,7 @@
             "url": "{{baseUrl}}/admin/properties/2/reject",
             "header": [
               { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Accept", "value": "application/json" },
               { "key": "Content-Type", "value": "application/json" }
             ],
             "body": {
@@ -1412,7 +1348,10 @@
           ],
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/regions/1"
+            "url": "{{baseUrl}}/regions/1",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ]
           }
         },
         {
@@ -1431,7 +1370,10 @@
           ],
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/regions/1/children"
+            "url": "{{baseUrl}}/regions/1/children",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ]
           }
         },
         {
@@ -1450,7 +1392,10 @@
           ],
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/regions/types/list"
+            "url": "{{baseUrl}}/regions/types/list",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ]
           }
         },
         {
@@ -1471,7 +1416,8 @@
             "method": "GET",
             "url": "{{baseUrl}}/contact/my-requests",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         },
@@ -1493,7 +1439,8 @@
             "method": "GET",
             "url": "{{baseUrl}}/contact/my-received",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Accept", "value": "application/json" }
             ]
           }
         }
