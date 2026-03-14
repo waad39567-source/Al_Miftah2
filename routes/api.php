@@ -34,6 +34,7 @@ Route::prefix('auth')->group(function () {
 */
 Route::prefix('regions')->group(function () {
     Route::get('/', [RegionController::class, 'index']);
+    Route::get('/tree', [RegionController::class, 'tree']);
     Route::get('/{id}', [RegionController::class, 'show']);
     Route::get('/types/list', [RegionController::class, 'types']);
     Route::get('/root/list', [RegionController::class, 'rootRegions']);

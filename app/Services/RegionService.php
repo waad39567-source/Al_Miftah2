@@ -11,6 +11,10 @@ class RegionService
     {
         $query = Region::with('parent');
 
+        if (!empty($filters['include_children'])) {
+            $query->with('children');
+        }
+
         if (!empty($filters['type'])) {
             $query->where('type', $filters['type']);
         }
@@ -49,6 +53,15 @@ class RegionService
         return Region::with(['parent', 'children', 'properties'])->find($id);
     }
 
+    public function getByIdWithNestedChildren(int $id): ?Region
+    {
+        $region = Region::with('parent')->find($id);
+        if ($region) {
+            $region->load('children.children.children');
+        }
+        return $region;
+    }
+
     public function create(array $data): Region
     {
         return Region::create($data);
@@ -76,6 +89,13 @@ class RegionService
     public function getRootRegions()
     {
         return Region::whereNull('parent_id')->with('children')->get();
+    }
+
+    public function getRootRegionsWithNestedChildren()
+    {
+        return Region::whereNull('parent_id')
+            ->with('children.children.children')
+            ->get();
     }
 
     public function getChildren(int $id)

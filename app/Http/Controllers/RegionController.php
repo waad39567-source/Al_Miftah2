@@ -187,4 +187,11 @@ class RegionController extends Controller
 
         return $this->successResponse(RegionResource::collection($children));
     }
+
+    public function tree(): JsonResponse
+    {
+        $regions = $this->regionService->getRootRegionsWithNestedChildren();
+
+        return $this->successResponse(RegionResource::collection($regions));
+    }
 }
