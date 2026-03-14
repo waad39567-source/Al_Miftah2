@@ -23,6 +23,15 @@ class Region extends Model
         return $this->hasMany(Property::class);
     }
 
+    public function getAllDescendantIds(): array
+    {
+        $ids = [$this->id];
+        foreach ($this->children as $child) {
+            $ids = array_merge($ids, $child->getAllDescendantIds());
+        }
+        return $ids;
+    }
+
     public static function getTypes(): array
     {
         return [

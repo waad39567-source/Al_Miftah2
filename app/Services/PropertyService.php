@@ -22,7 +22,11 @@ class PropertyService
         }
 
         if (!empty($filters['region_id'])) {
-            $query->where('region_id', $filters['region_id']);
+            $region = \App\Models\Region::find($filters['region_id']);
+            if ($region) {
+                $regionIds = $region->getAllDescendantIds();
+                $query->whereIn('region_id', $regionIds);
+            }
         }
 
         if (!empty($filters['status'])) {
@@ -191,7 +195,11 @@ class PropertyService
         }
 
         if (!empty($filters['region_id'])) {
-            $query->where('region_id', $filters['region_id']);
+            $region = \App\Models\Region::find($filters['region_id']);
+            if ($region) {
+                $regionIds = $region->getAllDescendantIds();
+                $query->whereIn('region_id', $regionIds);
+            }
         }
 
         if (!empty($filters['status'])) {
@@ -237,23 +245,27 @@ class PropertyService
         }
 
         if (!empty($filters['governorate_id'])) {
-            $regionIds = \App\Models\Region::where('parent_id', $filters['governorate_id'])
-                ->orWhere('id', $filters['governorate_id'])
-                ->pluck('id')
-                ->toArray();
-            $query->whereIn('region_id', $regionIds);
+            $region = \App\Models\Region::find($filters['governorate_id']);
+            if ($region) {
+                $regionIds = $region->getAllDescendantIds();
+                $query->whereIn('region_id', $regionIds);
+            }
         }
 
         if (!empty($filters['city_id'])) {
-            $regionIds = \App\Models\Region::where('parent_id', $filters['city_id'])
-                ->orWhere('id', $filters['city_id'])
-                ->pluck('id')
-                ->toArray();
-            $query->whereIn('region_id', $regionIds);
+            $region = \App\Models\Region::find($filters['city_id']);
+            if ($region) {
+                $regionIds = $region->getAllDescendantIds();
+                $query->whereIn('region_id', $regionIds);
+            }
         }
 
         if (!empty($filters['neighborhood_id'])) {
-            $query->where('region_id', $filters['neighborhood_id']);
+            $region = \App\Models\Region::find($filters['neighborhood_id']);
+            if ($region) {
+                $regionIds = $region->getAllDescendantIds();
+                $query->whereIn('region_id', $regionIds);
+            }
         }
 
         if (!empty($filters['region_names'])) {
