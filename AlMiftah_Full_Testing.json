@@ -73,6 +73,10 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{newUserEmail}}\",\n  \"password\": \"password123\"\n}"
@@ -97,6 +101,10 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"admin@almiftah.com\",\n  \"password\": \"admin123\"\n}"
@@ -145,6 +153,10 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{newUserEmail}}\",\n  \"password\": \"password123\"\n}"
@@ -174,6 +186,10 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/auth/register",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"مستخدم 2\",\n  \"email\": \"newuser2_{{$randomInt}}@test.com\",\n  \"phone\": \"96666{{$randomInt}}\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}"
@@ -197,6 +213,10 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/auth/send-verification-email",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{newUserEmail2}}\"\n}"
@@ -220,6 +240,10 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/auth/verify-email",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{newUserEmail2}}\"\n}"
@@ -243,6 +267,10 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{newUserEmail2}}\",\n  \"password\": \"password123\"\n}"
@@ -269,6 +297,10 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"owner1@almiftah.com\",\n  \"password\": \"password123\"\n}"
@@ -325,6 +357,10 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"admin@almiftah.com\",\n  \"password\": \"admin123\"\n}"
@@ -389,6 +425,10 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"user1@test.com\",\n  \"password\": \"password123\"\n}"
@@ -474,6 +514,10 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"user2@test.com\",\n  \"password\": \"password123\"\n}"
@@ -523,6 +567,10 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"user2@test.com\",\n  \"password\": \"password123\"\n}"
@@ -551,6 +599,10 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"wrong@test.com\",\n  \"password\": \"wrongpass\"\n}"
@@ -574,6 +626,10 @@
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/auth/login",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"inactive@test.com\",\n  \"password\": \"password123\"\n}"
