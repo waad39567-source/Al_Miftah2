@@ -35,6 +35,13 @@ class ContactResource extends JsonResource
                 $data['rejection_reason'] = $this->rejection_reason;
             }
             
+            if ($this->status === 'approved' && $this->whenLoaded('owner')) {
+                $data['owner'] = [
+                    'name' => $this->owner->name,
+                    'phone' => $this->owner->phone,
+                ];
+            }
+            
             return $data;
         }
         
