@@ -16,6 +16,7 @@ class PropertySimpleResource extends JsonResource
             'property_type' => $this->property_type,
             'area' => $this->area,
             'location' => $this->location,
+            'images' => $this->whenLoaded('images', fn() => $this->images->map(fn($img) => url($img->image_path))),
         ];
     }
 }
