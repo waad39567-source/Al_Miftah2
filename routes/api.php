@@ -23,8 +23,6 @@ Route::prefix('auth')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/change-password', [AuthController::class, 'changePassword']);
         Route::post('/promote-to-admin', [AuthController::class, 'promoteToAdmin']);
-        Route::post('/users', [AuthController::class, 'createUser']);
-        Route::post('/admin/users/create', [AuthController::class, 'createUser']);
     });
 });
 
@@ -91,6 +89,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('admin')->group(function () {
         // Users Management
         Route::get('/users', [AdminController::class, 'getUsers']);
+        Route::post('/users/create', [AuthController::class, 'createUser']);
         Route::get('/users/unverified', [AdminController::class, 'getUnverifiedUsers']);
         Route::post('/users/{id}/verify', [AdminController::class, 'verifyUser']);
         Route::post('/users/{id}/ban', [AdminController::class, 'banUser']);
