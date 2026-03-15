@@ -203,7 +203,7 @@ class PropertyController extends Controller
 
         $properties = $this->propertyService->getAllForAdmin($filters);
 
-        return $this->successResponse($properties);
+        return $this->successResponse(PropertySimpleResource::collection($properties));
     }
 
     public function deleteImage(Request $request, $id, $imageId)

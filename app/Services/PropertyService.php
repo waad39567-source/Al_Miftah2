@@ -218,7 +218,7 @@ class PropertyService
 
     public function getAllForAdmin(array $filters): LengthAwarePaginator
     {
-        $query = Property::with(['owner', 'region']);
+        $query = Property::with(['owner', 'region.parent.parent.parent', 'images']);
 
         if (!empty($filters['owner_id'])) {
             $query->where('owner_id', $filters['owner_id']);
