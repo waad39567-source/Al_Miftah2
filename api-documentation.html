@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توثيق API - شركة المفتاح للعقارات</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 40px; border-radius: 10px; margin-bottom: 30px; }
+        header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        header p { opacity: 0.9; }
+        .base-url { background: #fff3cd; padding: 10px 20px; border-radius: 5px; display: inline-block; margin-top: 15px; font-family: monospace; color: #856404; }
+        .nav { background: white; padding: 15px; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; }
+        .nav a { text-decoration: none; color: #2a5298; padding: 8px 15px; border-radius: 5px; transition: all 0.3s; }
+        .nav a:hover { background: #2a5298; color: white; }
+        .section { background: white; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
+        .section-header { background: #2a5298; color: white; padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .section-header h2 { font-size: 1.5rem; }
+        .section-content { padding: 25px; display: none; }
+        .section-content.active { display: block; }
+        .endpoint { background: #f8f9fa; border-right: 4px solid #2a5298; padding: 20px; margin-bottom: 20px; border-radius: 5px; }
+        .endpoint h3 { color: #1e3c72; margin-bottom: 15px; font-size: 1.2rem; }
+        .method { display: inline-block; padding: 5px 15px; border-radius: 3px; font-weight: bold; margin-left: 10px; font-size: 0.9rem; }
+        .method-get { background: #28a745; color: white; }
+        .method-post { background: #007bff; color: white; }
+        .method-put { background: #ffc107; color: #333; }
+        .method-delete { background: #dc3545; color: white; }
+        .url { font-family: monospace; background: #e9ecef; padding: 5px 10px; border-radius: 3px; color: #495057; }
+        .required { color: #dc3545; font-weight: bold; }
+        .optional { color: #6c757d; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { padding: 12px; text-align: right; border-bottom: 1px solid #dee2e6; }
+        th { background: #f8f9fa; font-weight: 600; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; color: #c7254e; }
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 5px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; margin: 15px 0; }
+        .json-key { color: #9cdcfe; }
+        .json-string { color: #ce9178; }
+        .json-number { color: #b5cea8; }
+        .json-boolean { color: #569cd6; }
+        .json-null { color: #569cd6; }
+        .note { background: #e7f3ff; border-right: 4px solid #2196F3; padding: 15px; margin: 15px 0; border-radius: 5px; }
+        .note-title { font-weight: bold; color: #1976D2; margin-bottom: 5px; }
+        .success-response { border-right: 4px solid #28a745; }
+        .error-response { border-right: 4px solid #dc3545; }
+        .toggle-icon { font-size: 1.5rem; transition: transform 0.3s; }
+        .section-header.active .toggle-icon { transform: rotate(180deg); }
+        .auth-badge { background: #ffc107; color: #333; padding: 3px 8px; border-radius: 3px; font-size: 0.8rem; margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>توثيق API - شركة المفتاح</h1>
+            <p>وثائق API كاملة لنظام إدارة العقارات</p>
+            <div class="base-url">Base URL: {{baseUrl}}</div>
+        </header>
+
+        <nav class="nav">
+            <ul>
+                <li><a href="#auth">المستخدمين</a></li>
+                <li><a href="#regions">المناطق</a></li>
+                <li><a href="#properties">العقارات</a></li>
+                <li><a href="#contact">التواصل</a></li>
+                <li><a href="#admin">الأدمن</a></li>
+                <li><a href="#images">الصور</a></li>
+            </ul>
+        </nav>
+
+        <!-- المصادقة -->
+        <div class="section" id="auth">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>1. المصادقة والمستخدمين</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                
+                <!-- تسجيل مستخدم جديد -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> تسجيل مستخدم جديد</h3>
+                    <p><span class="url">{{baseUrl}}/auth/register</span></p>
+                    <table>
+                        <tr><th>الحقل</th><th>النوع</th><th>مطلوب</th><th>الوصف</th></tr>
+                        <tr><td>name</td><td>string</td><td class="required">نعم</td><td>الاسم الكامل</td></tr>
+                        <tr><td>email</td><td>email</td><td class="required">نعم</td><td>البريد الإلكتروني (فريد)</td></tr>
+                        <tr><td>password</td><td>string</td><td class="required">نعم</td><td>كلمة المرور (min: 8)</td></tr>
+                        <tr><td>password_confirmation</td><td>string</td><td class="required">نعم</td><td>تأكيد كلمة المرور</td></tr>
+                        <tr><td>phone</td><td>string</td><td class="required">نعم</td><td>رقم الهاتف</td></tr>
+                        <tr><td>role</td><td>string</td><td class="optional">لا</td><td>user أو owner</td></tr>
+                    </table>
+                    <div class="note"><div class="note-title">ملاحظة</div>يرجى التحقق من البريد الإلكتروني لتوثيق الحساب.</div>
+                    <pre>{
+    "name": "اسم المستخدم",
+    "email": "user@example.com",
+    "password": "password123",
+    "password_confirmation": "password123",
+    "phone": "966501234567",
+    "role": "user"
+}</pre>
+                    <div class="success-response">
+                        <p><strong>✅ استجابة ناجحة (201):</strong></p>
+                        <pre>{
+    "success": true,
+    "message": "تم التسجيل بنجاح...",
+    "data": {
+        "user": {
+            "id": 1,
+            "name": "اسم المستخدم",
+            "email": "user@example.com",
+            "phone": "966501234567",
+            "role": "user",
+            "is_active": true,
+            "created_at": "2026-03-15T12:00:00"
+        }
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <!-- تسجيل الدخول -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> تسجيل الدخول</h3>
+                    <p><span class="url">{{baseUrl}}/auth/login</span></p>
+                    <pre>{
+    "email": "user@example.com",
+    "password": "password123"
+}</pre>
+                    <div class="success-response">
+                        <p><strong>✅ استجابة ناجحة (200):</strong></p>
+                        <pre>{
+    "success": true,
+    "message": "تم تسجيل الدخول بنجاح",
+    "data": {
+        "user": {...},
+        "token": "1|abc123..."
+    }
+}</pre>
+                    </div>
+                    <div class="error-response">
+                        <p><strong>❌ خطأ (401):</strong></p>
+                        <pre>{"success": false, "message": "بيانات الاعتماد غير صحيحة"}</pre>
+                    </div>
+                </div>
+
+                <!-- جلب بيانات المستخدم الحالي -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> جلب بيانات المستخدم الحالي <span class="auth-badge">مصادقة</span></h3>
+                    <p><span class="url">{{baseUrl}}/auth/me</span></p>
+                    <p><strong>Headers:</strong> Authorization: Bearer {{token}}</p>
+                    <div class="success-response">
+                        <pre>{
+    "success": true,
+    "data": {
+        "id": 1,
+        "name": "اسم المستخدم",
+        "email": "user@example.com",
+        "phone": "966501234567",
+        "role": "user",
+        "is_active": true,
+        "created_at": "2026-03-15T12:00:00"
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <!-- تغيير كلمة المرور -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> تغيير كلمة المرور <span class="auth-badge">مصادقة</span></h3>
+                    <p><span class="url">{{baseUrl}}/auth/change-password</span></p>
+                    <pre>{
+    "current_password": "oldpassword",
+    "password": "newpassword",
+    "password_confirmation": "newpassword"
+}</pre>
+                </div>
+
+                <!-- تسجيل الخروج -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> تسجيل الخروج <span class="auth-badge">مصادقة</span></h3>
+                    <p><span class="url">{{baseUrl}}/auth/logout</span></p>
+                </div>
+
+                <!-- إرسال رابط توثيق البريد -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> إرسال رابط توثيق البريد</h3>
+                    <p><span class="url">{{baseUrl}}/auth/send-verification-email</span></p>
+                    <pre>{"email": "user@example.com"}</pre>
+                </div>
+
+                <!-- توثيق البريد الإلكتروني -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> توثيق البريد الإلكتروني</h3>
+                    <p><span class="url">{{baseUrl}}/auth/verify-email</span></p>
+                    <pre>{"email": "user@example.com"}</pre>
+                </div>
+
+                <!-- ترقية إلى أدمن -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> ترقية مستخدم إلى أدمن <span class="auth-badge">مصادقة</span></h3>
+                    <p><span class="url">{{baseUrl}}/auth/promote-to-admin</span></p>
+                    <pre>{"id": 5} // أو {"email": "user@example.com"}</pre>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- المناطق -->
+        <div class="section" id="regions">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>2. المناطق (Regions)</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                
+                <!-- جلب جميع المناطق -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> جلب جميع المناطق مع التصفية والصفحات</h3>
+                    <p><span class="url">{{baseUrl}}/regions</span></p>
+                    <table>
+                        <tr><th>Parameter</th><th>الوصف</th><th>مثال</th></tr>
+                        <tr><td>type</td><td>نوع المنطقة</td><td>?type=city</td></tr>
+                        <tr><td>parent_id</td><td>المنطقة الأب</td><td>?parent_id=1 أو ?parent_id=null</td></tr>
+                        <tr><td>search</td><td>البحث بالاسم</td><td>?search=دمشق</td></tr>
+                        <tr><td>has_children</td><td>فلترة حسب وجود أبناء</td><td>?has_children=true</td></tr>
+                        <tr><td>sort_by</td><td>حقل الترتيب</td><td>?sort_by=name</td></tr>
+                        <tr><td>sort_order</td><td>اتجاه الترتيب</td><td>?sort_order=asc</td></tr>
+                        <tr><td>per_page</td><td>عدد بالصفحة</td><td>?per_page=10</td></tr>
+                    </table>
+                    <p>أنواع المناطق: <code>country</code>, <code>governorate</code>, <code>city</code>, <code>neighborhood</code></p>
+                    <div class="success-response">
+                        <pre>{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "name": "سوريا",
+            "type": "country",
+            "parent_id": null,
+            "created_at": "2026-03-15T12:00:00"
+        }
+    ]
+}</pre>
+                    </div>
+                </div>
+
+                <!-- جلب منطقة محددة -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> جلب منطقة محددة</h3>
+                    <p><span class="url">{{baseUrl}}/regions/{id}</span></p>
+                </div>
+
+                <!-- شجرة المناطق -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> جلب شجرة المناطق</h3>
+                    <p><span class="url">{{baseUrl}}/regions/tree</span></p>
+                </div>
+
+                <!-- أنواع المناطق -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> جلب أنواع المناطق المتاحة</h3>
+                    <p><span class="url">{{baseUrl}}/regions/types/list</span></p>
+                </div>
+
+                <!-- المناطق الرئيسية -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> جلب المناطق الرئيسية</h3>
+                    <p><span class="url">{{baseUrl}}/regions/root/list</span></p>
+                </div>
+
+                <!-- المناطق الفرعية -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> جلب المناطق الفرعية</h3>
+                    <p><span class="url">{{baseUrl}}/regions/{id}/children</span></p>
+                </div>
+
+                <!-- إنشاء منطقة -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> إنشاء منطقة جديدة <span class="auth-badge">أدمن فقط</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/regions</span></p>
+                    <pre>{
+    "name": "المزة",
+    "type": "neighborhood",
+    "parent_id": 3
+}</pre>
+                </div>
+
+                <!-- تحديث منطقة -->
+                <div class="endpoint">
+                    <h3><span class="method method-put">PUT</span> تحديث منطقة <span class="auth-badge">أدمن فقط</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/regions/{id}</span></p>
+                    <pre>{"name": "المزة الجديدة"}</pre>
+                </div>
+
+                <!-- حذف منطقة -->
+                <div class="endpoint">
+                    <h3><span class="method method-delete">DELETE</span> حذف منطقة <span class="auth-badge">أدمن فقط</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/regions/{id}</span></p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- العقارات -->
+        <div class="section" id="properties">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>3. العقارات (Properties)</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                
+                <!-- جلب قائمة العقارات -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> جلب قائمة العقارات المنشورة</h3>
+                    <p><span class="url">{{baseUrl}}/properties</span></p>
+                    <table>
+                        <tr><th>Parameter</th><th>الوصف</th><th>مثال</th></tr>
+                        <tr><td>type</td><td>نوع العقار (sale/rent)</td><td>?type=sale</td></tr>
+                        <tr><td>property_type</td><td>نوع العقار</td><td>?property_type=apartment</td></tr>
+                        <tr><td>region_id</td><td>معرف المنطقة</td><td>?region_id=4</td></tr>
+                        <tr><td>search</td><td>البحث</td><td>?search=شقة</td></tr>
+                        <tr><td>min_price</td><td>الحد الأدنى للسعر</td><td>?min_price=100000</td></tr>
+                        <tr><td>max_price</td><td>الحد الأقصى للسعر</td><td>?max_price=500000</td></tr>
+                        <tr><td>min_area</td><td>الحد الأدنى للمساحة</td><td>?min_area=50</td></tr>
+                        <tr><td>max_area</td><td>الحد الأقصى للمساحة</td><td>?max_area=200</td></tr>
+                        <tr><td>per_page</td><td>عدد بالصفحة</td><td>?per_page=10</td></tr>
+                    </table>
+                    <div class="note">
+                        <div class="note-title">ملاحظة</div>
+                        يرجع فقط العقارات المنشورة (status=active) ولا يرجع المؤجرة أو المباعة أو المرفوضة أو بانتظار الموافقة.
+                    </div>
+                    <div class="success-response">
+                        <pre>{
+    "success": true,
+    "data": {
+        "data": [
+            {
+                "id": 1,
+                "title": "شقة فاخرة في المزة",
+                "description": "شقة حديثة 3 غرف نوم",
+                "price": 150000,
+                "type": "sale",
+                "property_type": "apartment",
+                "area": 120,
+                "location": "دمشق - المزة",
+                "region": "سوريا - دمشق - مدينة دمشق - المزة",
+                "status": "active",
+                "images": ["https://..."]
+            }
+        ],
+        "meta": {
+            "current_page": 1,
+            "last_page": 1,
+            "per_page": 15,
+            "total": 3
+        }
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <!-- البحث -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> البحث عن عقارات</h3>
+                    <p><span class="url">{{baseUrl}}/properties/search</span></p>
+                    <p>نفس المعاملات السابقة</p>
+                </div>
+
+                <!-- البحث المتقدم -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> البحث المتقدم</h3>
+                    <p><span class="url">{{baseUrl}}/properties/advanced-search</span></p>
+                    <table>
+                        <tr><th>Parameter</th><th>الوصف</th></tr>
+                        <tr><td>type</td><td>sale/rent</td></tr>
+                        <tr><td>property_type</td><td>apartment/house/villa/land</td></tr>
+                        <tr><td>region_ids</td><td>معرفات المناطق (مفصولة بفواصل)</td></tr>
+                        <tr><td>min_price</td><td>السعر الأدنى</td></tr>
+                        <tr><td>max_price</td><td>السعر الأقصى</td></tr>
+                        <tr><td>min_area</td><td>المساحة الأدنى</td></tr>
+                        <tr><td>max_area</td><td>المساحة الأقصى</td></tr>
+                    </table>
+                </div>
+
+                <!-- جلب عقار واحد -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> جلب تفاصيل عقار</h3>
+                    <p><span class="url">{{baseUrl}}/properties/{id}</span></p>
+                    <div class="success-response">
+                        <pre>{
+    "success": true,
+    "data": {
+        "property": {
+            "id": 1,
+            "title": "شقة فاخرة",
+            "description": "...",
+            "price": 150000,
+            "type": "sale",
+            "property_type": "apartment",
+            "area": 120,
+            "location": "دمشق - المزة",
+            "region": {...},
+            "images": [
+                {"id": 1, "image_url": "https://...", "is_primary": false}
+            ]
+        },
+        "contact_info": null
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <!-- عقارات المستخدم -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> عقاراتي (مستخدم مسجل) <span class="auth-badge">مصادقة</span></h3>
+                    <p><span class="url">{{baseUrl}}/properties/my-properties</span></p>
+                    <p>يرجع جميع عقارات المستخدم المالك</p>
+                </div>
+
+                <!-- إنشاء عقار -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> إنشاء عقار جديد <span class="auth-badge">مصادقة</span></h3>
+                    <p><span class="url">{{baseUrl}}/properties</span></p>
+                    <table>
+                        <tr><th>الحقل</th><th>النوع</th><th>مطلوب</th></tr>
+                        <tr><td>title</td><td>string</td><td class="required">نعم</td></tr>
+                        <tr><td>description</td><td>string</td><td class="required">نعم</td></tr>
+                        <tr><td>price</td><td>number</td><td class="required">نعم</td></tr>
+                        <tr><td>type</td><td>string</td><td class="required">نعم (sale/rent)</td></tr>
+                        <tr><td>property_type</td><td>string</td><td class="required">نعم</td></tr>
+                        <tr><td>area</td><td>number</td><td class="required">نعم</td></tr>
+                        <tr><td>region_id</td><td>integer</td><td class="required">نعم</td></tr>
+                        <tr><td>location</td><td>string</td><td class="required">نعم</td></tr>
+                        <tr><td>latitude</td><td>number</td><td class="optional">لا</td></tr>
+                        <tr><td>longitude</td><td>number</td><td class="optional">لا</td></tr>
+                        <tr><td>images[]</td><td>file</td><td class="optional">لا</td></tr>
+                        <tr><td>images_base64[]</td><td>string</td><td class="optional">لا</td></tr>
+                    </table>
+                    <pre>{
+    "title": "شقة فاخرة",
+    "description": "شقة جديدة 3 غرف",
+    "price": 150000,
+    "type": "sale",
+    "property_type": "apartment",
+    "area": 120,
+    "region_id": 4,
+    "location": "دمشق - المزة"
+}</pre>
+                    <div class="note">
+                        <div class="note-title">ملاحظة</div>
+                        العقار بعد الإنشاء يكون بحالة "pending" (بانتظار الموافقة) ولا يظهر في القائمة العامة إلا بعد موافقة الأدمن.
+                    </div>
+                </div>
+
+                <!-- تحديث عقار -->
+                <div class="endpoint">
+                    <h3><span class="method method-put">PUT</span> تحديث عقار <span class="auth-badge">مصادقة</span></h3>
+                    <p><span class="url">{{baseUrl}}/properties/{id}</span></p>
+                    <p>نفس حقول الإنشاء</p>
+                </div>
+
+                <!-- حذف عقار -->
+                <div class="endpoint">
+                    <h3><span class="method method-delete">DELETE</span> حذف عقار <span class="auth-badge">مصادقة</span></h3>
+                    <p><span class="url">{{baseUrl}}/properties/{id}</span></p>
+                </div>
+
+                <!-- حذف صورة -->
+                <div class="endpoint">
+                    <h3><span class="method method-delete">DELETE</span> حذف صورة من عقار <span class="auth-badge">مصادقة</span></h3>
+                    <p><span class="url">{{baseUrl}}/properties/{propertyId}/images/{imageId}</span></p>
+                </div>
+
+                <!-- تعليم كمؤجر -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> تعليم العقار كمؤجر <span class="auth-badge">مصادقة</span></h3>
+                    <p><span class="url">{{baseUrl}}/properties/{id}/rented</span></p>
+                </div>
+
+                <!-- تعليم كمباع -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> تعليم العقار كمباع <span class="auth-badge">مصادقة</span></h3>
+                    <p><span class="url">{{baseUrl}}/properties/{id}/sold</span></p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- التواصل -->
+        <div class="section" id="contact">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>4. طلبات التواصل (Contact)</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                
+                <!-- إرسال طلب تواصل -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> إرسال طلب تواصل <span class="auth-badge">مصادقة</span></h3>
+                    <p><span class="url">{{baseUrl}}/contact</span></p>
+                    <pre>{
+    "property_id": 1,
+    "name": "اسم المرسل",
+    "phone": "966501234567",
+    "message": "رسالة اهتمام بالعقار"
+}</pre>
+                    <div class="note">
+                        <div class="note-title">ملاحظة</div>
+                        بيانات المالك (الاسم ورقم الهاتف) تظهر فقط إذا وافق المالك على طلب التواصل.
+                    </div>
+                </div>
+
+                <!-- طلباتي -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> طلباتي المرسلة <span class="auth-badge">مصادقة</span></h3>
+                    <p><span class="url">{{baseUrl}}/contact/my-requests</span></p>
+                </div>
+
+                <!-- الطلبات المستلمة -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> الطلبات المستلمة <span class="auth-badge">مصادقة</span></h3>
+                    <p><span class="url">{{baseUrl}}/contact/my-received</span></p>
+                    <p>طلبات التواصل المرسلة لمالك العقارات</p>
+                </div>
+
+                <!-- حالة الطلب -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> التحقق من حالة طلب <span class="auth-badge"> مصادقة</span></h3>
+                    <p><span class="url">{{baseUrl}}/contact/status/{propertyId}</span></p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- الأدمن -->
+        <div class="section" id="admin">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>5. إدارة الأدمن (Admin)</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                
+                <!-- جلب جميع المستخدمين -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> جلب جميع المستخدمين <span class="auth-badge">أدمن</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/users</span></p>
+                </div>
+
+                <!-- إنشاء مستخدم -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> إنشاء مستخدم جديد <span class="auth-badge">أدمن</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/users/create</span></p>
+                    <pre>{
+    "name": "اسم المستخدم",
+    "email": "user@example.com",
+    "password": "password123",
+    "password_confirmation": "password123",
+    "phone": "966501234567",
+    "role": "user",
+    "is_active": true
+}</pre>
+                </div>
+
+                <!-- المستخدمين غير الموثقين -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> المستخدمين غير الموثقين <span class="auth-badge">أدمن</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/users/unverified</span></p>
+                </div>
+
+                <!-- توثيق مستخدم -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> توثيق مستخدم <span class="auth-badge">أدمن</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/users/{id}/verify</span></p>
+                </div>
+
+                <!-- حظر مستخدم -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> حظر مستخدم <span class="auth-badge">أدمن</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/users/{id}/ban</span></p>
+                    <pre>{"reason": "سبب الحظر"}</pre>
+                </div>
+
+                <!-- إلغاء حظر مستخدم -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> إلغاء حظر مستخدم <span class="auth-badge">أدمن</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/users/{id}/unban</span></p>
+                </div>
+
+                <!-- تفعيل/تعطيل مستخدم -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> تفعيل/تعطيل مستخدم <span class="auth-badge">أدمن</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/users/{id}/toggle-active</span></p>
+                </div>
+
+                <!-- جلب جميع العقارات -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> جلب جميع العقارات <span class="auth-badge">أدمن</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/properties</span></p>
+                    <table>
+                        <tr><th>Parameter</th><th>الوصف</th></tr>
+                        <tr><td>status</td><td>pending, active, rented, sold, rejected</td></tr>
+                        <tr><td>type</td><td>sale/rent</td></tr>
+                        <tr><td>search</td><td>البحث</td></tr>
+                    </table>
+                </div>
+
+                <!-- الموافقة على عقار -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> الموافقة على عقار <span class="auth-badge">أدمن</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/properties/{id}/approve</span></p>
+                </div>
+
+                <!-- رفض عقار -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> رفض عقار <span class="auth-badge">أدمن</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/properties/{id}/reject</span></p>
+                    <pre>{"reason": "سبب الرفض"}</pre>
+                </div>
+
+                <!-- طلبات التواصل -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> طلبات التواصل <span class="auth-badge">أدمن</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/contact-requests</span></p>
+                </div>
+
+                <!-- الموافقة على طلب تواصل -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> الموافقة على طلب تواصل <span class="auth-badge">أدمن</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/contact-requests/{id}/approve</span></p>
+                </div>
+
+                <!-- رفض طلب تواصل -->
+                <div class="endpoint">
+                    <h3><span class="method method-post">POST</span> رفض طلب تواصل <span class="auth-badge">أدمن</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/contact-requests/{id}/reject</span></p>
+                    <pre>{"reason": "سبب الرفض"}</pre>
+                </div>
+
+                <!-- الإحصائيات -->
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> الإحصائيات <span class="auth-badge">أدمن</span></h3>
+                    <p><span class="url">{{baseUrl}}/admin/statistics</span></p>
+                    <div class="success-response">
+                        <pre>{
+    "success": true,
+    "data": {
+        "users": 10,
+        "properties": 25,
+        "approved_properties": 20,
+        "pending_properties": 3,
+        "rejected_properties": 2,
+        "contact_requests": 15
+    }
+}</pre>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- الصور -->
+        <div class="section" id="images">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2>6. عرض الصور (Images)</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+                
+                <div class="endpoint">
+                    <h3><span class="method method-get">GET</span> عرض صورة عقار</h3>
+                    <p><span class="url">{{baseUrl}}/api/images/{path}</span></p>
+                    <p>مثال: {{baseUrl}}/api/images/properties/12/filename.jpg</p>
+                    <div class="note">
+                        <div class="note-title">ملاحظة</div>
+                        هذا المسار يُستخدم لعرض الصور المخزنة في النظام.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleSection(header) {
+            const content = header.nextElementSibling;
+            header.classList.toggle('active');
+            content.classList.toggle('active');
+        }
+        
+        // فتح القسم الأول افتراضياً
+        document.querySelector('.section-content').classList.add('active');
+    </script>
+</body>
+</html>
