@@ -112,8 +112,9 @@ class PropertyService
     public function delete(Property $property): bool
     {
         foreach ($property->images as $image) {
-            if (file_exists(public_path($image->image_path))) {
-                unlink(public_path($image->image_path));
+            $fullPath = storage_path('app/public/' . $image->image_path);
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
             }
             $image->delete();
         }
@@ -130,7 +131,7 @@ class PropertyService
             
             PropertyImage::create([
                 'property_id' => $property->id,
-                'image_path' => 'storage/' . $path,
+                'image_path' => $path,
                 'is_primary' => $existingCount === 0,
             ]);
             
@@ -156,7 +157,7 @@ class PropertyService
             
             PropertyImage::create([
                 'property_id' => $property->id,
-                'image_path' => 'storage/' . $path,
+                'image_path' => $path,
                 'is_primary' => $existingCount === 0,
             ]);
             
@@ -175,9 +176,10 @@ class PropertyService
         }
 
         $imagePath = $image->image_path;
+        $fullPath = storage_path('app/public/' . $imagePath);
 
-        if (file_exists(public_path($imagePath))) {
-            unlink(public_path($imagePath));
+        if (file_exists($fullPath)) {
+            unlink($fullPath);
         }
 
         return $image->delete();

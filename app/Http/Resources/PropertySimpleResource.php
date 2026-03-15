@@ -46,7 +46,7 @@ class PropertySimpleResource extends JsonResource
             'region' => $regionText,
             'status' => $this->status,
             'images' => $this->whenLoaded('images', fn() => $this->images->isNotEmpty() 
-                ? $this->images->map(fn($img) => url($img->image_path)) 
+                ? $this->images->map(fn($img) => config('app.url') . '/storage/' . $img->image_path) 
                 : null),
         ];
     }

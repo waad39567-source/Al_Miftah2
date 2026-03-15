@@ -11,7 +11,7 @@ class PropertyImageResource extends JsonResource
     {
         $imagePath = $this->image_path;
         if ($imagePath && !str_starts_with($imagePath, 'http')) {
-            $imagePath = config('app.url') . '/' . $imagePath;
+            $imagePath = config('app.url') . '/storage/' . $imagePath;
         }
 
         return [
