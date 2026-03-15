@@ -6,6 +6,20 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\RegionController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+
+/*
+|--------------------------------------------------------------------------
+| Image Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/images/{path}', function ($path) {
+    $path = storage_path('app/public/' . $path);
+    if (!file_exists($path)) {
+        abort(404);
+    }
+    return response()->file($path);
+})->where('path', '.*');
 
 /*
 |--------------------------------------------------------------------------
