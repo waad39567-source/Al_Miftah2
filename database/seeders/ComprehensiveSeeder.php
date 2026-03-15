@@ -366,7 +366,7 @@ class ComprehensiveSeeder extends Seeder
             'status' => 'pending',
         ]);
 
-        // Approved Requests (2)
+        // Approved Requests (4)
         ContactRequest::create([
             'property_id' => $properties[2]->id,
             'user_id' => $user3->id,
@@ -386,6 +386,30 @@ class ComprehensiveSeeder extends Seeder
             'name' => 'أحمد',
             'phone' => '966507777777',
             'message' => 'أريد شراء الفيلا',
+            'status' => 'approved',
+            'reviewed_by' => $admin->id,
+            'reviewed_at' => now(),
+        ]);
+
+        ContactRequest::create([
+            'property_id' => $properties[0]->id,
+            'user_id' => $user1->id,
+            'owner_id' => $owner1->id,
+            'name' => 'أحمد محمد',
+            'phone' => '966501234567',
+            'message' => 'أريد معرفة المزيد عن هذه الشقة',
+            'status' => 'approved',
+            'reviewed_by' => $admin->id,
+            'reviewed_at' => now(),
+        ]);
+
+        ContactRequest::create([
+            'property_id' => $properties[1]->id,
+            'user_id' => $user2->id,
+            'owner_id' => $owner1->id,
+            'name' => 'خالد عمر',
+            'phone' => '966509999999',
+            'message' => 'مهتم بهذا العقار',
             'status' => 'approved',
             'reviewed_by' => $admin->id,
             'reviewed_at' => now(),
@@ -418,7 +442,7 @@ class ComprehensiveSeeder extends Seeder
             'reviewed_at' => now(),
         ]);
 
-        $this->command->info('✅ Contact requests created (6 total)');
+        $this->command->info('✅ Contact requests created (8 total)');
 
         // 9. Add Images to Properties
         foreach ($properties as $index => $property) {
