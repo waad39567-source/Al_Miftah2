@@ -13,6 +13,7 @@ class PropertySimpleResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'price' => (float) $this->price,
+            'type' => $this->type,
             'property_type' => $this->property_type,
             'area' => $this->area,
             'location' => $this->location,
