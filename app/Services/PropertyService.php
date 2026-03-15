@@ -30,30 +30,6 @@ class PropertyService
             }
         }
 
-        if (!empty($filters['governorate_id'])) {
-            $region = \App\Models\Region::find($filters['governorate_id']);
-            if ($region) {
-                $regionIds = $region->getAllDescendantIds();
-                $query->whereIn('region_id', $regionIds);
-            }
-        }
-
-        if (!empty($filters['city_id'])) {
-            $region = \App\Models\Region::find($filters['city_id']);
-            if ($region) {
-                $regionIds = $region->getAllDescendantIds();
-                $query->whereIn('region_id', $regionIds);
-            }
-        }
-
-        if (!empty($filters['neighborhood_id'])) {
-            $region = \App\Models\Region::find($filters['neighborhood_id']);
-            if ($region) {
-                $regionIds = $region->getAllDescendantIds();
-                $query->whereIn('region_id', $regionIds);
-            }
-        }
-
         if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }

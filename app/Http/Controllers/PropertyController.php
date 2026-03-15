@@ -26,7 +26,7 @@ class PropertyController extends Controller
         }
 
         $filters = $request->only([
-            'type', 'property_type', 'region_id', 'region_ids', 'governorate_id', 'city_id', 'neighborhood_id',
+            'type', 'property_type', 'region_id', 'region_ids',
             'status', 'search', 'sort_by', 'sort_order', 'per_page',
             'min_price', 'max_price', 'min_area', 'max_area'
         ]);
