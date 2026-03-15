@@ -29,7 +29,6 @@ class PropertyResource extends JsonResource
             'approved_at' => $this->approved_at?->toDateTimeString(),
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
-            'owner' => $this->whenLoaded('owner', fn() => new UserResource($this->owner)),
             'region' => $this->whenLoaded('region', fn() => new RegionResource($this->region)),
             'images' => $this->whenLoaded('images', fn() => \App\Http\Resources\PropertyImageResource::collection($this->images)),
         ];
