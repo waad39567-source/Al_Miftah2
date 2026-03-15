@@ -11,6 +11,27 @@ class ContactResource extends JsonResource
     {
         $isApproved = $this->status === 'approved';
         
+        $isSender = $request->user() && $request->user()->id === $this->user_id;
+        
+        if ($isSender) {
+            return [
+                'id' => $this->id,
+                'property_id' => $this->property_id,
+                'status' => $this->status,
+                'message' => $this->message,
+                'created_at' => $this->created_at->toDateTimeString(),
+                'property' => $this->whenLoaded('property', fn() => [
+                    'id' => $this->property->id,
+                    'title' => $this->property->title,
+                    'price' => $this->property->price,
+                    'type' => $this->property->type,
+                    'property_type' => $this->property->property_type,
+                    'location' => $this->property->location,
+                    'status' => $this->property->status,
+                ]),
+            ];
+        }
+        
         $ownerData = null;
         if ($this->whenLoaded('owner') && $isApproved) {
             $ownerData = [
