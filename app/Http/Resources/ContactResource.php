@@ -14,7 +14,7 @@ class ContactResource extends JsonResource
         $isSender = $request->user() && $request->user()->id === $this->user_id;
         
         if ($isSender) {
-            return [
+            $data = [
                 'id' => $this->id,
                 'property_id' => $this->property_id,
                 'status' => $this->status,
@@ -30,6 +30,12 @@ class ContactResource extends JsonResource
                     'status' => $this->property->status,
                 ]),
             ];
+            
+            if ($this->status === 'rejected') {
+                $data['rejection_reason'] = $this->rejection_reason;
+            }
+            
+            return $data;
         }
         
         $ownerData = null;
