@@ -126,11 +126,28 @@ class PropertyService
         
         foreach ($images as $image) {
             $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $path = $image->storeAs('properties/' . $property->id, $filename, 'public');
+            
+            try {
+                $cloudinary = new \Cloudinary\Cloudinary(config('cloudinary.cloud_name'));
+                $uploadResult = $cloudinary->uploadApi()->upload(
+                    $image->getRealPath(),
+                    [
+                        'folder' => 'properties/' . $property->id,
+                        'public_id' => pathinfo($filename, PATHINFO_FILENAME),
+                        'transformation' => [
+                            ['width' => 1200, 'height' => 900, 'crop' => 'limit']
+                        ]
+                    ]
+                );
+                $imageUrl = $uploadResult['secure_url'];
+            } catch (\Exception $e) {
+                $path = $image->storeAs('properties/' . $property->id, $filename, 'public');
+                $imageUrl = 'storage/' . $path;
+            }
             
             PropertyImage::create([
                 'property_id' => $property->id,
-                'image_path' => 'storage/' . $path,
+                'image_path' => $imageUrl,
                 'is_primary' => $existingCount === 0,
             ]);
             
@@ -145,17 +162,34 @@ class PropertyService
         foreach ($base64Images as $base64) {
             if (!$base64) continue;
             
-            $imageData = base64_decode($base64);
+            $base64Data = preg_replace('/^data:image\/\w+;base64,/', '', $base64);
+            $imageData = base64_decode($base64Data);
             if ($imageData === false) continue;
             
             $filename = time() . '_' . uniqid() . '.jpg';
-            $path = 'properties/' . $property->id . '/' . $filename;
             
-            Storage::disk('public')->put($path, $imageData);
+            try {
+                $cloudinary = new \Cloudinary\Cloudinary(config('cloudinary.cloud_name'));
+                $uploadResult = $cloudinary->uploadApi()->upload(
+                    'data:image/jpeg;base64,' . base64_encode($imageData),
+                    [
+                        'folder' => 'properties/' . $property->id,
+                        'public_id' => pathinfo($filename, PATHINFO_FILENAME),
+                        'transformation' => [
+                            ['width' => 1200, 'height' => 900, 'crop' => 'limit']
+                        ]
+                    ]
+                );
+                $imageUrl = $uploadResult['secure_url'];
+            } catch (\Exception $e) {
+                $path = 'properties/' . $property->id . '/' . $filename;
+                Storage::disk('public')->put($path, $imageData);
+                $imageUrl = 'storage/' . $path;
+            }
             
             PropertyImage::create([
                 'property_id' => $property->id,
-                'image_path' => 'storage/' . $path,
+                'image_path' => $imageUrl,
                 'is_primary' => $existingCount === 0,
             ]);
             
@@ -173,12 +207,29 @@ class PropertyService
             return false;
         }
 
-        if (file_exists(public_path($image->image_path))) {
-            unlink(public_path($image->image_path));
+        $imagePath = $image->image_path;
+
+        if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
+            try {
+                $publicId = $this->getCloudinaryPublicId($imagePath);
+                if ($publicId) {
+                    $cloudinary = new \Cloudinary\Cloudinary(config('cloudinary.cloud_name'));
+                    $cloudinary->uploadApi()->destroy($publicId);
+                }
+            } catch (\Exception $e) {
+                // Continue even if Cloudinary delete fails
+            }
+        } elseif (file_exists(public_path($imagePath))) {
+            unlink(public_path($imagePath));
         }
 
-        $image->delete();
-        return true;
+        return $image->delete();
+    }
+
+    private function getCloudinaryPublicId(string $url): ?string
+    {
+        preg_match('/\/upload\/(?:v\d+\/)?(.+?)(?:\.|$)/', $url, $matches);
+        return $matches[1] ?? null;
     }
 
     public function approve(Property $property, int $adminId): Property
