@@ -15,17 +15,23 @@ class PropertySimpleResource extends JsonResource
             $region = $this->region;
             if ($region->parent) {
                 $parent1 = $region->parent;
-                if ($parent1->parent) {
+                if ($parent1 && $parent1->parent) {
                     $parent2 = $parent1->parent;
-                    if ($parent2->parent) {
+                    if ($parent2 && $parent2->parent) {
                         $parts[] = $parent2->parent->name;
                     }
-                    $parts[] = $parent2->name;
+                    if ($parent2->name) {
+                        $parts[] = $parent2->name;
+                    }
                 }
-                $parts[] = $parent1->name;
+                if ($parent1->name) {
+                    $parts[] = $parent1->name;
+                }
             }
-            $parts[] = $region->name;
-            $regionText = implode(' - ', $parts);
+            if ($region->name) {
+                $parts[] = $region->name;
+            }
+            $regionText = implode(' - ', array_filter($parts));
         }
 
         return [
