@@ -11,6 +11,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * @OA\Tag(
+ *     name="Contact",
+ *     description="طلبات التواصل"
+ * )
+ */
 class ContactController extends Controller
 {
     use ApiResponseTrait;

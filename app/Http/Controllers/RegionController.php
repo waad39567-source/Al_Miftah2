@@ -10,6 +10,12 @@ use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Tag(
+ *     name="Regions",
+ *     description="إدارة المناطق"
+ * )
+ */
 class RegionController extends Controller
 {
     use ApiResponseTrait;

@@ -35,6 +35,12 @@ use Throwable;
  *     bearerFormat="JWT"
  * )
  */
+/**
+ * @OA\Tag(
+ *     name="Authentication",
+ *     description="المصادقة والتسجيل"
+ * )
+ */
 class AuthController extends Controller
 {
     use ApiResponseTrait;
@@ -77,6 +83,24 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/auth/login",
+     *     summary="تسجيل الدخول",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email", "password"},
+     *             @OA\Property(property="email", type="string", example="user@example.com"),
+     *             @OA\Property(property="password", type="string", example="password123")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="نجاح", @OA\JsonContent(type="object")),
+     *     @OA\Response(response=401, description="بيانات غير صحيحة"),
+     *     @OA\Response(response=403, description="غير نشط أو غير موثق")
+     * )
+     */
     public function login(AuthRequest $request): JsonResponse
     {
         try {
@@ -107,6 +131,15 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/auth/logout",
+     *     summary="تسجيل الخروج",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(response=200, description="نجاح")
+     * )
+     */
     public function logout(Request $request): JsonResponse
     {
         try {
@@ -118,6 +151,15 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/auth/me",
+     *     summary="جلب بيانات المستخدم الحالي",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(response=200, description="نجاح")
+     * )
+     */
     public function me(Request $request): JsonResponse
     {
         try {
@@ -127,6 +169,25 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/auth/change-password",
+     *     summary="تغيير كلمة المرور",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"current_password", "password", "password_confirmation"},
+     *             @OA\Property(property="current_password", type="string"),
+     *             @OA\Property(property="password", type="string"),
+     *             @OA\Property(property="password_confirmation", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="نجاح"),
+     *     @OA\Response(response=400, description="كلمة المرور الحالية خطأ")
+     * )
+     */
     public function changePassword(AuthRequest $request): JsonResponse
     {
         try {
@@ -145,6 +206,23 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/auth/promote-to-admin",
+     *     summary="ترقية مستخدم لأدمن",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer", example=5),
+     *             @OA\Property(property="email", type="string", example="user@example.com")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="نجاح"),
+     *     @OA\Response(response=403, description="غير مصرح"),
+     *     @OA\Response(response=404, description="المستخدم غير موجود")
+     * )
+     */
     public function promoteToAdmin(AuthRequest $request): JsonResponse
     {
         try {
@@ -167,6 +245,29 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/admin/users/create",
+     *     summary="إنشاء مستخدم جديد (أدمن)",
+     *     tags={"Admin"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "email", "password", "password_confirmation", "role"},
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="password", type="string"),
+     *             @OA\Property(property="password_confirmation", type="string"),
+     *             @OA\Property(property="phone", type="string"),
+     *             @OA\Property(property="role", type="string", enum={"user", "owner", "admin"}),
+     *             @OA\Property(property="is_active", type="boolean")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="تم الإنشاء"),
+     *     @OA\Response(response=403, description="غير مصرح")
+     * )
+     */
     public function createUser(AuthRequest $request): JsonResponse
     {
         try {
@@ -186,6 +287,22 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/auth/verify-email",
+     *     summary="توثيق البريد الإلكتروني",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email"},
+     *             @OA\Property(property="email", type="string", example="user@example.com")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="نجاح"),
+     *     @OA\Response(response=400, description="موثق مسبقاً")
+     * )
+     */
     public function verifyEmail(Request $request): JsonResponse
     {
         try {
@@ -209,6 +326,22 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/auth/send-verification-email",
+     *     summary="إرسال رابط توثيق البريد",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email"},
+     *             @OA\Property(property="email", type="string", example="user@example.com")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="نجاح"),
+     *     @OA\Response(response=400, description="موثق مسبقاً")
+     * )
+     */
     public function sendVerificationEmail(Request $request): JsonResponse
     {
         try {

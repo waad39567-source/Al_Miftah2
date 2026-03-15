@@ -15,6 +15,12 @@ use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * @OA\Tag(
+ *     name="Admin",
+ *     description="إدارة الأدمن"
+ * )
+ */
 class AdminController extends Controller
 {
     use ApiResponseTrait;
