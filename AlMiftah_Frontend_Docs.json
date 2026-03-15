@@ -1,0 +1,9 @@
+{
+  "info": {
+    "name": "شركة المفتاح - توثيق Frontend",
+    "description": "# توثيق Frontend\n\n## Base URL: {{baseUrl}}\n\n## Headers:\n- Accept: application/json\n- Content-Type: application/json\n- Authorization: Bearer {token}\n\n## 1. المصادقة\n- POST /auth/register\n- POST /auth/login\n- POST /auth/change-password\n\n## 2. المناطق\n- GET /regions/tree\n- GET /regions/{id}/children\n\n## 3. العقارات\n- GET /properties (مع pagination)\n- GET /properties/{id}\n- GET /properties/advanced-search\n- POST /properties\n\n## 4. طلبات التواصل\n- POST /contact\n- GET /contact/my-requests\n- GET /contact/my-received\n\n## 5. الأدمن\n- GET /admin/statistics\n- POST /admin/properties/{id}/approve\n- POST /admin/properties/{id}/reject",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [{"key": "baseUrl", "value": "https://your-domain.com/api"}],
+  "item": []
+}
