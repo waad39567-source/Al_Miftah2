@@ -49,7 +49,7 @@ Route::prefix('properties')->group(function () {
     Route::get('/', [PropertyController::class, 'index']);
     Route::get('/search', [PropertyController::class, 'search']);
     Route::get('/advanced-search', [PropertyController::class, 'advancedSearch']);
-    Route::get('/{id}', [PropertyController::class, 'show']);
+    Route::get('/{id}', [PropertyController::class, 'show'])->where('id', '[0-9]+');
 });
 
 /*
@@ -59,12 +59,12 @@ Route::prefix('properties')->group(function () {
 */
 Route::middleware('auth:sanctum')->prefix('properties')->group(function () {
     Route::post('/', [PropertyController::class, 'store']);
-    Route::put('/{id}', [PropertyController::class, 'update']);
-    Route::delete('/{id}', [PropertyController::class, 'destroy']);
+    Route::put('/{id}', [PropertyController::class, 'update'])->where('id', '[0-9]+');
+    Route::delete('/{id}', [PropertyController::class, 'destroy'])->where('id', '[0-9]+');
     Route::get('/my-properties', [PropertyController::class, 'myProperties']);
-    Route::delete('/{id}/images/{imageId}', [PropertyController::class, 'deleteImage']);
-    Route::post('/{id}/rented', [PropertyController::class, 'markAsRented']);
-    Route::post('/{id}/sold', [PropertyController::class, 'markAsSold']);
+    Route::delete('/{id}/images/{imageId}', [PropertyController::class, 'deleteImage'])->where('id', '[0-9]+');
+    Route::post('/{id}/rented', [PropertyController::class, 'markAsRented'])->where('id', '[0-9]+');
+    Route::post('/{id}/sold', [PropertyController::class, 'markAsSold'])->where('id', '[0-9]+');
 });
 
 /*
