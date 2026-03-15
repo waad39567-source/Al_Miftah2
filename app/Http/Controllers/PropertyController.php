@@ -110,7 +110,7 @@ class PropertyController extends Controller
             return $this->errorResponse('العقار غير موجود', 404);
         }
 
-        if (!Gate::allows('view', $property)) {
+        if ($request->user() && !Gate::allows('view', $property)) {
             return $this->errorResponse('غير مصرح لك بعرض هذا العقار', 403);
         }
 
