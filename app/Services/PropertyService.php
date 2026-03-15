@@ -12,7 +12,7 @@ class PropertyService
 {
     public function getAll(array $filters): LengthAwarePaginator
     {
-        $query = Property::with(['owner', 'region', 'images']);
+        $query = Property::with(['owner', 'region.parent.parent.parent', 'images']);
 
         if (!empty($filters['type'])) {
             $query->where('type', $filters['type']);
