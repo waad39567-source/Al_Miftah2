@@ -10,7 +10,14 @@ class ContactResource extends JsonResource
     public function toArray(Request $request): array
     {
         $isApproved = $this->status === 'approved';
-        $isOwner = $request->user() && $this->property && $request->user()->id === $this->property->owner_id;
+        
+        $ownerData = null;
+        if ($this->whenLoaded('owner') && $isApproved) {
+            $ownerData = [
+                'name' => $this->owner->name,
+                'phone' => $this->owner->phone,
+            ];
+        }
 
         return [
             'id' => $this->id,
@@ -23,11 +30,7 @@ class ContactResource extends JsonResource
             'rejection_reason' => $this->rejection_reason,
             'created_at' => $this->created_at->toDateTimeString(),
             'property' => $this->whenLoaded('property', fn() => new PropertyResource($this->property)),
-            'owner' => ($isApproved || $isOwner) && $this->whenLoaded('owner', fn() => [
-                'id' => $this->owner->id,
-                'name' => $this->owner->name,
-                'phone' => $isApproved ? $this->owner->phone : null,
-            ]),
+            'owner' => $ownerData,
         ];
     }
 }
