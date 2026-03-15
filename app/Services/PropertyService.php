@@ -286,28 +286,6 @@ class PropertyService
             }
         }
 
-        if (!empty($filters['city_id'])) {
-            $region = \App\Models\Region::find($filters['city_id']);
-            if ($region) {
-                $regionIds = $region->getAllDescendantIds();
-                $query->whereIn('region_id', $regionIds);
-            }
-        }
-
-        if (!empty($filters['neighborhood_id'])) {
-            $region = \App\Models\Region::find($filters['neighborhood_id']);
-            if ($region) {
-                $regionIds = $region->getAllDescendantIds();
-                $query->whereIn('region_id', $regionIds);
-            }
-        }
-
-        if (!empty($filters['region_names'])) {
-            $names = explode(',', $filters['region_names']);
-            $regionIds = \App\Models\Region::whereIn('name', $names)->pluck('id')->toArray();
-            $query->whereIn('region_id', $regionIds);
-        }
-
         if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
