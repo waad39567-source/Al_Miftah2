@@ -117,7 +117,8 @@
 <div class="header">
     <h1>🏢 شركة المفتاح</h1>
     <p>توثيق API - الإصدار 1.0.0</p>
-    <p>Base URL: <code>http://127.0.0.1:8000/api</code></p>
+    <p>Base URL: <code>{{baseUrl}}</code></p>
+    <p style="font-size: 0.9em; opacity: 0.8;">مثال: http://127.0.0.1:8000/api أو https://your-domain.com/api</p>
 </div>
 
 <nav class="nav">
@@ -127,6 +128,7 @@
         <li><a href="#properties">العقارات</a></li>
         <li><a href="#contact">طلبات التواصل</a></li>
         <li><a href="#admin">الأدمن</a></li>
+        <li><a href="#images">الصور</a></li>
     </ul>
 </nav>
 
@@ -516,6 +518,101 @@
                 </div>
             </div>
 
+            <!-- ==================== PROMOTE TO ADMIN ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method POST">POST</span>
+                    <span class="endpoint-url">/auth/promote-to-admin</span>
+                    <span class="badge badge-auth">مطلوب Token</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>ترقية مستخدم عادي إلى دور أدمن. يتطلب صلاحيات أدمن.</p>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📦 Request Body</h3>
+                        <table>
+                            <tr><th>الحقل</th><th>النوع</th><th>مطلوب</th><th>مثال</th></tr>
+                            <tr><td>id</td><td>integer</td><td class="optional">لا</td><td>5</td></tr>
+                            <tr><td>email</td><td>string</td><td class="optional">لا</td><td>"user@example.com"</td></tr>
+                        </table>
+                        <p class="note">ملاحظة: يجب توفير أحد الحقلين (id أو email)</p>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "message": "تم ترقية المستخدم إلى مسؤول بنجاح",
+  "data": {
+    "id": 5,
+    "name": "اسم المستخدم",
+    "email": "user@example.com",
+    "role": "admin",
+    "is_active": true
+  }
+}</div>
+                    </div>
+                    
+                    <div class="section error">
+                        <h3>❌ استجابات خاطئة</h3>
+                        <p><strong>404 - مستخدم غير موجود:</strong></p>
+                        <div class="code-block">{"success": false, "message": "المستخدم غير موجود"}</div>
+                        
+                        <p style="margin-top:10px"><strong>403 - غير مصرح:</strong></p>
+                        <div class="code-block">{"success": false, "message": "غير مصرح لك بهذه العملية"}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== AUTH CREATE USER (ADMIN) ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method POST">POST</span>
+                    <span class="endpoint-url">/admin/users/create</span>
+                    <span class="badge badge-admin">أدمن فقط</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>إنشاء مستخدم جديد من قبل الأدمن.</p>
+                    </div>
+                    
+                    <div class="section">
+                        <h3>📦 Request Body</h3>
+                        <table>
+                            <tr><th>الحقل</th><th>النوع</th><th>مطلوب</th><th>القواعد</th><th>مثال</th></tr>
+                            <tr><td>name</td><td>string</td><td class="required">نعم</td><td>required, max:255</td><td>"أحمد"</td></tr>
+                            <tr><td>email</td><td>string</td><td class="required">نعم</td><td>required, email, unique</td><td>"ahmed@test.com"</td></tr>
+                            <tr><td>password</td><td>string</td><td class="required">نعم</td><td>required, min:8, confirmed</td><td>"password123"</td></tr>
+                            <tr><td>password_confirmation</td><td>string</td><td class="required">نعم</td><td>required</td><td>"password123"</td></tr>
+                            <tr><td>phone</td><td>string</td><td class="optional">لا</td><td>nullable, unique</td><td>"966501234567"</td></tr>
+                            <tr><td>role</td><td>string</td><td class="required">نعم</td><td>required, in:user,owner,admin</td><td>"user"</td></tr>
+                            <tr><td>is_active</td><td>boolean</td><td class="optional">لا</td><td>default:true</td><td>true</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section success">
+                        <h3>✅ 201 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "message": "تم إنشاء المستخدم بنجاح",
+  "data": {
+    "id": 6,
+    "name": "أحمد",
+    "email": "ahmed@test.com",
+    "phone": "966501234567",
+    "role": "user",
+    "is_active": true,
+    "created_at": "2026-03-15T12:00:00"
+  }
+}</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- ==================== REGIONS INDEX ==================== -->
             <div id="regions" class="endpoint">
                 <div class="endpoint-header">
@@ -547,29 +644,22 @@
                         <h3>✅ 200 - نجاح</h3>
                         <div class="code-block">{
   "success": true,
-  "data": {
-    "current_page": 1,
-    "data": [
-      {
-        "id": 1,
-        "name": "السعودية",
-        "type": "country",
-        "parent_id": null,
-        "created_at": "2026-03-09T10:30:00"
-      },
-      {
-        "id": 2,
-        "name": "الرياض",
-        "type": "city",
-        "parent_id": 1,
-        "created_at": "2026-03-09T10:30:00"
-      }
-    ],
-    "first_page_url": "...",
-    "last_page_url": "...",
-    "total": 10,
-    "per_page": 15
-  }
+  "data": [
+    {
+      "id": 1,
+      "name": "سوريا",
+      "type": "country",
+      "parent_id": null,
+      "created_at": "2026-03-15T12:00:00"
+    },
+    {
+      "id": 2,
+      "name": "الرياض",
+      "type": "city",
+      "parent_id": 1,
+      "created_at": "2026-03-15T12:00:00"
+    }
+  ]
 }</div>
                     </div>
                 </div>
@@ -656,9 +746,8 @@
                     <span class="badge badge-public">عام</span>
                 </div>
                 <div class="endpoint-body">
-                    <div class="section">
-                        <h3>📝 الوصف</h3>
-                        <p>جلب قائمة العقارات المعتمدة مع الفلترة.</p>
+                    <div class="note">
+                        <strong>⚠️ ملاحظة:</strong> يرجع فقط العقارات المنشورة (status=active). لا يرجع المؤجرة أو المباعة أو المرفوضة أو بانتظار الموافقة.
                     </div>
                     
                     <div class="section">
@@ -666,8 +755,13 @@
                         <table>
                             <tr><th>المعامل</th><th>الوصف</th><th>القيم</th><th>مثال</th></tr>
                             <tr><td>type</td><td>نوع العقار</td><td>sale, rent</td><td>?type=sale</td></tr>
-                            <tr><td>region_id</td><td>معرف المنطقة</td><td>رقم</td><td>?region_id=2</td></tr>
+                            <tr><td>property_type</td><td>نوع العقار</td><td>apartment, house, villa, land</td><td>?property_type=apartment</td></tr>
+                            <tr><td>region_id</td><td>معرف المنطقة (يشمل كل الأحياء)</td><td>رقم</td><td>?region_id=2</td></tr>
                             <tr><td>search</td><td>البحث في العنوان والوصف</td><td>نص</td><td>?search=شقة</td></tr>
+                            <tr><td>min_price</td><td>السعر الأدنى</td><td>رقم</td><td>?min_price=100000</td></tr>
+                            <tr><td>max_price</td><td>السعر الأقصى</td><td>رقم</td><td>?max_price=500000</td></tr>
+                            <tr><td>min_area</td><td>المساحة الأدنى</td><td>رقم</td><td>?min_area=50</td></tr>
+                            <tr><td>max_area</td><td>المساحة الأقصى</td><td>رقم</td><td>?max_area=200</td></tr>
                             <tr><td>per_page</td><td>عدد النتائج</td><td>رقم</td><td>?per_page=15</td></tr>
                         </table>
                     </div>
@@ -677,32 +771,29 @@
                         <div class="code-block">{
   "success": true,
   "data": {
-    "current_page": 1,
     "data": [
       {
         "id": 1,
-        "owner_id": 5,
-        "title": "شقة فاخرة",
-        "description": "شقة جديدة في وسط المدينة",
-        "price": 500000,
+        "title": "شقة فاخرة في المزة",
+        "description": "شقة حديثة 3 غرف نوم",
+        "price": 150000,
         "type": "sale",
         "property_type": "apartment",
-        "area": 150,
-        "region_id": 2,
-        "location": "الرياض",
-        "status": "approved",
-        "is_active": true,
-        "owner": {
-          "id": 5,
-          "name": "مالك العقار"
-        },
-        "region": {
-          "id": 2,
-          "name": "الرياض"
-        },
-        "images": []
+        "area": 120,
+        "location": "دمشق - المزة",
+        "region": "سوريا - دمشق - مدينة دمشق - المزة",
+        "status": "active",
+        "images": [
+          "https://.../api/images/properties/1/image.jpg"
+        ]
       }
-    ]
+    ],
+    "meta": {
+      "current_page": 1,
+      "last_page": 1,
+      "per_page": 15,
+      "total": 3
+    }
   }
 }</div>
                     </div>
@@ -1075,12 +1166,16 @@
                 <div class="endpoint-header">
                     <span class="method POST">POST</span>
                     <span class="endpoint-url">/contact</span>
-                    <span class="badge badge-public">عام</span>
+                    <span class="badge badge-auth">مطلوب Token</span>
                 </div>
                 <div class="endpoint-body">
                     <div class="section">
                         <h3>📝 الوصف</h3>
                         <p>إرسال طلب تواصل مع مالك العقار.</p>
+                    </div>
+                    
+                    <div class="note">
+                        <strong>⚠️ ملاحظة:</strong> بيانات المالك (الاسم ورقم الهاتف) تظهر فقط إذا وافق المالك على طلب التواصل.
                     </div>
                     
                     <div class="section">
@@ -1840,6 +1935,40 @@
 
         </div>
 
+        <!-- ==================== IMAGES SECTION ==================== -->
+        <div id="images" class="endpoint">
+            <div class="endpoint-header">
+                <span class="method GET">GET</span>
+                <span class="endpoint-url">/api/images/{path}</span>
+                <span class="badge badge-public">عام</span>
+            </div>
+            <div class="endpoint-body">
+                <div class="section">
+                    <h3>📝 الوصف</h3>
+                    <p>عرض الصور المخزنة في النظام (صور العقارات).</p>
+                </div>
+                
+                <div class="section">
+                    <h3>📋 Parameters</h3>
+                    <table>
+                        <tr><th>المعامل</th><th>في</th><th>النوع</th><th>الوصف</th></tr>
+                        <tr><td>path</td><td>path</td><td>string</td><td>مسار الصورة (مثال: properties/12/image.jpg)</td></tr>
+                    </table>
+                </div>
+                
+                <div class="section">
+                    <h3>📝 أمثلة</h3>
+                    <p>مثال على المسار:</p>
+                    <div class="code-block">{{baseUrl}}/api/images/properties/12/1773554012_69b6495c32b21.jpg</div>
+                </div>
+                
+                <div class="section error">
+                    <h3>❌ 404 - الملف غير موجود</h3>
+                    <div class="code-block">404 Not Found</div>
+                </div>
+            </div>
+        </div>
+
         <!-- Table of Contents -->
         <div>
             <div class="toc">
@@ -1853,6 +1982,7 @@
                     <li class="sub">GET /auth/me</li>
                     <li class="sub">POST /auth/change-password</li>
                     <li class="sub">POST /auth/logout</li>
+                    <li class="sub">POST /auth/promote-to-admin</li>
                     
                     <li style="margin-top:15px"><a href="#regions"><strong>المناطق</strong></a></li>
                     <li class="sub">GET /regions</li>
@@ -1879,6 +2009,7 @@
                     <li class="sub">GET /contact/status/{propertyId}</li>
                     
                     <li style="margin-top:15px"><a href="#admin"><strong>الأدمن</strong></a></li>
+                    <li class="sub">POST /admin/users/create</li>
                     <li class="sub">GET /admin/users</li>
                     <li class="sub">GET /admin/users/unverified</li>
                     <li class="sub">POST /admin/users/{id}/verify</li>
@@ -1895,6 +2026,9 @@
                     <li class="sub">POST /admin/regions</li>
                     <li class="sub">PUT /admin/regions/{id}</li>
                     <li class="sub">DELETE /admin/regions/{id}</li>
+
+                    <li style="margin-top:15px"><a href="#images"><strong>الصور</strong></a></li>
+                    <li class="sub">GET /api/images/{path}</li>
                 </ul>
             </div>
         </div>
