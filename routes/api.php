@@ -24,6 +24,7 @@ Route::prefix('auth')->group(function () {
         Route::post('/change-password', [AuthController::class, 'changePassword']);
         Route::post('/promote-to-admin', [AuthController::class, 'promoteToAdmin']);
         Route::post('/users', [AuthController::class, 'createUser']);
+        Route::post('/admin/users/create', [AuthController::class, 'createUser']);
     });
 });
 
