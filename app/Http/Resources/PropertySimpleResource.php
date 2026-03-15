@@ -12,16 +12,19 @@ class PropertySimpleResource extends JsonResource
         $regionText = null;
         if ($this->whenLoaded('region') && $this->region) {
             $parts = [];
-            if ($this->region->parent) {
-                if ($this->region->parent->parent) {
-                    if ($this->region->parent->parent->parent) {
-                        $parts[] = $this->region->parent->parent->parent->name;
+            $region = $this->region;
+            if ($region->parent) {
+                $parent1 = $region->parent;
+                if ($parent1->parent) {
+                    $parent2 = $parent1->parent;
+                    if ($parent2->parent) {
+                        $parts[] = $parent2->parent->name;
                     }
-                    $parts[] = $this->region->parent->parent->name;
+                    $parts[] = $parent2->name;
                 }
-                $parts[] = $this->region->parent->name;
+                $parts[] = $parent1->name;
             }
-            $parts[] = $this->region->name;
+            $parts[] = $region->name;
             $regionText = implode(' - ', $parts);
         }
 
