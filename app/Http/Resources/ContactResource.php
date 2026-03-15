@@ -45,11 +45,27 @@ class ContactResource extends JsonResource
             return $data;
         }
         
-        $ownerData = null;
-        if ($this->whenLoaded('owner') && $isApproved) {
-            $ownerData = [
-                'name' => $this->owner->name,
-                'phone' => $this->owner->phone,
+        $isOwner = $request->user() && $request->user()->id === $this->owner_id;
+        
+        if ($isOwner && $isApproved) {
+            return [
+                'id' => $this->id,
+                'property_id' => $this->property_id,
+                'status' => $this->status,
+                'message' => $this->message,
+                'created_at' => $this->created_at->toDateTimeString(),
+                'user' => $this->whenLoaded('user', fn() => [
+                    'name' => $this->user->name,
+                    'phone' => $this->user->phone,
+                ]),
+                'property' => $this->whenLoaded('property', fn() => [
+                    'id' => $this->property->id,
+                    'title' => $this->property->title,
+                    'price' => $this->property->price,
+                    'type' => $this->property->type,
+                    'property_type' => $this->property->property_type,
+                    'location' => $this->property->location,
+                ]),
             ];
         }
 
@@ -64,7 +80,7 @@ class ContactResource extends JsonResource
             'rejection_reason' => $this->rejection_reason,
             'created_at' => $this->created_at->toDateTimeString(),
             'property' => $this->whenLoaded('property', fn() => new PropertyResource($this->property)),
-            'owner' => $ownerData,
+            'owner' => null,
         ];
     }
 }
