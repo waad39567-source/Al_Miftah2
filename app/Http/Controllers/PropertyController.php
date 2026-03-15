@@ -32,7 +32,7 @@ class PropertyController extends Controller
         ]);
         $properties = $this->propertyService->getAll($filters);
 
-        return $this->successResponse(PropertySimpleResource::collection($properties));
+        return $this->successResponse($properties);
     }
 
     public function search(Request $request)
@@ -49,7 +49,7 @@ class PropertyController extends Controller
 
         $properties = $this->propertyService->search($filters);
 
-        return $this->successResponse(PropertySimpleResource::collection($properties));
+        return $this->successResponse($properties);
     }
 
     public function advancedSearch(Request $request)
@@ -68,7 +68,7 @@ class PropertyController extends Controller
 
         $properties = $this->propertyService->advancedSearch($filters);
 
-        return $this->successResponse(PropertySimpleResource::collection($properties));
+        return $this->successResponse($properties);
     }
 
     public function store(PropertyRequest $request)
@@ -190,7 +190,7 @@ class PropertyController extends Controller
 
         $properties = $this->propertyService->getAllForAdmin($filters);
 
-        return $this->successResponse(PropertySimpleResource::collection($properties));
+        return $this->successResponse($properties);
     }
 
     public function deleteImage(Request $request, $id, $imageId)
