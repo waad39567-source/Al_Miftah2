@@ -37,7 +37,15 @@ class PropertyController extends Controller
 
         $properties = $this->propertyService->getAll($filters);
 
-        return $this->successResponse(PropertySimpleResource::collection($properties));
+        return $this->successResponse([
+            'data' => PropertySimpleResource::collection($properties),
+            'meta' => [
+                'current_page' => $properties->currentPage(),
+                'last_page' => $properties->lastPage(),
+                'per_page' => $properties->perPage(),
+                'total' => $properties->total(),
+            ],
+        ]);
     }
 
     public function search(Request $request)
