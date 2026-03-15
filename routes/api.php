@@ -50,16 +50,13 @@ Route::prefix('properties')->group(function () {
     Route::get('/search', [PropertyController::class, 'search']);
     Route::get('/advanced-search', [PropertyController::class, 'advancedSearch']);
     Route::get('/{id}', [PropertyController::class, 'show'])->where('id', '[0-9]+');
-
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/', [PropertyController::class, 'store']);
-        Route::put('/{id}', [PropertyController::class, 'update'])->where('id', '[0-9]+');
-        Route::delete('/{id}', [PropertyController::class, 'destroy'])->where('id', '[0-9]+');
-        Route::get('/my-properties', [PropertyController::class, 'myProperties']);
-        Route::delete('/{id}/images/{imageId}', [PropertyController::class, 'deleteImage'])->where('id', '[0-9]+');
-        Route::post('/{id}/rented', [PropertyController::class, 'markAsRented'])->where('id', '[0-9]+');
-        Route::post('/{id}/sold', [PropertyController::class, 'markAsSold'])->where('id', '[0-9]+');
-    });
+    Route::get('/my-properties', [PropertyController::class, 'myProperties'])->middleware('auth:sanctum');
+    Route::post('/', [PropertyController::class, 'store'])->middleware('auth:sanctum');
+    Route::put('/{id}', [PropertyController::class, 'update'])->where('id', '[0-9]+')->middleware('auth:sanctum');
+    Route::delete('/{id}', [PropertyController::class, 'destroy'])->where('id', '[0-9]+')->middleware('auth:sanctum');
+    Route::delete('/{id}/images/{imageId}', [PropertyController::class, 'deleteImage'])->where('id', '[0-9]+')->middleware('auth:sanctum');
+    Route::post('/{id}/rented', [PropertyController::class, 'markAsRented'])->where('id', '[0-9]+')->middleware('auth:sanctum');
+    Route::post('/{id}/sold', [PropertyController::class, 'markAsSold'])->where('id', '[0-9]+')->middleware('auth:sanctum');
 });
 
 /*
