@@ -6,6 +6,7 @@ use App\Models\Property;
 use App\Models\PropertyImage;
 use App\Models\ContactRequest;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Storage;
 
 class PropertyService
 {
@@ -121,13 +122,44 @@ class PropertyService
 
     public function addImages(Property $property, array $images): void
     {
+        $existingCount = $property->images()->count();
+        
         foreach ($images as $image) {
-            $path = $image->store('properties/' . $property->id, 'public');
+            $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $path = $image->storeAs('properties/' . $property->id, $filename, 'public');
+            
             PropertyImage::create([
                 'property_id' => $property->id,
                 'image_path' => 'storage/' . $path,
-                'is_primary' => $property->images()->count() === 0,
+                'is_primary' => $existingCount === 0,
             ]);
+            
+            $existingCount++;
+        }
+    }
+
+    public function addImagesFromBase64(Property $property, array $base64Images): void
+    {
+        $existingCount = $property->images()->count();
+        
+        foreach ($base64Images as $base64) {
+            if (!$base64) continue;
+            
+            $imageData = base64_decode($base64);
+            if ($imageData === false) continue;
+            
+            $filename = time() . '_' . uniqid() . '.jpg';
+            $path = 'properties/' . $property->id . '/' . $filename;
+            
+            Storage::disk('public')->put($path, $imageData);
+            
+            PropertyImage::create([
+                'property_id' => $property->id,
+                'image_path' => 'storage/' . $path,
+                'is_primary' => $existingCount === 0,
+            ]);
+            
+            $existingCount++;
         }
     }
 

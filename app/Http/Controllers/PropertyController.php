@@ -83,6 +83,13 @@ class PropertyController extends Controller
             $this->propertyService->addImages($property, $request->file('images'));
         }
 
+        if ($request->has('images_base64')) {
+            $base64Images = $request->input('images_base64');
+            if (is_array($base64Images)) {
+                $this->propertyService->addImagesFromBase64($property, $base64Images);
+            }
+        }
+
         return $this->successResponse(
             new PropertyResource($property->load(['owner', 'region', 'images'])),
             'تم إنشاء العقار بنجاح',
@@ -139,6 +146,13 @@ class PropertyController extends Controller
 
         if ($request->hasFile('images')) {
             $this->propertyService->addImages($property, $request->file('images'));
+        }
+
+        if ($request->has('images_base64')) {
+            $base64Images = $request->input('images_base64');
+            if (is_array($base64Images)) {
+                $this->propertyService->addImagesFromBase64($property, $base64Images);
+            }
         }
 
         return $this->successResponse(

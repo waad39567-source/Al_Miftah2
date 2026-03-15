@@ -27,8 +27,10 @@ class PropertyRequest extends FormRequest
                 'location' => 'required|string|max:255',
                 'latitude' => 'nullable|numeric|between:-90,90',
                 'longitude' => 'nullable|numeric|between:-180,180',
-                'images' => 'nullable|array',
+                'images' => 'nullable|array|max:10',
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+                'images_base64' => 'nullable|array|max:10',
+                'images_base64.*' => 'nullable|string',
             ],
             'update' => [
                 'title' => 'sometimes|string|max:255',
@@ -41,8 +43,10 @@ class PropertyRequest extends FormRequest
                 'location' => 'sometimes|string|max:255',
                 'latitude' => 'nullable|numeric|between:-90,90',
                 'longitude' => 'nullable|numeric|between:-180,180',
-                'images' => 'sometimes|array',
+                'images' => 'sometimes|array|max:10',
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+                'images_base64' => 'sometimes|array|max:10',
+                'images_base64.*' => 'nullable|string',
             ],
             default => [],
         };
