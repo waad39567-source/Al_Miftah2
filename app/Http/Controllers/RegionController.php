@@ -34,7 +34,7 @@ class RegionController extends Controller
 
         $regions = $this->regionService->getAll($filters);
 
-        return $this->successResponse(RegionResource::collection($regions));
+        return $this->successResponse($regions);
     }
 
     public function show(int $id): JsonResponse
