@@ -68,7 +68,8 @@ class ContactService
 
     public function getUserRequestForProperty(int $userId, int $propertyId): ?ContactRequestModel
     {
-        return ContactRequestModel::where('user_id', $userId)
+        return ContactRequestModel::with(['property', 'owner'])
+            ->where('user_id', $userId)
             ->where('property_id', $propertyId)
             ->first();
     }

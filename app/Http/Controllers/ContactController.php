@@ -85,10 +85,19 @@ class ContactController extends Controller
             ]);
         }
 
-        return $this->successResponse([
+        $response = [
             'has_request' => true,
             'status' => $contactRequest->status,
             'created_at' => $contactRequest->created_at->toDateTimeString(),
-        ]);
+        ];
+
+        if ($contactRequest->status === 'approved' && $contactRequest->owner) {
+            $response['owner'] = [
+                'name' => $contactRequest->owner->name,
+                'phone' => $contactRequest->owner->phone,
+            ];
+        }
+
+        return $this->successResponse($response);
     }
 }
