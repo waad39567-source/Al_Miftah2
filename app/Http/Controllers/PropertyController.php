@@ -30,9 +30,14 @@ class PropertyController extends Controller
             'status', 'search', 'sort_by', 'sort_order', 'per_page',
             'min_price', 'max_price', 'min_area', 'max_area'
         ]);
+
+        if (!isset($filters['status'])) {
+            $filters['status'] = 'active';
+        }
+
         $properties = $this->propertyService->getAll($filters);
 
-        return $this->successResponse($properties);
+        return $this->successResponse(PropertySimpleResource::collection($properties));
     }
 
     public function search(Request $request)
