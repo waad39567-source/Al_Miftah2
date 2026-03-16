@@ -40,11 +40,15 @@ class ContactController extends Controller
             );
 
             // إرسال إشعار للأدمن
-            $this->firebaseService->sendToAdmins(
-                'طلب تواصل جديد',
-                'يوجد طلب تواصل جديد من: ' . $request->user()->name,
-                ['type' => 'contact_request', 'id' => (string) $contactRequest->id]
-            );
+            try {
+                $this->firebaseService->sendToAdmins(
+                    'طلب تواصل جديد',
+                    'يوجد طلب تواصل جديد من: ' . $request->user()->name,
+                    ['type' => 'contact_request', 'id' => (string) $contactRequest->id]
+                );
+            } catch (\Exception $e) {
+                // تجاهل خطأ الإشعار
+            }
 
             return $this->successResponse(
                 new ContactResource($contactRequest),

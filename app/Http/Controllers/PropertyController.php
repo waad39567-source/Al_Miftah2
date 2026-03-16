@@ -182,11 +182,15 @@ class PropertyController extends Controller
         }
 
         // إرسال إشعار للأدمن عند إضافة عقار جديد
-        $this->firebaseService->sendToAdmins(
-            'عقار جديد',
-            'تمت إضافة عقار جديد: ' . $property->title,
-            ['type' => 'new_property', 'id' => (string) $property->id]
-        );
+        try {
+            $this->firebaseService->sendToAdmins(
+                'عقار جديد',
+                'تمت إضافة عقار جديد: ' . $property->title,
+                ['type' => 'new_property', 'id' => (string) $property->id]
+            );
+        } catch (\Exception $e) {
+            // تجاهل خطأ الإشعار
+        }
 
         return $this->successResponse(
             new PropertyResource($property->load(['owner', 'region', 'images'])),
