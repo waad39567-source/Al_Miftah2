@@ -9,31 +9,26 @@ use Illuminate\Support\Facades\Log;
 class FirebaseService
 {
     private $projectId;
-    private $senderId;
+    private $clientEmail;
+    private $privateKey;
 
     public function __construct()
     {
-        $this->projectId = config('firebase.project_id');
-        $this->senderId = config('firebase.sender_id');
+        $this->projectId = env('FIREBASE_PROJECT_ID', 'almoftahapp');
+        $this->clientEmail = env('FIREBASE_CLIENT_EMAIL', 'firebase-adminsdk-fbsvc@almoftahapp.iam.gserviceaccount.com');
+        
+        $key = env('FIREBASE_PRIVATE_KEY', '');
+        $this->privateKey = str_replace('\n', "\n", $key);
     }
 
     private function getAccessToken()
     {
-        $credentialsPath = config('firebase.credentials_path');
-        
-        if (!file_exists($credentialsPath)) {
-            Log::warning('Firebase credentials file not found');
+        if (empty($this->privateKey) || empty($this->clientEmail)) {
+            Log::warning('Firebase credentials not configured');
             return null;
         }
         
-        $credentials = json_decode(file_get_contents($credentialsPath), true);
-        
-        if (!$credentials) {
-            Log::warning('Firebase credentials file is invalid');
-            return null;
-        }
-        
-        $jwt = $this->createJwt($credentials);
+        $jwt = $this->createJwt();
         
         $response = Http::post('https://oauth2.googleapis.com/token', [
             'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
@@ -48,7 +43,7 @@ class FirebaseService
         return null;
     }
 
-    private function createJwt($credentials)
+    private function createJwt()
     {
         $now = time();
         $exp = $now + 3600;
@@ -56,18 +51,16 @@ class FirebaseService
         $header = base64_encode(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));
         
         $payload = base64_encode(json_encode([
-            'iss' => $credentials['client_email'],
-            'sub' => $credentials['client_email'],
+            'iss' => $this->clientEmail,
+            'sub' => $this->clientEmail,
             'aud' => 'https://oauth2.googleapis.com/token',
             'iat' => $now,
             'exp' => $exp,
             'scope' => 'https://www.googleapis.com/auth/firebase.messaging https://www.googleapis.com/auth/cloud-platform',
         ]));
         
-        $privateKey = $credentials['private_key'];
-        
         $signature = '';
-        openssl_sign("$header.$payload", $signature, $privateKey, OPENSSL_ALGO_SHA256);
+        openssl_sign("$header.$payload", $signature, $this->privateKey, OPENSSL_ALGO_SHA256);
         
         return "$header.$payload." . base64_encode($signature);
     }

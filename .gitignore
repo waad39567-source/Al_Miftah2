@@ -3,8 +3,6 @@
 .env
 .env.backup
 .env.production
-firebase-credentials.json
-4_5890820196498676408.json
 .phpunit.result.cache
 /.fleet
 /.idea
