@@ -30,9 +30,9 @@ class AppServiceProvider extends ServiceProvider
             $path = base_path('firebase-credentials.json');
             
             if (!file_exists($path)) {
-                $decoded = base64_decode($base64);
-                if ($decoded) {
-                    file_put_contents($path, $decoded);
+                $decoded = base64_decode($base64, true);
+                if ($decoded !== false) {
+                    @file_put_contents($path, $decoded);
                 }
             }
         }
