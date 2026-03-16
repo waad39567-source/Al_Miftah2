@@ -154,6 +154,12 @@ class FirebaseService
 
     public function sendToAdmins($title, $body, $data = [])
     {
-        return $this->sendToTopic('admins', $title, $body, $data);
+        $adminIds = \App\Models\User::where('role', 'admin')->pluck('id')->toArray();
+        
+        foreach ($adminIds as $adminId) {
+            $this->sendToUser($adminId, $title, $body, $data);
+        }
+        
+        return true;
     }
 }
