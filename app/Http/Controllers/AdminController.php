@@ -11,6 +11,7 @@ use App\Models\Region;
 use App\Models\ContactRequest;
 use App\Models\User;
 use App\Services\AdminService;
+use App\Services\FirebaseService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -25,8 +26,10 @@ class AdminController extends Controller
 {
     use ApiResponseTrait;
 
-    public function __construct(private AdminService $adminService)
-    {
+    public function __construct(
+        private AdminService $adminService,
+        private FirebaseService $firebaseService
+    ) {
         $this->middleware(function ($request, $next) {
             if (!$request->user() || !$request->user()->isAdmin()) {
                 return $this->errorResponse('غير مصرح لك بهذه العملية', 403);
@@ -34,7 +37,7 @@ class AdminController extends Controller
             return $next($request);
         });
     }
-
+    
     public function getUsers(Request $request)
     {
         if (!Gate::allows('viewAny', User::class)) {
@@ -137,6 +140,16 @@ class AdminController extends Controller
 
         $user = $this->adminService->toggleUserActive($user);
 
+        // إرسال إشعار للمستخدم عند التفعيل
+        if ($user->is_active && $user->role === 'owner') {
+            $this->firebaseService->sendToUser(
+                $user->id,
+                'تم تفعيل حسابك',
+                'تم تفعيل حساب مكتبكم العقاري بنجاح. يمكنكم الآن إضافة العقارات.',
+                ['type' => 'account_activated']
+            );
+        }
+
         $message = $user->is_active ? 'تم تفعيل المستخدم بنجاح' : 'تم إلغاء تفعيل المستخدم بنجاح';
 
         return $this->successResponse(new UserResource($user), $message);
@@ -221,6 +234,15 @@ class AdminController extends Controller
 
         $this->adminService->approveContactRequest($contactRequest, $request->user()->id);
 
+        // إرسال إشعار للمستخدم بالموافقة مع رقم المكتب
+        $owner = $contactRequest->owner;
+        $this->firebaseService->sendToUser(
+            $contactRequest->user_id,
+            'تم الموافقة على طلبك',
+            'تمت الموافقة على طلبكم. رقم المكتب: ' . $owner->phone,
+            ['type' => 'contact_approved', 'phone' => $owner->phone]
+        );
+
         return $this->successResponse(
             new ContactResource($contactRequest->fresh(['property', 'user', 'owner'])),
             'تم الموافقة على طلب التواصل بنجاح'
@@ -243,6 +265,14 @@ class AdminController extends Controller
         }
 
         $this->adminService->rejectContactRequest($contactRequest, $request->user()->id, $request->reason);
+
+        // إرسال إشعار للمستخدم بالرفض
+        $this->firebaseService->sendToUser(
+            $contactRequest->user_id,
+            'تم رفض طلبك',
+            'تم رفض طلب التواصل. السبب: ' . ($request->reason ?? 'لا يوجد سبب محدد'),
+            ['type' => 'contact_rejected']
+        );
 
         return $this->successResponse(
             new ContactResource($contactRequest->fresh(['property', 'user', 'owner'])),

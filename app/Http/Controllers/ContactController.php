@@ -6,6 +6,7 @@ use App\Http\Requests\StoreContactRequest;
 use App\Http\Resources\ContactResource;
 use App\Models\ContactRequest;
 use App\Services\ContactService;
+use App\Services\FirebaseService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,7 +23,8 @@ class ContactController extends Controller
     use ApiResponseTrait;
 
     public function __construct(
-        private ContactService $contactService
+        private ContactService $contactService,
+        private FirebaseService $firebaseService
     ) {}
 
     public function store(StoreContactRequest $request): JsonResponse
@@ -35,6 +37,13 @@ class ContactController extends Controller
             $contactRequest = $this->contactService->create(
                 $request->validated(),
                 $request->user()->id
+            );
+
+            // إرسال إشعار للأدمن
+            $this->firebaseService->sendToAdmins(
+                'طلب تواصل جديد',
+                'يوجد طلب تواصل جديد من: ' . $request->user()->name,
+                ['type' => 'contact_request', 'id' => (string) $contactRequest->id]
             );
 
             return $this->successResponse(

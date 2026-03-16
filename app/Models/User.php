@@ -75,6 +75,12 @@ class User extends Authenticatable
         return $this->hasMany(Notification::class);
     }
 
+    // FCM Tokens
+    public function fcmTokens()
+    {
+        return $this->hasMany(UserFcmToken::class);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Helpers (اختياري احترافي)

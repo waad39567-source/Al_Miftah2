@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FcmTokenController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\RegionController;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,16 @@ Route::get('/images/{path}', function ($path) {
     }
     return response()->file($path);
 })->where('path', '.*');
+
+/*
+|--------------------------------------------------------------------------
+| FCM Token Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth:sanctum')->prefix('fcm')->group(function () {
+    Route::post('/token', [FcmTokenController::class, 'saveToken']);
+    Route::delete('/token', [FcmTokenController::class, 'removeToken']);
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -93,6 +104,9 @@ Route::middleware('auth:sanctum')->prefix('contact')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     
     Route::prefix('admin')->group(function () {
+        // FCM
+        Route::post('/send-notification', [FcmTokenController::class, 'sendNotification']);
+        
         // Users Management
         Route::get('/users', [AdminController::class, 'getUsers']);
         Route::post('/users/create', [AuthController::class, 'createUser']);

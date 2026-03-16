@@ -7,6 +7,7 @@ use App\Http\Resources\PropertyResource;
 use App\Http\Resources\PropertySimpleResource;
 use App\Models\Property;
 use App\Services\PropertyService;
+use App\Services\FirebaseService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -21,7 +22,10 @@ class PropertyController extends Controller
 {
     use ApiResponseTrait;
 
-    public function __construct(private PropertyService $propertyService)
+    public function __construct(
+        private PropertyService $propertyService,
+        private FirebaseService $firebaseService
+    )
     {
     }
 
@@ -176,6 +180,13 @@ class PropertyController extends Controller
                 $this->propertyService->addImagesFromBase64($property, $base64Images);
             }
         }
+
+        // إرسال إشعار للأدمن عند إضافة عقار جديد
+        $this->firebaseService->sendToAdmins(
+            'عقار جديد',
+            'تمت إضافة عقار جديد: ' . $property->title,
+            ['type' => 'new_property', 'id' => (string) $property->id]
+        );
 
         return $this->successResponse(
             new PropertyResource($property->load(['owner', 'region', 'images'])),
