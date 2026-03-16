@@ -14,10 +14,26 @@ class FirebaseService
 
     public function __construct()
     {
-        $this->projectId = env('FIREBASE_PROJECT_ID', 'almoftahapp');
-        $this->clientEmail = env('FIREBASE_CLIENT_EMAIL', 'firebase-adminsdk-fbsvc@almoftahapp.iam.gserviceaccount.com');
+        $this->loadCredentials();
+    }
+
+    private function loadCredentials()
+    {
+        $credentialsFile = config('firebase.credentials_file', base_path('firebase-credentials.json'));
         
-        $key = env('FIREBASE_PRIVATE_KEY', '');
+        if (file_exists($credentialsFile)) {
+            $credentials = json_decode(file_get_contents($credentialsFile), true);
+            if ($credentials) {
+                $this->projectId = $credentials['project_id'] ?? 'almoftahapp';
+                $this->clientEmail = $credentials['client_email'] ?? '';
+                $this->privateKey = $credentials['private_key'] ?? '';
+                return;
+            }
+        }
+
+        $this->projectId = config('firebase.project_id', 'almoftahapp');
+        $this->clientEmail = config('firebase.client_email', 'firebase-adminsdk-fbsvc@almoftahapp.iam.gserviceaccount.com');
+        $key = config('firebase.private_key', '');
         $this->privateKey = str_replace('\n', "\n", $key);
     }
 
