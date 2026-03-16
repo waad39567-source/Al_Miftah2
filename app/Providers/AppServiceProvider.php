@@ -19,6 +19,22 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->createFirebaseCredentialsFile();
+    }
+
+    private function createFirebaseCredentialsFile()
+    {
+        $base64 = env('FIREBASE_CREDENTIALS_BASE64');
+        
+        if ($base64) {
+            $path = base_path('firebase-credentials.json');
+            
+            if (!file_exists($path)) {
+                $decoded = base64_decode($base64);
+                if ($decoded) {
+                    file_put_contents($path, $decoded);
+                }
+            }
+        }
     }
 }
