@@ -1,0 +1,86 @@
+{
+  "info": {
+    "name": "شركة المفتاح - Dashboard API",
+    "description": "# Dashboard APIs - لوحة تحكم الأدمن\n\n## نظرة عامة\nواجهة برمجة التطبيقات للوحة تحكم الأدمن تتضمن:\n- الإحصائيات الشاملة\n- بيانات الرسوم البيانية\n- توزيع العقارات\n- ملخص العقارات\n- تسجيل المستخدمين\n- أكثر المناطق نشاطاً\n\n## Base URL\n```\n{{baseUrl}}\n```\n\n## بيانات الدخول\n- Admin: admin@almiftah.com / admin123\n\n## ملاحظات مهمة\n⚠️ جميع المسارات تتطلب صلاحية Admin فقط",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "baseUrl", "value": "https://al-miftah-master-enqeji.free.laravel.cloud/api"},
+    {"key": "adminToken", "value": ""}
+  ],
+  "item": [
+    {
+      "name": "0. تسجيل الدخول",
+      "item": [
+        {
+          "name": "0.1 تسجيل دخول الأدمن",
+          "event": [{"listen": "test", "script": {"exec": ["pm.test('تم تسجيل الدخول', function() {", "    pm.expect(pm.response.json().success).to.be.true;", "});", "pm.environment.set('adminToken', pm.response.json().data.token);"]}}],
+          "request": {"method": "POST", "url": "{{baseUrl}}/auth/login", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"email\": \"admin@almiftah.com\", \"password\": \"admin123\"}"}}}
+        }
+      ]
+    },
+    {
+      "name": "1. الإحصائيات",
+      "item": [
+        {
+          "name": "1.1 الإحصائيات الشاملة",
+          "event": [{"listen": "test", "script": {"exec": ["pm.test('نجاح', function() {", "    pm.expect(pm.response.json().success).to.be.true;", "});"]}}],
+          "request": {"method": "GET", "url": "{{baseUrl}}/admin/statistics", "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"}]}
+        }
+      ]
+    },
+    {
+      "name": "2. بيانات الرسم البياني",
+      "item": [
+        {
+          "name": "2.1 Chart Data",
+          "event": [{"listen": "test", "script": {"exec": ["pm.test('نجاح', function() {", "    pm.expect(pm.response.json().success).to.be.true;", "});"]}}],
+          "request": {"method": "GET", "url": "{{baseUrl}}/admin/dashboard/chart-data", "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"}]}
+        }
+      ]
+    },
+    {
+      "name": "3. توزيع العقارات",
+      "item": [
+        {"name": "3.1 حسب المنطقة", "request": {"method": "GET", "url": "{{baseUrl}}/admin/dashboard/properties-by-region", "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"]}}},
+        {"name": "3.2 حسب النوع", "request": {"method": "GET", "url": "{{baseUrl}}/admin/dashboard/properties-by-type", "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"]}}}
+      ]
+    },
+    {
+      "name": "4. ملخص العقارات",
+      "item": [
+        {"name": "4.1 الكل", "request": {"method": "GET", "url": "{{baseUrl}}/admin/dashboard/properties-summary", "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"]}}},
+        {"name": "4.2 المباعة", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/admin/dashboard/properties-summary?from_date=2026-03-01&to_date=2026-03-31&type=sold", "query": [{"key": "from_date", "value": "2026-03-01"}, {"key": "to_date", "value": "2026-03-31"}, {"key": "type", "value": "sold"}]}}, "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"]}}},
+        {"name": "4.3 المؤجرة", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/admin/dashboard/properties-summary?from_date=2026-03-01&to_date=2026-03-31&type=rented", "query": [{"key": "from_date", "value": "2026-03-01"}, {"key": "to_date", "value": "2026-03-31"}, {"key": "type", "value": "rented"}]}}, "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"]}}}
+      ]
+    },
+    {
+      "name": "5. تسجيل المستخدمين",
+      "item": [
+        {"name": "5.1 يومياً", "request": {"method": "GET", "url": "{{baseUrl}}/admin/dashboard/users-registration?period=daily", "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"]}}},
+        {"name": "5.2 أسبوعياً", "request": {"method": "GET", "url": "{{baseUrl}}/admin/dashboard/users-registration?period=weekly", "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"]}}},
+        {"name": "5.3 إجمالي", "request": {"method": "GET", "url": "{{baseUrl}}/admin/dashboard/users-registration?period=all", "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"]}}}
+      ]
+    },
+    {
+      "name": "6. المناطق النشطة",
+      "item": [
+        {"name": "6.1 أكثر 10 مناطق", "request": {"method": "GET", "url": "{{baseUrl}}/admin/dashboard/top-active-regions", "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"]}}},
+        {"name": "6.2 أكثر 5 مناطق", "request": {"method": "GET", "url": "{{baseUrl}}/admin/dashboard/top-active-regions?limit=5", "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"]}}}
+      ]
+    },
+    {
+      "name": "7. آخر الأنشطة",
+      "item": [
+        {"name": "7.1 الكل", "request": {"method": "GET", "url": "{{baseUrl}}/admin/dashboard/recent-activities", "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"]}}},
+        {"name": "7.2 آخر 5", "request": {"method": "GET", "url": "{{baseUrl}}/admin/dashboard/recent-activities?limit=5", "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"]}}}
+      ]
+    },
+    {
+      "name": "8. سيناريوهات الأخطاء",
+      "item": [
+        {"name": "❌ بدون مصادقة", "event": [{"listen": "test", "script": {"exec": ["pm.test('فشل', function() {", "    pm.expect(pm.response.status).to.eq(401);", "});"]}}], "request": {"method": "GET", "url": "{{baseUrl}}/admin/dashboard/chart-data"}}}
+      ]
+    }
+  ]
+}
