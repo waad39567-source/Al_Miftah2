@@ -358,6 +358,11 @@ class AuthController extends Controller
 
             Mail::to($user->email)->send(new EmailVerification($user));
 
+            Log::info('Verification email sent successfully', [
+                'email' => $user->email,
+                'user_id' => $user->id
+            ]);
+
             return $this->successResponse(null, 'تم إرسال رابط توثيق البريد الإلكتروني');
         } catch (Throwable $e) {
             Log::error('Email verification failed: ' . $e->getMessage());
