@@ -1571,6 +1571,112 @@
                 </div>
             </div>
 
+
+
+            <!-- ==================== DASHBOARD OVERVIEW ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method GET">GET</span>
+                    <span class="endpoint-url">/admin/dashboard/recent-activities</span>
+                    <span class="badge badge-admin">أدمن فقط</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>جلب آخر الأنشطة في النظام (العقارات، طلبات التواصل، المستخدمين)</p>
+                    </div>
+                    <div class="section">
+                        <h3>📌 Parameters</h3>
+                        <table>
+                            <tr><th>المعامل</th><th>النوع</th><th>مطلوب</th><th>القيم</th><th>الوصف</th></tr>
+                            <tr><td>limit</td><td>integer</td><td class="optional">لا</td><td>1-100</td><td>عدد العناصر (افتراضي: 10)</td></tr>
+                        </table>
+                    </div>
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "data": {
+    "properties": [...],
+    "contact_requests": [...],
+    "users": [...]
+  }
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== DASHBOARD CHART DATA ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method GET">GET</span>
+                    <span class="endpoint-url">/admin/dashboard/chart-data</span>
+                    <span class="badge badge-admin">أدمن فقط</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>جلب بيانات الرسوم البيانية لتوزيع العقارات والمستخدمين</p>
+                    </div>
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "data": {
+    "properties_by_region": [...],
+    "properties_by_type": [...],
+    "properties_by_status": [...],
+    "users_by_role": [...]
+  }
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== DASHBOARD PROPERTIES BY REGION ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method GET">GET</span>
+                    <span class="endpoint-url">/admin/dashboard/properties-by-region</span>
+                    <span class="badge badge-admin">أدمن فقط</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>جلب توزيع العقارات حسب المناطق مع الإحصائيات</p>
+                    </div>
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "data": [...]
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== DASHBOARD PROPERTIES BY TYPE ==================== -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method GET">GET</span>
+                    <span class="endpoint-url">/admin/dashboard/properties-by-type</span>
+                    <span class="badge badge-admin">أدمن فقط</span>
+                </div>
+                <div class="endpoint-body">
+                    <div class="section">
+                        <h3>📝 الوصف</h3>
+                        <p>جلب توزيع العقارات حسب النوع مع الإحصائيات</p>
+                    </div>
+                    <div class="section success">
+                        <h3>✅ 200 - نجاح</h3>
+                        <div class="code-block">{
+  "success": true,
+  "data": [...]
+}</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- ==================== ADMIN CREATE REGION ==================== -->
             <div class="endpoint">
                 <div class="endpoint-header">
