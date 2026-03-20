@@ -41,6 +41,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/verify-email', [AuthController::class, 'verifyEmail']);
+    Route::get('/verify-email', [AuthController::class, 'verifyEmail']);
     Route::post('/send-verification-email', [AuthController::class, 'sendVerificationEmail']);
     
     Route::middleware('auth:sanctum')->group(function () {
