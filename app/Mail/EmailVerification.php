@@ -26,11 +26,14 @@ class EmailVerification extends Mailable
 
     public function content(): Content
     {
+        $baseUrl = config('app.url');
+        $token = base64_encode($this->user->email . '|' . $this->user->id . '|' . $this->user->email_verified_at);
+        
         return new Content(
             view: 'emails.email-verification',
             with: [
                 'userName' => $this->user->name,
-                'verificationUrl' => config('app.frontend_url') . '/verify-email?token=' . $this->user->email,
+                'verificationUrl' => $baseUrl . '/api/auth/verify-email?token=' . $token,
             ],
         );
     }

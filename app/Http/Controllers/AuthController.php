@@ -307,22 +307,35 @@ class AuthController extends Controller
     public function verifyEmail(Request $request): JsonResponse
     {
         try {
+            $email = $request->email;
+
+            if ($request->has('token')) {
+                $decoded = base64_decode($request->token);
+                $parts = explode('|', $decoded);
+                if (count($parts) >= 1) {
+                    $email = $parts[0];
+                }
+            }
+
+            $request->merge(['email' => $email]);
             $request->validate([
                 'email' => 'required|email|exists:users,email',
             ]);
 
-            $user = User::where('email', $request->email)->first();
+            $user = User::where('email', $email)->first();
 
             if (!is_null($user->email_verified_at)) {
                 return $this->errorResponse('تم توثيق البريد الإلكتروني مسبقاً', 400);
             }
 
             $user->update(['email_verified_at' => now()]);
+            Log::info('Email verified successfully', ['email' => $email]);
 
             return $this->successResponse([
                 'email_verified_at' => $user->email_verified_at,
             ], 'تم توثيق البريد الإلكتروني بنجاح');
         } catch (Throwable $e) {
+            Log::error('Email verification failed: ' . $e->getMessage());
             return $this->errorResponse('حدث خطأ أثناء توثيق البريد الإلكتروني', 500, null, $e->getMessage());
         }
     }
