@@ -357,13 +357,13 @@ class AdminController extends Controller
     {
         $data = $this->adminService->getPropertiesByRegion();
 
-        return $this->successResponse(PropertyByRegionResource::collection(collect($data)));
+        return $this->successResponse($data);
     }
 
     public function propertiesByType()
     {
         $data = $this->adminService->getPropertiesByType();
 
-        return $this->successResponse(PropertyByTypeResource::collection(collect($data)));
+        return $this->successResponse($data);
     }
 }
