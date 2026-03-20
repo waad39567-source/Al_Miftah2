@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\Property;
+use App\Models\Region;
 use App\Models\ContactRequest;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -378,14 +379,11 @@ class AdminService
 
     public function getPropertiesByRegion(): array
     {
-        $regions = Region::where('type', 'city')
-            ->with(['properties' => function ($query) {
-                $query->select('region_id', 'status', 'price');
-            }])
+        $regions = Region::whereIn('type', ['city', 'governorate'])
             ->get();
 
         return $regions->map(function ($region) {
-            $properties = $region->properties;
+            $properties = Property::where('region_id', $region->id)->get();
             $total = $properties->count();
             $avgPrice = $total > 0 ? round($properties->avg('price')) : 0;
 
@@ -401,7 +399,9 @@ class AdminService
                 'rejected' => $properties->where('status', 'rejected')->count(),
                 'avg_price' => $avgPrice,
             ];
-        })->toArray();
+        })->filter(function ($region) {
+            return $region['total_properties'] > 0;
+        })->values()->toArray();
     }
 
     public function getPropertiesByType(): array
