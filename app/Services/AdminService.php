@@ -468,16 +468,9 @@ class AdminService
     }
 
 
-    public function getPropertiesSummary(?string $fromDate = null, ?string $toDate = null, string $type = 'all'): array
+        public function getPropertiesSummary(?string $fromDate = null, ?string $toDate = null, string $type = 'all'): array
     {
         $query = Property::query();
-
-        if ($fromDate) {
-            $query->where('created_at', '>=', $fromDate);
-        }
-        if ($toDate) {
-            $query->where('created_at', '<=', $toDate . ' 23:59:59');
-        }
 
         if ($type === 'sold') {
             $query->where('status', 'sold');
@@ -489,41 +482,10 @@ class AdminService
         $totalPrice = $query->sum('price');
         $avgPrice = $total > 0 ? round($totalPrice / $total) : 0;
 
-        $byRegion = Property::select('region_id')
-            ->where(function ($q) use ($fromDate, $toDate, $type) {
-                if ($fromDate) {
-                    $q->where('created_at', '>=', $fromDate);
-                }
-                if ($toDate) {
-                    $q->where('created_at', '<=', $toDate . ' 23:59:59');
-                }
-                if ($type === 'sold') {
-                    $q->where('status', 'sold');
-                } elseif ($type === 'rented') {
-                    $q->where('status', 'rented');
-                }
-            })
-            ->with('region')
-            ->get()
-            ->groupBy('region_id')
-            ->map(function ($items, $regionId) {
-                $region = $items->first()->region;
-                return [
-                    'region_id' => $regionId,
-                    'region_name' => $region ? $region->name : 'غير محدد',
-                    'count' => $items->count(),
-                ];
-            })
-            ->sortByDesc('count')
-            ->take(5)
-            ->values()
-            ->toArray();
-
         return [
             'total_count' => $total,
             'total_price' => (float) $totalPrice,
             'avg_price' => $avgPrice,
-            'by_region' => $byRegion,
             'filters' => [
                 'from_date' => $fromDate,
                 'to_date' => $toDate,
