@@ -9,6 +9,10 @@ class RecentActivityContactResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        if (is_array($this->resource)) {
+            return $this->resource;
+        }
+        
         return [
             'id' => $this->id,
             'user_name' => $this->user?->name ?? $this->name,
