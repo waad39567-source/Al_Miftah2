@@ -365,10 +365,6 @@ class AuthController extends Controller
 
             $user = User::where('email', $request->email)->first();
 
-            if (!is_null($user->email_verified_at)) {
-                return $this->errorResponse('تم توثيق البريد الإلكتروني مسبقاً', 400);
-            }
-
             Mail::to($user->email)->send(new EmailVerification($user));
 
             Log::info('Verification email sent successfully', [
