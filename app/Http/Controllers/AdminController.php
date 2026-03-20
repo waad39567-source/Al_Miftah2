@@ -366,4 +366,36 @@ class AdminController extends Controller
 
         return $this->successResponse($data);
     }
+
+
+    public function propertiesSummary(DashboardSummaryRequest $request)
+    {
+        $fromDate = $request->input('from_date');
+        $toDate = $request->input('to_date');
+        $type = $request->input('type', 'all');
+
+        $data = $this->adminService->getPropertiesSummary($fromDate, $toDate, $type);
+
+        return $this->successResponse($data);
+    }
+
+    public function usersRegistration(DashboardSummaryRequest $request)
+    {
+        $period = $request->input('period', 'all');
+        $fromDate = $request->input('from_date');
+        $toDate = $request->input('to_date');
+
+        $data = $this->adminService->getUsersRegistration($period, $fromDate, $toDate);
+
+        return $this->successResponse($data);
+    }
+
+    public function topActiveRegions(DashboardSummaryRequest $request)
+    {
+        $limit = $request->input('limit', 10);
+
+        $data = $this->adminService->getTopActiveRegions($limit);
+
+        return $this->successResponse($data);
+    }
 }

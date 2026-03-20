@@ -141,6 +141,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/chart-data', [AdminController::class, 'chartData']);
             Route::get('/properties-by-region', [AdminController::class, 'propertiesByRegion']);
             Route::get('/properties-by-type', [AdminController::class, 'propertiesByType']);
+            Route::get('/properties-summary', [AdminController::class, 'propertiesSummary']);
+            Route::get('/users-registration', [AdminController::class, 'usersRegistration']);
+            Route::get('/top-active-regions', [AdminController::class, 'topActiveRegions']);
         });
     });
 });

@@ -466,4 +466,209 @@ class AdminService
         ];
         return $labels[$role] ?? $role;
     }
+
+
+    public function getPropertiesSummary(?string $fromDate = null, ?string $toDate = null, string $type = 'all'): array
+    {
+        $query = Property::query();
+
+        if ($fromDate) {
+            $query->where('created_at', '>=', $fromDate);
+        }
+        if ($toDate) {
+            $query->where('created_at', '<=', $toDate . ' 23:59:59');
+        }
+
+        if ($type === 'sold') {
+            $query->where('status', 'sold');
+        } elseif ($type === 'rented') {
+            $query->where('status', 'rented');
+        }
+
+        $total = $query->count();
+        $totalPrice = $query->sum('price');
+        $avgPrice = $total > 0 ? round($totalPrice / $total) : 0;
+
+        $byRegion = Property::select('region_id')
+            ->where(function ($q) use ($fromDate, $toDate, $type) {
+                if ($fromDate) {
+                    $q->where('created_at', '>=', $fromDate);
+                }
+                if ($toDate) {
+                    $q->where('created_at', '<=', $toDate . ' 23:59:59');
+                }
+                if ($type === 'sold') {
+                    $q->where('status', 'sold');
+                } elseif ($type === 'rented') {
+                    $q->where('status', 'rented');
+                }
+            })
+            ->with('region')
+            ->get()
+            ->groupBy('region_id')
+            ->map(function ($items, $regionId) {
+                $region = $items->first()->region;
+                return [
+                    'region_id' => $regionId,
+                    'region_name' => $region ? $region->name : 'غير محدد',
+                    'count' => $items->count(),
+                ];
+            })
+            ->sortByDesc('count')
+            ->take(5)
+            ->values()
+            ->toArray();
+
+        return [
+            'total_count' => $total,
+            'total_price' => (float) $totalPrice,
+            'avg_price' => $avgPrice,
+            'by_region' => $byRegion,
+            'filters' => [
+                'from_date' => $fromDate,
+                'to_date' => $toDate,
+                'type' => $type,
+            ],
+        ];
+    }
+
+    public function getUsersRegistration(string $period = 'all', ?string $fromDate = null, ?string $toDate = null): array
+    {
+        $query = User::query();
+
+        if ($fromDate) {
+            $query->where('created_at', '>=', $fromDate);
+        }
+        if ($toDate) {
+            $query->where('created_at', '<=', $toDate . ' 23:59:59');
+        }
+
+        $total = $query->count();
+
+        if ($period === 'daily') {
+            $data = User::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+                ->where(function ($q) use ($fromDate, $toDate) {
+                    if ($fromDate) {
+                        $q->where('created_at', '>=', $fromDate);
+                    }
+                    if ($toDate) {
+                        $q->where('created_at', '<=', $toDate . ' 23:59:59');
+                    }
+                })
+                ->groupBy('date')
+                ->orderBy('date', 'desc')
+                ->limit(30)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'date' => $item->date,
+                        'count' => $item->count,
+                    ];
+                })
+                ->toArray();
+        } elseif ($period === 'weekly') {
+            $data = User::selectRaw('YEAR(created_at) as year, WEEK(created_at) as week, COUNT(*) as count')
+                ->where(function ($q) use ($fromDate, $toDate) {
+                    if ($fromDate) {
+                        $q->where('created_at', '>=', $fromDate);
+                    }
+                    if ($toDate) {
+                        $q->where('created_at', '<=', $toDate . ' 23:59:59');
+                    }
+                })
+                ->groupBy('year', 'week')
+                ->orderBy('year', 'desc')
+                ->orderBy('week', 'desc')
+                ->limit(12)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'year' => $item->year,
+                        'week' => $item->week,
+                        'count' => $item->count,
+                    ];
+                })
+                ->toArray();
+        } else {
+            $data = [];
+        }
+
+        $byRole = User::select('role')
+            ->where(function ($q) use ($fromDate, $toDate) {
+                if ($fromDate) {
+                    $q->where('created_at', '>=', $fromDate);
+                }
+                if ($toDate) {
+                    $q->where('created_at', '<=', $toDate . ' 23:59:59');
+                }
+            })
+            ->get()
+            ->groupBy('role')
+            ->map(function ($items, $role) {
+                return [
+                    'role' => $role,
+                    'count' => $items->count(),
+                ];
+            })
+            ->values()
+            ->toArray();
+
+        return [
+            'total' => $total,
+            'period' => $period,
+            'by_date' => $data,
+            'by_role' => $byRole,
+            'filters' => [
+                'from_date' => $fromDate,
+                'to_date' => $toDate,
+            ],
+        ];
+    }
+
+    public function getTopActiveRegions(int $limit = 10): array
+    {
+        $regions = Region::whereIn('type', ['city', 'governorate'])
+            ->withCount([
+                'properties as total_properties' => function ($query) {
+                    $query->where('status', '!=', 'rejected');
+                },
+                'properties as active_properties' => function ($query) {
+                    $query->where('status', 'active');
+                },
+                'properties as pending_properties' => function ($query) {
+                    $query->where('status', 'pending');
+                },
+                'properties as sold_properties' => function ($query) {
+                    $query->where('status', 'sold');
+                },
+                'properties as rented_properties' => function ($query) {
+                    $query->where('status', 'rented');
+                },
+            ])
+            ->orderBy('total_properties', 'desc')
+            ->limit($limit)
+            ->get()
+            ->map(function ($region) {
+                $avgPrice = Property::where('region_id', $region->id)
+                    ->where('status', '!=', 'rejected')
+                    ->avg('price') ?? 0;
+
+                return [
+                    'region_id' => $region->id,
+                    'region_name' => $region->name,
+                    'region_type' => $region->type,
+                    'total_properties' => $region->total_properties ?? 0,
+                    'active_properties' => $region->active_properties ?? 0,
+                    'pending_properties' => $region->pending_properties ?? 0,
+                    'sold_properties' => $region->sold_properties ?? 0,
+                    'rented_properties' => $region->rented_properties ?? 0,
+                    'avg_price' => round($avgPrice),
+                ];
+            })
+            ->toArray();
+
+        return $regions;
+    }
+
+
 }
