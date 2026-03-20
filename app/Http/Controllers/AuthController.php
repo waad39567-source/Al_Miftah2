@@ -304,7 +304,7 @@ class AuthController extends Controller
      *     @OA\Response(response=400, description="موثق مسبقاً")
      * )
      */
-    public function verifyEmail(Request $request): JsonResponse
+    public function verifyEmail(Request $request)
     {
         try {
             $email = $request->email;
@@ -325,17 +325,34 @@ class AuthController extends Controller
             $user = User::where('email', $email)->first();
 
             if (!is_null($user->email_verified_at)) {
+                if ($request->isMethod('get')) {
+                    return view('emails.verification-success', [
+                        'alreadyVerified' => true
+                    ]);
+                }
                 return $this->errorResponse('تم توثيق البريد الإلكتروني مسبقاً', 400);
             }
 
             $user->update(['email_verified_at' => now()]);
             Log::info('Email verified successfully', ['email' => $email]);
 
+            if ($request->isMethod('get')) {
+                return view('emails.verification-success', [
+                    'alreadyVerified' => false
+                ]);
+            }
+
             return $this->successResponse([
                 'email_verified_at' => $user->email_verified_at,
             ], 'تم توثيق البريد الإلكتروني بنجاح');
         } catch (Throwable $e) {
             Log::error('Email verification failed: ' . $e->getMessage());
+            if ($request->isMethod('get')) {
+                return view('emails.verification-success', [
+                    'error' => true,
+                    'message' => 'حدث خطأ أثناء توثيق البريد الإلكتروني'
+                ]);
+            }
             return $this->errorResponse('حدث خطأ أثناء توثيق البريد الإلكتروني', 500, null, $e->getMessage());
         }
     }
