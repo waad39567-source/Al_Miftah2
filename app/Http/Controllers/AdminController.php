@@ -369,7 +369,7 @@ class AdminController extends Controller
     }
 
 
-    public function propertiesSummary(DashboardSummaryRequest $request)
+    public function propertiesSummary(Request $request)
     {
         try {
             $fromDate = $request->input('from_date');
@@ -385,7 +385,7 @@ class AdminController extends Controller
         }
     }
 
-    public function usersRegistration(DashboardSummaryRequest $request)
+    public function usersRegistration(Request $request)
     {
         $period = $request->input('period', 'all');
         $fromDate = $request->input('from_date');
@@ -396,7 +396,7 @@ class AdminController extends Controller
         return $this->successResponse($data);
     }
 
-    public function topActiveRegions(DashboardSummaryRequest $request)
+    public function topActiveRegions(Request $request)
     {
         $limit = $request->input('limit', 10);
 
