@@ -350,7 +350,7 @@ class AdminController extends Controller
     {
         $data = $this->adminService->getChartData();
 
-        return $this->successResponse(new ChartDataResource($data));
+        return $this->successResponse($data);
     }
 
     public function propertiesByRegion()
