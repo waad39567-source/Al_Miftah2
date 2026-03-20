@@ -18,6 +18,7 @@ use App\Services\AdminService;
 use App\Services\FirebaseService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 
 /**
@@ -370,13 +371,18 @@ class AdminController extends Controller
 
     public function propertiesSummary(DashboardSummaryRequest $request)
     {
-        $fromDate = $request->input('from_date');
-        $toDate = $request->input('to_date');
-        $type = $request->input('type', 'all');
+        try {
+            $fromDate = $request->input('from_date');
+            $toDate = $request->input('to_date');
+            $type = $request->input('type', 'all');
 
-        $data = $this->adminService->getPropertiesSummary($fromDate, $toDate, $type);
+            $data = $this->adminService->getPropertiesSummary($fromDate, $toDate, $type);
 
-        return $this->successResponse($data);
+            return $this->successResponse($data);
+        } catch (\Exception $e) {
+            Log::error('propertiesSummary error: ' . $e->getMessage());
+            return $this->errorResponse('حدث خطأ', 500, null, $e->getMessage());
+        }
     }
 
     public function usersRegistration(DashboardSummaryRequest $request)
