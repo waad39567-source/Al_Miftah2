@@ -329,4 +329,33 @@ class AdminController extends Controller
 
         return $this->successResponse($statistics);
     }
+
+    public function recentActivities(Request $request)
+    {
+        $limit = $request->input('limit', 10);
+        $activities = $this->adminService->getRecentActivities($limit);
+
+        return $this->successResponse($activities);
+    }
+
+    public function chartData()
+    {
+        $data = $this->adminService->getChartData();
+
+        return $this->successResponse($data);
+    }
+
+    public function propertiesByRegion()
+    {
+        $data = $this->adminService->getPropertiesByRegion();
+
+        return $this->successResponse($data);
+    }
+
+    public function propertiesByType()
+    {
+        $data = $this->adminService->getPropertiesByType();
+
+        return $this->successResponse($data);
+    }
 }

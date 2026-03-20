@@ -134,5 +134,13 @@ Route::middleware('auth:sanctum')->group(function () {
         
         // Statistics
         Route::get('/statistics', [AdminController::class, 'statistics']);
+        
+        // Dashboard
+        Route::prefix('dashboard')->group(function () {
+            Route::get('/recent-activities', [AdminController::class, 'recentActivities']);
+            Route::get('/chart-data', [AdminController::class, 'chartData']);
+            Route::get('/properties-by-region', [AdminController::class, 'propertiesByRegion']);
+            Route::get('/properties-by-type', [AdminController::class, 'propertiesByType']);
+        });
     });
 });

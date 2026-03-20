@@ -245,4 +245,225 @@ class AdminService
             ],
         ];
     }
+
+    public function getRecentActivities(int $limit = 10): array
+    {
+        $recentProperties = Property::with('owner')
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get()
+            ->map(function ($property) {
+                return [
+                    'id' => $property->id,
+                    'title' => $property->title,
+                    'owner' => $property->owner ? $property->owner->name : null,
+                    'type' => $property->type,
+                    'status' => $property->status,
+                    'price' => $property->price,
+                    'created_at' => $property->created_at,
+                ];
+            });
+
+        $recentContactRequests = ContactRequest::with(['user', 'property'])
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get()
+            ->map(function ($request) {
+                return [
+                    'id' => $request->id,
+                    'user_name' => $request->user ? $request->user->name : $request->name,
+                    'property_title' => $request->property ? $request->property->title : null,
+                    'status' => $request->status,
+                    'message' => $request->message,
+                    'created_at' => $request->created_at,
+                ];
+            });
+
+        $recentUsers = User::orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => $user->phone,
+                    'role' => $user->role,
+                    'is_verified' => !is_null($user->email_verified_at),
+                    'created_at' => $user->created_at,
+                ];
+            });
+
+        return [
+            'properties' => $recentProperties,
+            'contact_requests' => $recentContactRequests,
+            'users' => $recentUsers,
+        ];
+    }
+
+    public function getChartData(): array
+    {
+        $totalProperties = Property::count();
+        
+        $propertiesByRegion = Property::with('region')
+            ->get()
+            ->groupBy('region_id')
+            ->map(function ($items, $regionId) use ($totalProperties) {
+                $region = $items->first()->region;
+                $count = $items->count();
+                return [
+                    'region_id' => $regionId,
+                    'region_name' => $region ? $region->name : 'غير محدد',
+                    'count' => $count,
+                    'percentage' => $totalProperties > 0 ? round(($count / $totalProperties) * 100, 1) : 0,
+                ];
+            })
+            ->values()
+            ->sortByDesc('count')
+            ->take(10)
+            ->values()
+            ->toArray();
+
+        $propertiesByType = Property::get()
+            ->groupBy('property_type')
+            ->map(function ($items, $type) use ($totalProperties) {
+                $count = $items->count();
+                return [
+                    'property_type' => $type,
+                    'label' => $this->getPropertyTypeLabel($type),
+                    'count' => $count,
+                    'percentage' => $totalProperties > 0 ? round(($count / $totalProperties) * 100, 1) : 0,
+                ];
+            })
+            ->values()
+            ->sortByDesc('count')
+            ->toArray();
+
+        $propertiesByStatus = Property::get()
+            ->groupBy('status')
+            ->map(function ($items, $status) use ($totalProperties) {
+                $count = $items->count();
+                return [
+                    'status' => $status,
+                    'label' => $this->getStatusLabel($status),
+                    'count' => $count,
+                    'percentage' => $totalProperties > 0 ? round(($count / $totalProperties) * 100, 1) : 0,
+                ];
+            })
+            ->values()
+            ->toArray();
+
+        $totalUsers = User::count();
+        $usersByRole = User::get()
+            ->groupBy('role')
+            ->map(function ($items, $role) use ($totalUsers) {
+                $count = $items->count();
+                return [
+                    'role' => $role,
+                    'label' => $this->getRoleLabel($role),
+                    'count' => $count,
+                    'percentage' => $totalUsers > 0 ? round(($count / $totalUsers) * 100, 1) : 0,
+                ];
+            })
+            ->values()
+            ->toArray();
+
+        return [
+            'properties_by_region' => $propertiesByRegion,
+            'properties_by_type' => $propertiesByType,
+            'properties_by_status' => $propertiesByStatus,
+            'users_by_role' => $usersByRole,
+        ];
+    }
+
+    public function getPropertiesByRegion(): array
+    {
+        $regions = Region::where('type', 'city')
+            ->with(['properties' => function ($query) {
+                $query->select('region_id', 'status', 'price');
+            }])
+            ->get();
+
+        return $regions->map(function ($region) {
+            $properties = $region->properties;
+            $total = $properties->count();
+            $avgPrice = $total > 0 ? round($properties->avg('price')) : 0;
+
+            return [
+                'region_id' => $region->id,
+                'region_name' => $region->name,
+                'region_type' => $region->type,
+                'total_properties' => $total,
+                'active' => $properties->where('status', 'active')->count(),
+                'pending' => $properties->where('status', 'pending')->count(),
+                'rented' => $properties->where('status', 'rented')->count(),
+                'sold' => $properties->where('status', 'sold')->count(),
+                'rejected' => $properties->where('status', 'rejected')->count(),
+                'avg_price' => $avgPrice,
+            ];
+        })->toArray();
+    }
+
+    public function getPropertiesByType(): array
+    {
+        $propertyTypes = Property::select('property_type')
+            ->distinct()
+            ->pluck('property_type');
+
+        return $propertyTypes->map(function ($type) {
+            $properties = Property::where('property_type', $type)->get();
+            $total = $properties->count();
+
+            return [
+                'property_type' => $type,
+                'label' => $this->getPropertyTypeLabel($type),
+                'total' => $total,
+                'active' => $properties->where('status', 'active')->count(),
+                'pending' => $properties->where('status', 'pending')->count(),
+                'rented' => $properties->where('status', 'rented')->count(),
+                'sold' => $properties->where('status', 'sold')->count(),
+                'rejected' => $properties->where('status', 'rejected')->count(),
+                'avg_price' => $total > 0 ? round($properties->avg('price')) : 0,
+                'min_price' => $total > 0 ? $properties->min('price') : 0,
+                'max_price' => $total > 0 ? $properties->max('price') : 0,
+            ];
+        })->toArray();
+    }
+
+    private function getPropertyTypeLabel(string $type): string
+    {
+        $labels = [
+            'apartment' => 'شقة',
+            'villa' => 'فيلا',
+            'house' => 'منزل',
+            'land' => 'أرض',
+            'shop' => 'متجر',
+            'office' => 'مكتب',
+            'warehouse' => 'مستودع',
+            'building' => 'عمارة',
+        ];
+        return $labels[$type] ?? $type;
+    }
+
+    private function getStatusLabel(string $status): string
+    {
+        $labels = [
+            'active' => 'نشط',
+            'pending' => 'معلق',
+            'rented' => 'مؤجر',
+            'sold' => 'مباع',
+            'rejected' => 'مرفوض',
+        ];
+        return $labels[$status] ?? $status;
+    }
+
+    private function getRoleLabel(string $role): string
+    {
+        $labels = [
+            'admin' => 'مدير',
+            'owner' => 'مكتب عقاري',
+            'user' => 'مستخدم',
+        ];
+        return $labels[$role] ?? $role;
+    }
 }
