@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AdminPropertyRequest;
+use App\Http\Requests\DashboardRequest;
 use App\Http\Resources\PropertyResource;
 use App\Http\Resources\ContactResource;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\RecentActivityPropertyResource;
+use App\Http\Resources\RecentActivityContactResource;
+use App\Http\Resources\RecentActivityUserResource;
 use App\Models\Property;
 use App\Models\Region;
 use App\Models\ContactRequest;
@@ -330,32 +334,36 @@ class AdminController extends Controller
         return $this->successResponse($statistics);
     }
 
-    public function recentActivities(Request $request)
+    public function recentActivities(DashboardRequest $request)
     {
         $limit = $request->input('limit', 10);
         $activities = $this->adminService->getRecentActivities($limit);
 
-        return $this->successResponse($activities);
+        return $this->successResponse([
+            'properties' => RecentActivityPropertyResource::collection(collect($activities['properties'])),
+            'contact_requests' => RecentActivityContactResource::collection(collect($activities['contact_requests'])),
+            'users' => RecentActivityUserResource::collection(collect($activities['users'])),
+        ]);
     }
 
     public function chartData()
     {
         $data = $this->adminService->getChartData();
 
-        return $this->successResponse($data);
+        return $this->successResponse(new ChartDataResource($data));
     }
 
     public function propertiesByRegion()
     {
         $data = $this->adminService->getPropertiesByRegion();
 
-        return $this->successResponse($data);
+        return $this->successResponse(PropertyByRegionResource::collection(collect($data)));
     }
 
     public function propertiesByType()
     {
         $data = $this->adminService->getPropertiesByType();
 
-        return $this->successResponse($data);
+        return $this->successResponse(PropertyByTypeResource::collection(collect($data)));
     }
 }
