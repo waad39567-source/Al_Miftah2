@@ -30,6 +30,17 @@ Route::get('/images/{path}', function ($path) {
 Route::middleware('auth:sanctum')->prefix('fcm')->group(function () {
     Route::post('/token', [FcmTokenController::class, 'saveToken']);
     Route::delete('/token', [FcmTokenController::class, 'removeToken']);
+
+/*
+|--------------------------------------------------------------------------
+| Notification Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth:sanctum')->prefix('notifications')->group(function () {
+    Route::get('/', [NotificationController::class, 'index']);
+    Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
+    Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/read-all', [NotificationController::class, 'markAllAsRead']);
 });
 
 /*
