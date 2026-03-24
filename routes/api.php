@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FcmTokenController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\RegionController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,7 @@ Route::get('/images/{path}', function ($path) {
 Route::middleware('auth:sanctum')->prefix('fcm')->group(function () {
     Route::post('/token', [FcmTokenController::class, 'saveToken']);
     Route::delete('/token', [FcmTokenController::class, 'removeToken']);
+});
 
 /*
 |--------------------------------------------------------------------------
