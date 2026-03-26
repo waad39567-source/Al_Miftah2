@@ -43,6 +43,10 @@ class AuthRequest extends FormRequest
                 'role' => 'required|in:user,owner,admin',
                 'is_active' => 'nullable|boolean',
             ],
+            'updateProfile' => [
+                'name' => 'sometimes|string|max:255',
+                'phone' => 'sometimes|string|max:20|unique:users,phone,' . request()->user()?->id,
+            ],
             default => [],
         };
     }

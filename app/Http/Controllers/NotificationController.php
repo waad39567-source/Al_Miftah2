@@ -33,9 +33,9 @@ class NotificationController extends Controller
         ]);
     }
 
-    public function markAsRead($id)
+    public function markAsRead(Request $request, $id)
     {
-        $notification = Notification::where('user_id', auth()->id())
+        $notification = Notification::where('user_id', $request->user()->id)
             ->where('id', $id)
             ->first();
 

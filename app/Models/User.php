@@ -81,6 +81,13 @@ class User extends Authenticatable
         return $this->hasMany(UserFcmToken::class);
     }
 
+    // العقارات المفضلة
+    public function favoriteProperties()
+    {
+        return $this->belongsToMany(Property::class, 'property_favorites')
+            ->withTimestamps();
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Helpers (اختياري احترافي)

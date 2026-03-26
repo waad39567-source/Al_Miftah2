@@ -171,6 +171,40 @@ class AuthController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *     path="/auth/profile",
+     *     summary="تعديل بيانات الملف الشخصي",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string", example="اسم المستخدم"),
+     *             @OA\Property(property="phone", type="string", example="966501234567")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="نجاح"),
+     *     @OA\Response(response=422, description="خطأ في التحقق")
+     * )
+     */
+    public function updateProfile(AuthRequest $request): JsonResponse
+    {
+        try {
+            $user = $request->user();
+            $validated = $request->validated();
+
+            $user->update($validated);
+
+            return $this->successResponse(
+                new UserResource($user->fresh()),
+                'تم تحديث الملف الشخصي بنجاح'
+            );
+        } catch (Throwable $e) {
+            return $this->errorResponse('حدث خطأ أثناء تحديث الملف الشخصي', 500, null, $e->getMessage());
+        }
+    }
+
+    /**
      * @OA\Post(
      *     path="/auth/change-password",
      *     summary="تغيير كلمة المرور",

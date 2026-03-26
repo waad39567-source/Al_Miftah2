@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\UserFcmToken;
+use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -139,11 +141,17 @@ class FirebaseService
 
     public function sendToUser($userId, $title, $body, $data = [])
     {
+        Notification::create([
+            'user_id' => $userId,
+            'type' => $data['type'] ?? 'general',
+            'title' => $title,
+            'body' => $body,
+            'is_read' => false,
+            'related_id' => $data['id'] ?? null,
+            'related_type' => $data['type'] ?? null,
+        ]);
+
         $tokens = UserFcmToken::where('user_id', $userId)->pluck('token')->toArray();
-        
-        if (empty($tokens)) {
-            return false;
-        }
         
         foreach ($tokens as $token) {
             $this->sendNotification($token, $title, $body, $data);
@@ -154,7 +162,7 @@ class FirebaseService
 
     public function sendToAdmins($title, $body, $data = [])
     {
-        $adminIds = \App\Models\User::where('role', 'admin')->pluck('id')->toArray();
+        $adminIds = User::where('role', 'admin')->pluck('id')->toArray();
         
         foreach ($adminIds as $adminId) {
             $this->sendToUser($adminId, $title, $body, $data);

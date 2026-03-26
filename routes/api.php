@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FcmTokenController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PropertyController;
@@ -59,6 +60,7 @@ Route::prefix('auth')->group(function () {
     
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
+        Route::put('/profile', [AuthController::class, 'updateProfile']);
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/change-password', [AuthController::class, 'changePassword']);
         Route::post('/promote-to-admin', [AuthController::class, 'promoteToAdmin']);
@@ -96,6 +98,18 @@ Route::prefix('properties')->group(function () {
     Route::delete('/{id}/images/{imageId}', [PropertyController::class, 'deleteImage'])->where('id', '[0-9]+')->middleware('auth:sanctum');
     Route::post('/{id}/rented', [PropertyController::class, 'markAsRented'])->where('id', '[0-9]+')->middleware('auth:sanctum');
     Route::post('/{id}/sold', [PropertyController::class, 'markAsSold'])->where('id', '[0-9]+')->middleware('auth:sanctum');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Favorites Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth:sanctum')->prefix('favorites')->group(function () {
+    Route::get('/', [FavoriteController::class, 'index']);
+    Route::post('/{propertyId}', [FavoriteController::class, 'store']);
+    Route::delete('/{propertyId}', [FavoriteController::class, 'destroy']);
+    Route::get('/{propertyId}/check', [FavoriteController::class, 'check']);
 });
 
 /*

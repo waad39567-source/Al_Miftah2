@@ -185,6 +185,13 @@ class AdminController extends Controller
 
         $this->adminService->approveProperty($property, $request->user()->id);
 
+        $this->firebaseService->sendToUser(
+            $property->owner_id,
+            'تمت الموافقة على عقاركم',
+            'تمت الموافقة على عقار: ' . $property->title,
+            ['type' => 'property_approved', 'id' => (string) $property->id]
+        );
+
         return $this->successResponse(
             new PropertyResource($property->fresh()),
             'تم الموافقة على العقار بنجاح'
@@ -203,6 +210,13 @@ class AdminController extends Controller
         }
 
         $this->adminService->rejectProperty($property, $request->user()->id, $request->reason);
+
+        $this->firebaseService->sendToUser(
+            $property->owner_id,
+            'تم رفض عقاركم',
+            'تم رفض عقار: ' . $property->title . '. السبب: ' . ($request->reason ?? ''),
+            ['type' => 'property_rejected', 'id' => (string) $property->id]
+        );
 
         return $this->successResponse(
             new PropertyResource($property->fresh()),
