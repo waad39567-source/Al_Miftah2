@@ -8,6 +8,7 @@ use App\Http\Controllers\FcmTokenController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\RegionController;
+use App\Http\Controllers\TermsController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -79,6 +80,16 @@ Route::prefix('regions')->group(function () {
     Route::get('/types/list', [RegionController::class, 'types']);
     Route::get('/root/list', [RegionController::class, 'rootRegions']);
     Route::get('/{id}/children', [RegionController::class, 'children']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Terms Routes (Public: View, Admin: Update)
+|--------------------------------------------------------------------------
+*/
+Route::get('/terms', [TermsController::class, 'show']);
+Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
+    Route::put('/terms', [TermsController::class, 'update']);
 });
 
 /*

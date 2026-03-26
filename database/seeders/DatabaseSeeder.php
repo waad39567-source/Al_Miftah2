@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             SyriaRegionsSeeder::class,
             ComprehensiveSeeder::class,
+            TermsSeeder::class,
         ]);
     }
 }

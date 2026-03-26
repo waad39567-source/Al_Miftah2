@@ -9,68 +9,57 @@ class SyriaRegionsSeeder extends Seeder
 {
     public function run(): void
     {
-        $syria = Region::create([
-            'name' => 'سوريا',
-            'type' => 'country',
-            'parent_id' => null
-        ]);
+        // 1. إنشاء/جلب سوريا كـ country
+        $syria = Region::updateOrCreate(
+            ['name' => 'سوريا', 'type' => 'country'],
+            ['parent_id' => null]
+        );
 
-        $governorates = [
-            'دمشق' => 'Damascus',
-            'ريف دمشق' => 'Rural Damascus',
-            'حلب' => 'Aleppo',
-            'حمص' => 'Homs',
-            'اللاذقية' => 'Latakia',
-            'حماه' => 'Hama',
-            'طرطوس' => 'Tartus',
-            'إدلب' => 'Idlib',
-            'درعا' => 'Daraa',
-            'السويداء' => 'Al-Sweida',
-            'القنيطرة' => 'Quneitra',
-            'دير الزور' => 'Deir Ezzor',
-            'الرقة' => 'Raqqa',
-            'الحسكة' => 'Hasaka',
-        ];
+        // 2. قراءة ملف CSV
+        $csvPath = base_path('syrian_towns.csv');
+        $rows = array_map('str_getcsv', file($csvPath));
+        array_shift($rows);
 
-        $damascusNeighborhoods = [
-            'المزة', 'باب توما', 'الرويحة', 'الشاغور', 'القيمرية', 'الدميرية',
-            'الميدان', 'الحريقة', 'البرامكة', 'المرج', 'ركن الدين', 'الصالحية',
-            'الشهداء', 'اليرموك', 'كفرسوسة', 'المستودع', 'العدوي', 'جسرови',
-            'العباسيين', 'الحاجز', 'باب شرقي', 'باب صل无能', 'الكلاسة', 'النوفرة',
-            'القدم', 'يلدا', 'ببيلا', 'بيت سحم', 'يلدا', 'رأس النبع',
-            'خلف الرازي', 'الس具و', 'خاني شيخ', 'المالكية', 'الجرمانا',
-            'مخيم اليرموك', 'شارع الرشيد', 'الخضر', 'وادي الشاطئ', 'النزهة'
-        ];
+        // 3. متغيرات لتتبع السجلات
+        $governorates = [];
+        $cities = [];
 
-        $governorateIds = [];
+        // 4. معالجة كل سطر
+        foreach ($rows as $row) {
+            $governorateName = trim($row[0]);
+            $cityName = trim($row[1]);
+            $neighborhoodName = trim($row[2]);
 
-        foreach ($governorates as $name => $nameEn) {
-            $governorate = Region::create([
-                'name' => $name,
-                'type' => 'governorate',
-                'parent_id' => $syria->id
-            ]);
-            $governorateIds[$name] = $governorate->id;
-
-            if ($name === 'دمشق') {
-                $damascusCity = Region::create([
-                    'name' => 'مدينة دمشق',
-                    'type' => 'city',
-                    'parent_id' => $governorate->id
-                ]);
-
-                foreach ($damascusNeighborhoods as $neighborhood) {
-                    Region::create([
-                        'name' => $neighborhood,
-                        'type' => 'neighborhood',
-                        'parent_id' => $damascusCity->id
-                    ]);
-                }
+            // إنشاء/جلب المحافظة
+            if (!isset($governorates[$governorateName])) {
+                $governorate = Region::updateOrCreate(
+                    ['name' => $governorateName, 'type' => 'governorate'],
+                    ['parent_id' => $syria->id]
+                );
+                $governorates[$governorateName] = $governorate->id;
             }
+
+            // إنشاء/جلب المدينة
+            $cityKey = $governorateName . '|' . $cityName;
+            if (!isset($cities[$cityKey])) {
+                $city = Region::updateOrCreate(
+                    ['name' => $cityName, 'type' => 'city'],
+                    ['parent_id' => $governorates[$governorateName]]
+                );
+                $cities[$cityKey] = $city->id;
+            }
+
+            // إنشاء الحي
+            Region::updateOrCreate(
+                ['name' => $neighborhoodName, 'type' => 'neighborhood'],
+                ['parent_id' => $cities[$cityKey]]
+            );
         }
 
+        // 5. معلومات
         $this->command->info('تم تعبئة المناطق بنجاح!');
         $this->command->info('عدد المحافظات: ' . count($governorates));
-        $this->command->info('عدد أحياء دمشق: ' . count($damascusNeighborhoods));
+        $this->command->info('عدد المدن: ' . count($cities));
+        $this->command->info('إجمالي السطور من CSV: ' . count($rows));
     }
 }

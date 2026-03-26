@@ -240,6 +240,91 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Terms",
+			"item": [
+				{
+					"name": "Get Terms (Public)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/terms",
+							"host": ["{{baseUrl}}"],
+							"path": ["terms"]
+						},
+						"description": "جلب الشروط والأحكام (متاح للجميع)"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.data && jsonData.data.token) {",
+									"    pm.collectionVariables.set('token', jsonData.data.token);",
+									"    pm.test('Admin token saved', true);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@almiftah.com\",\n    \"password\": \"admin123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "تسجيل دخول الأدمن (admin@almiftah.com / admin123)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Terms (Admin Only)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"الشروط و الأحكام\",\n    \"content\": \"نص الشروط والأحكام المحدث باللغة العربية...\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/admin/terms",
+							"host": ["{{baseUrl}}"],
+							"path": ["admin", "terms"]
+						},
+						"description": "تعديل الشروط والأحكام (يتطلب تسجيل دخول الأدمن)"
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
