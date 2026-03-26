@@ -16,7 +16,7 @@ class StoreContactRequest extends FormRequest
         return [
             'property_id' => 'required|exists:properties,id',
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
+            'phone' => ['required', 'string', 'regex:/^(\+?963|09)[0-9]{8}$/'],
             'message' => 'nullable|string',
         ];
     }
@@ -29,7 +29,7 @@ class StoreContactRequest extends FormRequest
             'name.required' => 'الاسم مطلوب',
             'name.max' => 'الاسم يجب ألا يتجاوز 255 حرف',
             'phone.required' => 'رقم الهاتف مطلوب',
-            'phone.max' => 'رقم الهاتف يجب ألا يتجاوز 20 حرف',
+            'phone.regex' => 'رقم الهاتف يجب أن يكون رقم سوري صحيح (09XXXXXXXX أو +963XXXXXXXX)',
         ];
     }
 }

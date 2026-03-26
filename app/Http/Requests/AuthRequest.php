@@ -20,7 +20,7 @@ class AuthRequest extends FormRequest
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string|min:8|confirmed',
-                'phone' => 'required|string|max:20|unique:users',
+                'phone' => ['required', 'string', 'regex:/^(\+?963|09)[0-9]{8}$/'],
                 'role' => 'required|in:user,owner',
             ],
             'login' => [
@@ -39,13 +39,13 @@ class AuthRequest extends FormRequest
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string|min:8|confirmed',
-                'phone' => 'nullable|string|max:20|unique:users',
+                'phone' => ['nullable', 'string', 'regex:/^(\+?963|09)[0-9]{8}$/'],
                 'role' => 'required|in:user,owner,admin',
                 'is_active' => 'nullable|boolean',
             ],
             'updateProfile' => [
                 'name' => 'sometimes|string|max:255',
-                'phone' => 'sometimes|string|max:20|unique:users,phone,' . request()->user()?->id,
+                'phone' => ['sometimes', 'string', 'regex:/^09[0-9]{8}$/'],
             ],
             default => [],
         };
@@ -74,7 +74,7 @@ class AuthRequest extends FormRequest
             // phone
             'phone.required' => 'رقم الهاتف مطلوب',
             'phone.string' => 'رقم الهاتف يجب أن يكون نص',
-            'phone.max' => 'رقم الهاتف يجب ألا يتجاوز 20 حرف',
+            'phone.regex' => 'رقم الهاتف يجب أن يكون رقم سوري صحيح (09XXXXXXXX أو +963XXXXXXXX)',
             'phone.unique' => 'رقم الهاتف مستخدم من قبل',
 
             // current password
