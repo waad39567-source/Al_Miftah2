@@ -180,23 +180,28 @@ class PropertyController extends Controller
                 $this->propertyService->addImagesFromBase64($property, $base64Images);
             }
         }
+    }
 
-        // إرسال إشعار للأدمن عند إضافة عقار جديد
-        try {
-            $this->firebaseService->sendToAdmins(
-                'عقار جديد',
-                'تمت إضافة عقار جديد: ' . $property->title,
-                ['type' => 'new_property', 'id' => (string) $property->id]
-            );
-        } catch (\Exception $e) {
-            // تجاهل خطأ الإشعار
-        }
+    /**
+     * @OA\Get(
+     *     path="/properties/types",
+     *     summary="جلب أنواع العقارات المتاحة",
+     *     tags={"Properties"},
+     *     @OA\Response(response=200, description="نجاح")
+     * )
+     */
+    public function types(): \Illuminate\Http\JsonResponse
+    {
+        $types = [
+            ['value' => 'apartment', 'label' => 'شقة'],
+            ['value' => 'house', 'label' => 'منزل'],
+            ['value' => 'shop', 'label' => 'محل'],
+            ['value' => 'land', 'label' => 'أرض'],
+            ['value' => 'farm', 'label' => 'مزرعة'],
+            ['value' => 'store', 'label' => 'متجر'],
+        ];
 
-        return $this->successResponse(
-            new PropertyResource($property->load(['owner', 'region', 'images'])),
-            'تم إنشاء العقار بنجاح',
-            201
-        );
+        return $this->successResponse($types);
     }
 
     /**

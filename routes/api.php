@@ -90,6 +90,7 @@ Route::prefix('properties')->group(function () {
     Route::get('/', [PropertyController::class, 'index']);
     Route::get('/search', [PropertyController::class, 'search']);
     Route::get('/advanced-search', [PropertyController::class, 'advancedSearch']);
+    Route::get('/types', [PropertyController::class, 'types']);
     Route::get('/{id}', [PropertyController::class, 'show'])->where('id', '[0-9]+');
     Route::get('/my-properties', [PropertyController::class, 'myProperties'])->middleware('auth:sanctum');
     Route::post('/', [PropertyController::class, 'store'])->middleware('auth:sanctum');
