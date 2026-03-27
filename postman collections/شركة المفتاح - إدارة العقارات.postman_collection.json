@@ -1,0 +1,1743 @@
+{
+  "info": {
+    "_postman_id": "e6ee8ca9-b696-4b4a-a47c-6e7ae29da76d",
+    "name": "شركة المفتاح - إدارة العقارات",
+    "description": "# شركة المفتاح - مجموعة إدارة العقارات\n\n## نظرة عامة\n\nواجهة برمجة التطبيقات للعقارات تتضمن:\n\n- عرض العقارات (عام/خاص)\n    \n- البحث المتقدم\n    \n- إنشاء/تحديث/حذف العقار\n    \n- إدارة صور العقار\n    \n- تغيير حالة العقار (مؤجر/مباع/معلق/نشط)\n    \n\n## الـ Base URL\n\n```\n{{baseUrl}}\n\n ```\n\n---\n\n## credentials:\n\n- Admin: [admin@almiftah.com](https://mailto:admin@almiftah.com) / admin123\n    \n- Owner: [owner1@almiftah.com](https://mailto:owner1@almiftah.com) / password123\n    \n- User: [user1@test.com](https://mailto:user1@test.com) / password123\n    \n\n## أنواع العقارات (property_type):\n\n- apartment: شقة\n    \n- villa: فيلا\n    \n- house: منزل\n    \n- land: أرض\n    \n- shop: محل\n    \n- office: مكتب\n    \n- warehouse: مستودع\n    \n- building: عمارة\n    \n\n## نوع العرض (type):\n\n- sale: للبيع\n    \n- rent: للإيجار\n    \n\n## حالة العقار (status):\n\n- pending: معلق (بانتظار الموافقة)\n    \n- active: نشط (معتمد)\n    \n- rented: مؤجر\n    \n- sold: مباع\n    \n- rejected: مرفوض",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "45241807",
+    "_collection_link": "https://go.postman.co/collection/45241807-e6ee8ca9-b696-4b4a-a47c-6e7ae29da76d?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "1. المصادقة - تسجيل الدخول",
+      "item": [
+        {
+          "name": "1.1 تسجيل دخول المالك (للعقارات)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تسجيل دخول المالك', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('ownerToken', pm.response.json().data.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner1@almiftah.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "1.2 تسجيل دخول الأدمن",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تسجيل دخول الأدمن', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('adminToken', pm.response.json().data.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@almiftah.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "1.3 تسجيل دخول المستخدم العادي",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تسجيل دخول المستخدم', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('userToken', pm.response.json().data.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user1@test.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. عرض العقارات (عام)",
+      "item": [
+        {
+          "name": "2.1 قائمة العقارات النشطة (الصفحة الرئيسية)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('العقارات نشطة فقط', function() {",
+                  "    var data = pm.response.json().data.data;",
+                  "    if (data.length > 0) {",
+                  "        pm.expect(data[0].status).to.eq('active');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/properties",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "properties"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2.2 عرض تفاصيل عقار محدد",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('يحتوي على الصور', function() {",
+                  "    pm.expect(pm.response.json().data.images).to.not.be.undefined;",
+                  "});",
+                  "pm.test('يحتوي على المنطقة', function() {",
+                  "    pm.expect(pm.response.json().data.region).to.not.be.undefined;",
+                  "});",
+                  "pm.test('يحتوي على المالك', function() {",
+                  "    pm.expect(pm.response.json().data.owner).to.not.be.undefined;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/properties/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "properties",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2.3 عقارات حسب نوع العرض (بيع/إيجار)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح - فلتر للبيع', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "?type=sale",
+              "query": [
+                {
+                  "key": "type",
+                  "value": "sale"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2.4 عقارات حسب نوع العقار (شقة/فيلا)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح - فلتر الشقق', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "?property_type=apartment",
+              "query": [
+                {
+                  "key": "property_type",
+                  "value": "apartment"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2.5 عقارات حسب المنطقة (مع_children)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح - فلتر المنطقة', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "?region_id=1",
+              "query": [
+                {
+                  "key": "region_id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2.6 عقارات حسب نطاق السعر",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح - فلتر السعر', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "?min_price=100000&max_price=500000",
+              "query": [
+                {
+                  "key": "min_price",
+                  "value": "100000"
+                },
+                {
+                  "key": "max_price",
+                  "value": "500000"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2.7 عقارات حسب المساحة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح - فلتر المساحة', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "?min_area=50&max_area=200",
+              "query": [
+                {
+                  "key": "min_area",
+                  "value": "50"
+                },
+                {
+                  "key": "max_area",
+                  "value": "200"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. البحث عن العقارات",
+      "item": [
+        {
+          "name": "3.1 البحث الأساسي (بالكلمات المفتاحية)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "?search=شقة",
+              "query": [
+                {
+                  "key": "search",
+                  "value": "شقة"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3.2 البحث المتقدم - فلتر متعدد",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "?type=sale&property_type=apartment&min_price=100000&max_price=300000&min_area=80",
+              "query": [
+                {
+                  "key": "type",
+                  "value": "sale"
+                },
+                {
+                  "key": "property_type",
+                  "value": "apartment"
+                },
+                {
+                  "key": "min_price",
+                  "value": "100000"
+                },
+                {
+                  "key": "max_price",
+                  "value": "300000"
+                },
+                {
+                  "key": "min_area",
+                  "value": "80"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3.4 البحث المتقدم - بالمدينة (يشمل الأحياء)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "?city_id=3",
+              "query": [
+                {
+                  "key": "city_id",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. عقارات المستخدم (خاص)",
+      "item": [
+        {
+          "name": "4.1 عقاراتي (جميع الحالات)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ownerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/properties/my-properties",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "properties",
+                "my-properties"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4.2 عقاراتي مع جميع الحالات (تصفية حسب الحالة)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('propertyId', pm.response.json().data.data[0]?.id || 1);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ownerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/properties/my-properties?show_all=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "properties",
+                "my-properties"
+              ],
+              "query": [
+                {
+                  "key": "show_all",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. إنشاء وتحديث العقار",
+      "item": [
+        {
+          "name": "5.1 إنشاء عقار جديد",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم إنشاء العقار - حالة: معلق', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.environment.set('propertyId', pm.response.json().data.id);",
+                  "pm.test('الحالة pending', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('pending');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ownerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"شقة فاخرة في المزة\",\n  \"description\": \"شقة حديثة 3 غرف نوم، مساحة 120 متر، موقع متميز\",\n  \"price\": 150000,\n  \"type\": \"sale\",\n  \"property_type\": \"apartment\",\n  \"area\": 120,\n  \"region_id\": 4,\n  \"location\": \"دمشق - المزة\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/properties",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "properties"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5.2 تحديث العقار",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تحديث العقار', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('السعر تم تحديثه', function() {",
+                  "    pm.expect(pm.response.json().data.price).to.eq(160000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ownerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"شقة محدثة\",\n  \"price\": 160000,\n  \"description\": \"شقة محدثة مع تفاصيل جديدة\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/properties/{{propertyId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "properties",
+                "{{propertyId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5.3 حذف العقار",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم حذف العقار', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ownerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/properties/{{propertyId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "properties",
+                "{{propertyId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. إدارة حالة العقار (أدمن)",
+      "item": [
+        {
+          "name": "6.1 الأدمن يوافق على العقار",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم الموافقة - حالة: نشط', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('الحالة active', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('active');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/properties/{{propertyId}}/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "properties",
+                "{{propertyId}}",
+                "approve"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6.2 الأدمن يرفض العقار",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم رفض العقار', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('الحالة rejected', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('rejected');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"المعلومات غير مكتملة\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/properties/2/reject",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "properties",
+                "2",
+                "reject"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6.3 المالك يعلم العقار كمؤجر",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تعليم العقار كمؤجر', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('الحالة rented', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('rented');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ownerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/properties/{{propertyId}}/rented",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "properties",
+                "{{propertyId}}",
+                "rented"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6.4 المالك يعلم العقار كمباع",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم تعليم العقار كمباع', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ownerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/properties/{{propertyId}}/sold",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "properties",
+                "{{propertyId}}",
+                "sold"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "7. إدارة الصور",
+      "item": [
+        {
+          "name": "7.1 حذف صورة من العقار",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم حذف الصورة', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ownerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/properties/1/images/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "properties",
+                "1",
+                "images",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "إنشاء عقار مع صور",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ownerToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "شقة فاخرة",
+                  "type": "text",
+                  "uuid": "1b4bfb05-0196-4c2c-9676-f600e51f597b"
+                },
+                {
+                  "key": "description",
+                  "value": "شقة جديدة",
+                  "type": "text",
+                  "uuid": "8c865c30-1037-4e40-9286-22f29aee34c0"
+                },
+                {
+                  "key": "type",
+                  "value": "sale",
+                  "type": "text",
+                  "uuid": "ddebab5b-0d6b-4a09-96fd-a949b0d9e92d"
+                },
+                {
+                  "key": "property_type",
+                  "value": "apartment",
+                  "type": "text",
+                  "uuid": "94c29839-e822-40c8-8857-b6422b95841f"
+                },
+                {
+                  "key": "area",
+                  "value": "120",
+                  "type": "text",
+                  "uuid": "72e868a2-182b-4a9a-805c-7d0fd069cd68"
+                },
+                {
+                  "key": "region_id",
+                  "value": "43",
+                  "type": "text",
+                  "uuid": "d954e02d-1b14-401f-9d87-d12aa30f4530"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/properties",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "properties"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "8. إدارة العقارات (أدمن)",
+      "item": [
+        {
+          "name": "8.1 قائمة的所有 العقارات (مع الفلترة)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "?status=pending",
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "8.2 قائمة العقارات المعلقة (بانتظار الموافقة)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('جميع العقارات معلقة', function() {",
+                  "    var data = pm.response.json().data.data;",
+                  "    if (data.length > 0) {",
+                  "        pm.expect(data[0].status).to.eq('pending');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/properties?status=pending",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "properties"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "8.3 الإحصائيات",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/statistics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "statistics"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "9. المناطق",
+      "item": [
+        {
+          "name": "9.1 عرض جميع المناطق (مسطحة)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/regions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "regions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "9.2 عرض المناطق بشكل هرمي (شجرة)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('يحتوي على أطفال', function() {",
+                  "    pm.expect(pm.response.json().data[0].children).to.not.be.undefined;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/regions/tree",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "regions",
+                "tree"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "9.3 عرض المناطق الرئيسية (الدول)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/regions/root/list",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "regions",
+                "root",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "9.4 عرض المناطق الفرعية (مثلاً: أحياء دمشق)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/regions/3/children",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "regions",
+                "3",
+                "children"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "9.5 أنواع المناطق",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/regions/types/list",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "regions",
+                "types",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "10. طلبات التواصل",
+      "item": [
+        {
+          "name": "10.1 إرسال طلب تواصل لعقار",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم إرسال الطلب - حالة: معلق', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('الحالة pending', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('pending');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"property_id\": 1,\n  \"name\": \"أحمد محمد\",\n  \"phone\": \"966501234567\",\n  \"message\": \"أريد معرفة المزيد عن هذا العقار\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/contact",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "contact"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "10.2 عرض طلباتي المرسلة",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/contact/my-requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "contact",
+                "my-requests"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "10.3 عرض الطلبات المستلمة (للمالك)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ownerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/contact/my-received",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "contact",
+                "my-received"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "10.4 فحص حالة طلب على عقار",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ نجاح', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/contact/status/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "contact",
+                "status",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "10.5 الأدمن يوافق على طلب التواصل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم الموافقة على الطلب', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});",
+                  "pm.test('الحالة approved', function() {",
+                  "    pm.expect(pm.response.json().data.status).to.eq('approved');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/contact-requests/1/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "contact-requests",
+                "1",
+                "approve"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "10.6 الأدمن يرفض طلب التواصل",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('✓ تم رفض الطلب', function() {",
+                  "    pm.expect(pm.response.json().success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"العقار غير متاح حالياً\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/contact-requests/2/reject",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "contact-requests",
+                "2",
+                "reject"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ملحق: هيكل البيانات",
+      "item": [
+        {
+          "name": "هيكل بيانات العقار",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "/",
+              "path": [
+                ""
+              ]
+            },
+            "description": "# هيكل بيانات العقار\n\n```json\n{\n  \"id\": 1,\n  \"owner_id\": 2,\n  \"title\": \"شقة فاخرة في المزة\",\n  \"description\": \"وصف العقار\",\n  \"price\": 150000,\n  \"type\": \"sale\", // sale | rent\n  \"property_type\": \"apartment\", // apartment | villa | house | land | shop | office | warehouse | building\n  \"area\": 120,\n  \"region_id\": 4,\n  \"location\": \"دمشق - المزة\",\n  \"latitude\": 33.8321,\n  \"longitude\": 36.1067,\n  \"status\": \"active\", // pending | active | rented | sold | rejected\n  \"rejection_reason\": null,\n  \"is_active\": true,\n  \"approved_by\": 1,\n  \"approved_at\": \"2026-03-14 04:14:37\",\n  \"created_at\": \"2026-03-14 04:14:37\",\n  \"updated_at\": \"2026-03-14 12:15:36\",\n  \"owner\": { /* UserResource */ },\n  \"region\": { /* RegionResource */ },\n  \"images\": [\n    {\n      \"id\": 1,\n      \"property_id\": 1,\n      \"image_url\": \"https://...\",\n      \"is_primary\": true,\n      \"created_at\": \"2026-03-14 04:14:37\"\n    }\n  ]\n}\n```\n\n---\n\n## أنواع المناطق (type)\n| القيمة | الوصف |\n|--------|-------|\n| country | دولة |\n| governorate | محافظة |\n| city | مدينة |\n| neighborhood | حي |\n\n---\n\n## حالة طلب التواصل (status)\n| القيمة | الوصف |\n|--------|-------|\n| pending | معلق (بانتظار الموافقة) |\n| approved | معتمد (تم إظهار المعلومات) |\n| rejected | مرفوض |"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://al-miftah-master-enqeji.free.laravel.cloud/api"
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "ownerToken",
+      "value": ""
+    },
+    {
+      "key": "userToken",
+      "value": ""
+    },
+    {
+      "key": "propertyId",
+      "value": ""
+    },
+    {
+      "key": "regionId",
+      "value": "4"
+    }
+  ]
+}

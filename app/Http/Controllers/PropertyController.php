@@ -195,6 +195,7 @@ class PropertyController extends Controller
         $types = [
             ['value' => 'apartment', 'label' => 'شقة'],
             ['value' => 'house', 'label' => 'منزل'],
+            ['value' => 'villa', 'label' => 'فيلا'],
             ['value' => 'shop', 'label' => 'محل'],
             ['value' => 'land', 'label' => 'أرض'],
             ['value' => 'farm', 'label' => 'مزرعة'],

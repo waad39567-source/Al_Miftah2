@@ -1,14 +1,12 @@
 {
   "info": {
+    "_postman_id": "fc9714bf-8ff8-4916-a64e-47a4df86f34e",
     "name": "شركة المفتاح - المناطق",
-    "description": "# شركة المفتاح - Regions API\n\n## نظرة عامة\nواجهة برمجة التطبيقات للمناطق تتضمن:\n- عرض المناطق (مسطحة/هرمية)\n- عرض تفاصيل منطقة\n- عرض المناطق الفرعية\n- إدارة المناطق (أدمن)\n\n## الـ Base URL\n```\n{{baseUrl}}\n```\n\n---\n\n## credentials:\n- Admin: admin@almiftah.com / admin123\n\n---\n\n## أنواع المناطق (type)\n| القيمة | الوصف | المستوى |\n|--------|-------|--------|\n| country | دولة | 1 (أعلى) |\n| governorate | محافظة | 2 |\n| city | مدينة | 3 |\n| neighborhood | حي | 4 (أدنى) |\n\n## التسلسل الهرمي\n```\ncountry (دولة)\n└── governorate (محافظة)\n    └── city (مدينة)\n        └── neighborhood (حي)\n```\n\nمثال:\n```\nسوريا (country)\n└── دمشق (governorate)\n    └── مدينة دمشق (city)\n        ├── المزة (neighborhood)\n        ├── باب توما (neighborhood)\n        └── الميدان (neighborhood)\n```\n\n## قواعد التسمية\n- **country**: اسم الدولة (مثل: سوريا)\n- **governorate**: اسم المحافظة (مثل: دمشق، حلب)\n- **city**: اسم المدينة (مثل: مدينة دمشق)\n- **neighborhood**: اسم الحي (مثل: المزة، باب توما)",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "description": "# شركة المفتاح - Regions API\n\n## نظرة عامة\n\nواجهة برمجة التطبيقات للمناطق تتضمن:\n\n- عرض المناطق (مسطحة/هرمية)\n    \n- عرض تفاصيل منطقة\n    \n- عرض المناطق الفرعية\n    \n- إدارة المناطق (أدمن)\n    \n\n## الـ Base URL\n\n```\n{{baseUrl}}\n\n ```\n\n---\n\n## credentials:\n\n- Admin: [admin@almiftah.com](https://mailto:admin@almiftah.com) / admin123\n    \n\n---\n\n## أنواع المناطق (type)\n\n| القيمة | الوصف | المستوى |\n| --- | --- | --- |\n| country | دولة | 1 (أعلى) |\n| governorate | محافظة | 2 |\n| city | مدينة | 3 |\n| neighborhood | حي | 4 (أدنى) |\n\n## التسلسل الهرمي\n\n```\ncountry (دولة)\n└── governorate (محافظة)\n    └── city (مدينة)\n        └── neighborhood (حي)\n\n ```\n\nمثال:\n\n```\nسوريا (country)\n└── دمشق (governorate)\n    └── مدينة دمشق (city)\n        ├── المزة (neighborhood)\n        ├── باب توما (neighborhood)\n        └── الميدان (neighborhood)\n\n ```\n\n## قواعد التسمية\n\n- **country**: اسم الدولة (مثل: سوريا)\n    \n- **governorate**: اسم المحافظة (مثل: دمشق، حلب)\n    \n- **city**: اسم المدينة (مثل: مدينة دمشق)\n    \n- **neighborhood**: اسم الحي (مثل: المزة، باب توما)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "45241807",
+    "_collection_link": "https://go.postman.co/collection/45241807-fc9714bf-8ff8-4916-a64e-47a4df86f34e?source=collection_link"
   },
-  "variable": [
-    { "key": "baseUrl", "value": "https://al-miftah-master-enqeji.free.laravel.cloud/api" },
-    { "key": "adminToken", "value": "" },
-    { "key": "regionId", "value": "1" }
-  ],
   "item": [
     {
       "name": "1. المصادقة - تسجيل دخول الأدمن",
@@ -24,22 +22,39 @@
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});",
                   "pm.environment.set('adminToken', pm.response.json().data.token);"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/login",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"admin@almiftah.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -48,7 +63,6 @@
       "item": [
         {
           "name": "2.1 عرض جميع المناطق (مسطحة)",
-          "description": "ترجع جميع المناطق في قائمة مسطحة واحدة. يمكن استخدام الفلترة.",
           "event": [
             {
               "listen": "test",
@@ -60,21 +74,33 @@
                   "pm.test('يحتوي على بيانات', function() {",
                   "    pm.expect(pm.response.json().data.data.length).to.gt(0);",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/regions",
             "header": [
-              { "key": "Accept", "value": "application/json" }
-            ]
-          }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/regions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "regions"
+              ]
+            }
+          },
+          "response": []
         },
         {
           "name": "2.2 عرض المناطق بشكل هرمي (شجرة)",
-          "description": "ترجع المناطق بشكل هرمي مع جميع المستويات (دولة → محافظة → مدينة → حي)",
           "event": [
             {
               "listen": "test",
@@ -89,21 +115,34 @@
                   "pm.test('يحتوي على أحفاد', function() {",
                   "    pm.expect(pm.response.json().data[0].children[0]?.children).to.not.be.undefined;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/regions/tree",
             "header": [
-              { "key": "Accept", "value": "application/json" }
-            ]
-          }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/regions/tree",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "regions",
+                "tree"
+              ]
+            }
+          },
+          "response": []
         },
         {
           "name": "2.3 عرض المناطق الرئيسية (الدول)",
-          "description": "ترجع الدول فقط (المناطق التي لا تمتلك أب)",
           "event": [
             {
               "listen": "test",
@@ -118,21 +157,35 @@
                   "        pm.expect(region.type).to.eq('country');",
                   "    });",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/regions/root/list",
             "header": [
-              { "key": "Accept", "value": "application/json" }
-            ]
-          }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/regions/root/list",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "regions",
+                "root",
+                "list"
+              ]
+            }
+          },
+          "response": []
         },
         {
           "name": "2.4 عرض أنواع المناطق",
-          "description": "ترجع قائمة بأنواع المناطق المتاحة",
           "event": [
             {
               "listen": "test",
@@ -148,17 +201,32 @@
                   "    pm.expect(data.city).to.not.be.undefined;",
                   "    pm.expect(data.neighborhood).to.not.be.undefined;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/regions/types/list",
             "header": [
-              { "key": "Accept", "value": "application/json" }
-            ]
-          }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/regions/types/list",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "regions",
+                "types",
+                "list"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -167,7 +235,6 @@
       "item": [
         {
           "name": "3.1 عرض تفاصيل منطقة",
-          "description": "ترجع تفاصيل منطقة محددة مع_parent (المنطقة الأب)",
           "event": [
             {
               "listen": "test",
@@ -182,21 +249,34 @@
                   "pm.test('يحتوي على children', function() {",
                   "    pm.expect(pm.response.json().data.children).to.not.be.undefined;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/regions/3",
             "header": [
-              { "key": "Accept", "value": "application/json" }
-            ]
-          }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/regions/3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "regions",
+                "3"
+              ]
+            }
+          },
+          "response": []
         },
         {
           "name": "3.2 عرض المناطق الفرعية",
-          "description": "ترجع المناطق الفرعية مباشرة لمنطقة محددة ( Level واحد فقط)",
           "event": [
             {
               "listen": "test",
@@ -211,17 +291,32 @@
                   "        pm.expect(data[0].parent_id).to.eq(3);",
                   "    }",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/regions/3/children",
             "header": [
-              { "key": "Accept", "value": "application/json" }
-            ]
-          }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/regions/3/children",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "regions",
+                "3",
+                "children"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -230,7 +325,6 @@
       "item": [
         {
           "name": "4.1 فلترة حسب النوع",
-          "description": "عرض المناطق حسب type (country/governorate/city/neighborhood)",
           "event": [
             {
               "listen": "test",
@@ -245,26 +339,33 @@
                   "        pm.expect(r.type).to.eq('governorate');",
                   "    });",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/regions?type=governorate",
-              "query": [
-                { "key": "type", "value": "governorate" }
-              ]
-            },
             "header": [
-              { "key": "Accept", "value": "application/json" }
-            ]
-          }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "?type=governorate",
+              "query": [
+                {
+                  "key": "type",
+                  "value": "governorate"
+                }
+              ]
+            }
+          },
+          "response": []
         },
         {
           "name": "4.2 فلترة حسب الأب",
-          "description": "عرض المناطق التي تنتمي لمنطقة أب معينة (parent_id)",
           "event": [
             {
               "listen": "test",
@@ -273,26 +374,33 @@
                   "pm.test('✓ نجاح - فلتر parent_id', function() {",
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/regions?parent_id=1",
-              "query": [
-                { "key": "parent_id", "value": "1" }
-              ]
-            },
             "header": [
-              { "key": "Accept", "value": "application/json" }
-            ]
-          }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "?parent_id=1",
+              "query": [
+                {
+                  "key": "parent_id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
         },
         {
           "name": "4.3 عرض المناطق الرئيسية فقط",
-          "description": "عرض الدول فقط (التي parent_id = null)",
           "event": [
             {
               "listen": "test",
@@ -301,26 +409,33 @@
                   "pm.test('✓ نجاح', function() {",
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/regions?parent_id=null",
-              "query": [
-                { "key": "parent_id", "value": "null" }
-              ]
-            },
             "header": [
-              { "key": "Accept", "value": "application/json" }
-            ]
-          }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "?parent_id=null",
+              "query": [
+                {
+                  "key": "parent_id",
+                  "value": "null"
+                }
+              ]
+            }
+          },
+          "response": []
         },
         {
           "name": "4.4 البحث بالاسم",
-          "description": "البحث في أسماء المناطق",
           "event": [
             {
               "listen": "test",
@@ -329,26 +444,33 @@
                   "pm.test('✓ نجاح', function() {",
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/regions?search=دمشق",
-              "query": [
-                { "key": "search", "value": "دمشق" }
-              ]
-            },
             "header": [
-              { "key": "Accept", "value": "application/json" }
-            ]
-          }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "?search=دمشق",
+              "query": [
+                {
+                  "key": "search",
+                  "value": "دمشق"
+                }
+              ]
+            }
+          },
+          "response": []
         },
         {
           "name": "4.5 عرض المناطق مع الأطفال",
-          "description": "إضافة flag لجلب المناطق مع أطفالها",
           "event": [
             {
               "listen": "test",
@@ -357,22 +479,30 @@
                   "pm.test('✓ نجاح', function() {",
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/regions?include_children=true",
-              "query": [
-                { "key": "include_children", "value": "true" }
-              ]
-            },
             "header": [
-              { "key": "Accept", "value": "application/json" }
-            ]
-          }
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "?include_children=true",
+              "query": [
+                {
+                  "key": "include_children",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -381,7 +511,6 @@
       "item": [
         {
           "name": "5.1 إنشاء منطقة جديدة",
-          "description": "إنشاء منطقة جديدة (يجبollow التسلسل الهرمي)",
           "event": [
             {
               "listen": "test",
@@ -391,27 +520,46 @@
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});",
                   "pm.environment.set('regionId', pm.response.json().data.id);"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/admin/regions",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"حي测试\",\n  \"type\": \"neighborhood\",\n  \"parent_id\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/regions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "regions"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "5.2 تحديث منطقة",
-          "description": "تحديث اسم المنطقة",
           "event": [
             {
               "listen": "test",
@@ -420,27 +568,47 @@
                   "pm.test('✓ تم تحديث المنطقة', function() {",
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "PUT",
-            "url": "{{baseUrl}}/admin/regions/{{regionId}}",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"اسم محدث\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/regions/{{regionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "regions",
+                "{{regionId}}"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "5.3 حذف منطقة",
-          "description": "حذف منطقة (لا يمكن حذف منطقة لها أطفال أو عقارات)",
           "event": [
             {
               "listen": "test",
@@ -449,18 +617,36 @@
                   "pm.test('✓ تم حذف المنطقة', function() {",
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "DELETE",
-            "url": "{{baseUrl}}/admin/regions/{{regionId}}",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
-              { "key": "Accept", "value": "application/json" }
-            ]
-          }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/regions/{{regionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "regions",
+                "{{regionId}}"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -469,7 +655,6 @@
       "item": [
         {
           "name": "إنشاء محافظة بدون أب",
-          "description": "المحافظة تحتاج إلى parent_id (دولة)",
           "event": [
             {
               "listen": "test",
@@ -478,27 +663,46 @@
                   "pm.test('✓ فشل - المحافظة تحتاج أب', function() {",
                   "    pm.expect(pm.response.json().success).to.be.false;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/admin/regions",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"محافظة جديدة\",\n  \"type\": \"governorate\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/regions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "regions"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "إنشاء مدينة بدون parent صحيح",
-          "description": "المدينة تحتاج إلى parent من نوع governorate",
           "event": [
             {
               "listen": "test",
@@ -507,38 +711,59 @@
                   "pm.test('✓ فشل - المدينة تحتاج محافظة', function() {",
                   "    pm.expect(pm.response.json().success).to.be.false;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/admin/regions",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"مدينة جديدة\",\n  \"type\": \"city\",\n  \"parent_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/regions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "regions"
+              ]
             }
-          }
+          },
+          "response": []
         }
       ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://al-miftah-master-enqeji.free.laravel.cloud/api"
     },
     {
-      "name": "ملحق: هيكل البيانات",
-      "item": [
-        {
-          "name": "هيكل بيانات المنطقة",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "", "host": [], "path": [] },
-            "description": "# هيكل بيانات المنطقة\n\n```json\n{\n  \"id\": 1,\n  \"name\": \"سوريا\",\n  \"type\": \"country\",\n  \"parent_id\": null,\n  \"created_at\": \"2026-03-14 04:14:34\",\n  \"updated_at\": \"2026-03-14 04:14:34\",\n  \"parent\": {\n    \"id\": null,\n    \"name\": null,\n    \"type\": null,\n    \"parent_id\": null\n  },\n  \"children\": [\n    {\n      \"id\": 2,\n      \"name\": \"دمشق\",\n      \"type\": \"governorate\",\n      \"parent_id\": 1\n    }\n  ]\n}\n```\n\n---\n\n## الهـرسـمـي\n\n### country (دولة)\n- لا يحتاج parent_id\n- مثال: سوريا، لبنان، الأردن\n\n### governorate (محافظة)\n- يحتاج parent_id = id الخاصة بالدولة\n- مثال: دمشق، حلب، حمص\n\n### city (مدينة)\n- يحتاج parent_id = id الخاصة بالمحافظة\n- مثال: مدينة دمشق، مدينة حلب\n\n### neighborhood (حي)\n- يحتاج parent_id = id الخاصة بالمدينة\n- مثال: المزة، باب توما، الميدان\n\n---\n\n## ملاحظات للـ Frontend\n\n### 1. استخدام /regions/tree\nللحصول على شجرة مناطق كاملة:\n```javascript\nconst regions = response.data.data;\nregions.forEach(country => {\n    console.log(country.name); // سوريا\n    country.children.forEach(governorate => {\n        console.log(governorate.name); // دمشق\n        governorate.children.forEach(city => {\n            console.log(city.name); // مدينة دمشق\n            city.children.forEach(neighborhood => {\n                console.log(neighborhood.name); // المزة\n            });\n        });\n    });\n});\n```\n\n### 2. استخدام /regions/{id}/children\nللحصول على المناطق الفرعية مباشرة:\n```javascript\n//.GET /regions/2/children\n// يرجع محافظات دمشق\n```\n\n### 3. اختيار المنطقة في نموذج العقار\nعند اختيار المنطقة للعقار:\n1. اختر country أولاً → /regions/root/list\n2. اختر governorate → /regions/{id}/children\n3. اختر city → /regions/{id}/children\n4. اختر neighborhood → /regions/{id}/children\n\nid الأخير هو region_id الذي يُرسل في نموذج العقار."
-          }
-        }
-      ]
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "regionId",
+      "value": "1"
     }
   ]
 }

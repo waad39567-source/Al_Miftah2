@@ -1,0 +1,2058 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توثيق API شامل - شركة المفتاح للعقارات</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --dark: #343a40;
+            --light: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .header h1 { font-size: 3em; margin-bottom: 15px; }
+        .header p { font-size: 1.3em; opacity: 0.9; }
+        .header .version {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 1em;
+        }
+        
+        .nav-bar {
+            background: var(--dark);
+            padding: 15px 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+        
+        .nav-bar a:hover { background: var(--primary); }
+        
+        .content { padding: 40px; }
+        
+        .section {
+            margin-bottom: 60px;
+            border: 3px solid #e9ecef;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 25px 35px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .section-header h2 { font-size: 1.8em; }
+        
+        .section-header .badge {
+            background: rgba(255,255,255,0.25);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.95em;
+        }
+        
+        .section-content { padding: 35px; }
+        
+        .intro-box {
+            background: linear-gradient(135deg, #e7f3ff 0%, #d4edda 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-right: 5px solid var(--primary);
+        }
+        
+        .intro-box h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        
+        .intro-box p {
+            color: #495057;
+            line-height: 2;
+            font-size: 1.1em;
+        }
+        
+        .user-type-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .user-type-header {
+            padding: 20px 25px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-type-header.guest { background: linear-gradient(135deg, #6c757d, #495057); }
+        .user-type-header.user { background: linear-gradient(135deg, #17a2b8, #138496); }
+        .user-type-header.owner { background: linear-gradient(135deg, #28a745, #1e7e34); }
+        .user-type-header.admin { background: linear-gradient(135deg, #dc3545, #c82333); }
+        
+        .user-type-header h3 {
+            font-size: 1.5em;
+            flex: 1;
+        }
+        
+        .user-type-header .icon { font-size: 2em; }
+        
+        .user-type-body { padding: 25px; }
+        
+        .permissions-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .permission-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: var(--light);
+            border-radius: 8px;
+            font-size: 0.95em;
+        }
+        
+        .permission-item .check { color: var(--success); font-size: 1.2em; }
+        .permission-item .cross { color: var(--danger); font-size: 1.2em; }
+        
+        .api-endpoint {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .api-header {
+            background: #f8f9fa;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .method {
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9em;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .method.get { background: #61affe; color: white; }
+        .method.post { background: #49cc90; color: white; }
+        .method.put { background: #fca130; color: white; }
+        .method.delete { background: #f93e3e; color: white; }
+        .method.patch { background: #50e3c2; color: white; }
+        
+        .api-url {
+            font-family: monospace;
+            font-size: 1em;
+            color: #3b4151;
+            direction: ltr;
+            flex: 1;
+        }
+        
+        .auth-tag {
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .auth-tag.public { background: #d4edda; color: #155724; }
+        .auth-tag.required { background: #fff3cd; color: #856404; }
+        .auth-tag.admin { background: #f8d7da; color: #721c24; }
+        
+        .api-desc {
+            padding: 15px 25px;
+            background: #fff;
+            border-bottom: 1px solid #e9ecef;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .api-body { padding: 25px; }
+        
+        .block {
+            margin-bottom: 25px;
+        }
+        
+        .block h4 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.15em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .block h4::before { content: "📋"; font-size: 1.2em; }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            direction: ltr;
+            text-align: left;
+            white-space: pre;
+            line-height: 1.6;
+        }
+        
+        .code-block.json { background: #1a202c; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        code {
+            background: #e9ecef;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            direction: ltr;
+            display: inline-block;
+        }
+        
+        .required { color: var(--danger); font-weight: bold; }
+        .optional { color: var(--success); }
+        
+        .response-box {
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        
+        .response-header {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .response-box.success .response-header { background: #d4edda; }
+        .response-box.success .code-block { background: #1a202c; }
+        .response-box.error .response-header { background: #f8d7da; }
+        
+        .status-code {
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .status-code.success { background: #28a745; color: white; }
+        .status-code.error { background: #dc3545; color: white; }
+        
+        .flow-diagram {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-right: 4px solid var(--primary);
+        }
+        
+        .flow-step .number {
+            width: 35px;
+            height: 35px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .use-case-box {
+            background: white;
+            border: 2px solid var(--info);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .use-case-box h5 {
+            color: var(--info);
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            border: 1px solid #b6d4fe;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .info-box h5 {
+            color: #084298;
+            margin-bottom: 10px;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .warning-box h5 { color: #856404; margin-bottom: 10px; }
+        
+        .summary-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        
+        .summary-table th { background: var(--primary); color: white; }
+        .summary-table td:nth-child(2) { color: var(--success); font-weight: bold; }
+        .summary-table td:nth-child(3) { color: var(--info); }
+        .summary-table td:nth-child(4) { color: var(--warning); }
+        
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .footer p { margin-bottom: 10px; opacity: 0.9; }
+        
+        @media (max-width: 768px) {
+            .nav-bar { padding: 10px; }
+            .nav-bar a { padding: 8px 12px; font-size: 0.85em; }
+            .content { padding: 20px; }
+            .header h1 { font-size: 2em; }
+            .permissions-list { grid-template-columns: 1fr; }
+        }
+        
+        .scenario-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            border-right: 4px solid var(--info);
+        }
+        
+        .scenario-box h5 {
+            color: var(--dark);
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+        
+        .scenario-box ol {
+            padding-right: 25px;
+            line-height: 2;
+        }
+        
+        .scenario-box li { margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 شركة المفتاح للعقارات</h1>
+            <p>توثيق API شامل ومفصل - دليل المطور</p>
+            <div class="version">النسخة 1.0.0 - مارس 2026</div>
+        </div>
+        
+        <nav class="nav-bar">
+            <a href="#overview">نظرة عامة</a>
+            <a href="#user-types">أنواع المستخدمين</a>
+            <a href="#auth">المصادقة</a>
+            <a href="#properties">العقارات</a>
+            <a href="#notifications">الإشعارات</a>
+            <a href="#favorites">المفضلة</a>
+            <a href="#regions">المناطق</a>
+            <a href="#contact">التواصل</a>
+            <a href="#terms">الشروط</a>
+            <a href="#admin">الإدارة</a>
+        </nav>
+        
+        <div class="content">
+            
+            <!-- Overview Section -->
+            <div class="section" id="overview">
+                <div class="section-header">
+                    <h2>📖 نظرة عامة على النظام</h2>
+                    <span class="badge">Overview</span>
+                </div>
+                <div class="section-content">
+                    
+                    <div class="intro-box">
+                        <h3>🎯 ما هو نظام المفتاح؟</h3>
+                        <p>
+                            نظام المفتاح هو منصة متكاملة لإدارة العقارات في سوريا. يتيح للمستخدمين البحث عن العقارات،
+                            والتواصل مع المالكين، وإدارة العقارات للمطورين العقاريين. النظام يدعم أنواع متعددة من المستخدمين
+                            بأدوار وصلاحيات مختلفة.
+                        </p>
+                    </div>
+                    
+                    <div class="intro-box" style="background: linear-gradient(135deg, #fff3cd 0%, #e7f3ff 100%);">
+                        <h3>🏗️ هيكل النظام</h3>
+                        <p>
+                            يعتمد النظام على بنية REST API مع authentication عبر Laravel Sanctum.
+                            جميع البيانات تُرجع بصيغة JSON مع هيكل موحد للاستجابات.
+                        </p>
+                    </div>
+                    
+                    <h3 style="margin: 30px 0 20px; color: #495057;">📊 Base URL</h3>
+                    <div class="code-block json">http://127.0.0.1:8000/api</div>
+                    
+                    <h3 style="margin: 30px 0 20px; color: #495057;">📦 هيكل الاستجابة الموحد</h3>
+                    
+                    <div class="block">
+                        <h4>استجابة ناجحة</h4>
+                        <div class="code-block json">{
+    "success": true,
+    "message": "رسالة النجاح",
+    "data": { /* البيانات المطلوبة */ }
+}</div>
+                    </div>
+                    
+                    <div class="block">
+                        <h4>استجابة خطأ</h4>
+                        <div class="code-block json">{
+    "success": false,
+    "message": "رسالة الخطأ",
+    "errors": { /* أخطاء التحقق إن وجدت */ }
+}</div>
+                    </div>
+                    
+                    <h3 style="margin: 30px 0 20px; color: #495057;">🔢 أكواد HTTP</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الكود</th>
+                                <th>الاسم</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>200</code></td><td>OK</td><td>نجاح</td></tr>
+                            <tr><td><code>201</code></td><td>Created</td><td>تم الإنشاء</td></tr>
+                            <tr><td><code>400</code></td><td>Bad Request</td><td>طلب خاطئ</td></tr>
+                            <tr><td><code>401</code></td><td>Unauthorized</td><td>غير مصرح</td></tr>
+                            <tr><td><code>403</code></td><td>Forbidden</td><td>محظور</td></tr>
+                            <tr><td><code>404</code></td><td>Not Found</td><td>غير موجود</td></tr>
+                            <tr><td><code>422</code></td><td>Validation Error</td><td>خطأ في التحقق</td></tr>
+                            <tr><td><code>500</code></td><td>Server Error</td><td>خطأ في الخادم</td></tr>
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+            
+            <!-- User Types Section -->
+            <div class="section" id="user-types">
+                <div class="section-header">
+                    <h2>👥 أنواع المستخدمين والصلاحيات</h2>
+                    <span class="badge">User Types</span>
+                </div>
+                <div class="section-content">
+                    
+                    <div class="intro-box">
+                        <h3>🎭 أنواع المستخدمين الأربعة</h3>
+                        <p>
+                            يتكون النظام من أربعة أنواع مختلفة من المستخدمين، لكل منهم صلاحيات واستخدامات محددة.
+                            فهم هذه الصلاحيات يساعد في تصميم التطبيق بشكل صحيح.
+                        </p>
+                    </div>
+                    
+                    <!-- Guest User -->
+                    <div class="user-type-card">
+                        <div class="user-type-header guest">
+                            <span class="icon">👤</span>
+                            <h3>الزائر (Guest)</h3>
+                            <span class="badge">مستخدم غير مسجل</span>
+                        </div>
+                        <div class="user-type-body">
+                            <div class="scenario-box">
+                                <h5>📝 من هو الزائر؟</h5>
+                                <p>أي شخص يدخل التطبيق دون تسجيل الدخول. يمكنه تصفح العقارات والمناطق فقط.</p>
+                            </div>
+                            
+                            <h4 style="margin: 20px 0 15px;">✅ الصلاحيات المسموحة:</h4>
+                            <div class="permissions-list">
+                                <div class="permission-item"><span class="check">✓</span> تصفح العقارات المعتمدة</div>
+                                <div class="permission-item"><span class="check">✓</span> البحث عن العقارات</div>
+                                <div class="permission-item"><span class="check">✓</span> عرض تفاصيل العقار</div>
+                                <div class="permission-item"><span class="check">✓</span> عرض المناطق</div>
+                                <div class="permission-item"><span class="check">✓</span> عرض أنواع العقارات</div>
+                                <div class="permission-item"><span class="check">✓</span> عرض الشروط والأحكام</div>
+                            </div>
+                            
+                            <h4 style="margin: 20px 0 15px;">❌ الصلاحيات ممنوعة:</h4>
+                            <div class="permissions-list">
+                                <div class="permission-item"><span class="cross">✗</span> إضافة للمفضلة</div>
+                                <div class="permission-item"><span class="cross">✗</span> إرسال طلب تواصل</div>
+                                <div class="permission-item"><span class="cross">✗</span> إضافة عقار</div>
+                                <div class="permission-item"><span class="cross">✗</span> تعديل الملف الشخصي</div>
+                                <div class="permission-item"><span class="cross">✗</span> استلام إشعارات</div>
+                            </div>
+                            
+                            <h4 style="margin: 20px 0 15px;">🔄 سيناريو الاستخدام:</h4>
+                            <div class="flow-diagram">
+                                <div class="flow-step">
+                                    <span class="number">1</span>
+                                    <span>يدخل المستخدم التطبيق</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">2</span>
+                                    <span>يبحث عن عقارات في منطقة معينة</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">3</span>
+                                    <span>يعرض تفاصيل عقار معين</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">4</span>
+                                    <span>للتواصل يجب عليه التسجيل أولاً</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Regular User -->
+                    <div class="user-type-card">
+                        <div class="user-type-header user">
+                            <span class="icon">👨‍💻</span>
+                            <h3>المستخدم العادي (User)</h3>
+                            <span class="badge">مشتري أو مستأجر محتمل</span>
+                        </div>
+                        <div class="user-type-body">
+                            <div class="scenario-box">
+                                <h5>📝 من هو المستخدم العادي؟</h5>
+                                <p>شخص مسجل في النظام يبحث عن عقارات للشراء أو الإيجار. يمكنه التواصل مع المالكين وإدارة مفضلته.</p>
+                            </div>
+                            
+                            <h4 style="margin: 20px 0 15px;">✅ الصلاحيات المسموحة:</h4>
+                            <div class="permissions-list">
+                                <div class="permission-item"><span class="check">✓</span> كل صلاحيات الزائر</div>
+                                <div class="permission-item"><span class="check">✓</span> تسجيل الخروج</div>
+                                <div class="permission-item"><span class="check">✓</span> تعديل الملف الشخصي</div>
+                                <div class="permission-item"><span class="check">✓</span> تغيير كلمة المرور</div>
+                                <div class="permission-item"><span class="check">✓</span> إضافة عقارات للمفضلة</div>
+                                <div class="permission-item"><span class="check">✓</span> إزالة من المفضلة</div>
+                                <div class="permission-item"><span class="check">✓</span> عرض طلبات التواصل المرسلة</div>
+                                <div class="permission-item"><span class="check">✓</span> إرسال طلب تواصل لمالك</div>
+                                <div class="permission-item"><span class="check">✓</span> فحص حالة طلب التواصل</div>
+                                <div class="permission-item"><span class="check">✓</span> استلام إشعارات</div>
+                                <div class="permission-item"><span class="check">✓</span> حفظ FCM Token</div>
+                            </div>
+                            
+                            <h4 style="margin: 20px 0 15px;">❌ الصلاحيات ممنوعة:</h4>
+                            <div class="permissions-list">
+                                <div class="permission-item"><span class="cross">✗</span> إضافة عقارات</div>
+                                <div class="permission-item"><span class="cross">✗</span> إدارة طلبات التواصل المستلمة</div>
+                                <div class="permission-item"><span class="cross">✗</span> الوصول للوحة التحكم</div>
+                                <div class="permission-item"><span class="cross">✗</span> إدارة المستخدمين</div>
+                            </div>
+                            
+                            <h4 style="margin: 20px 0 15px;">🔄 سيناريو الاستخدام:</h4>
+                            <div class="flow-diagram">
+                                <div class="flow-step">
+                                    <span class="number">1</span>
+                                    <span>يسجل الدخول أو إنشاء حساب جديد</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">2</span>
+                                    <span>يبحث عن عقارات ويرشح النتائج</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">3</span>
+                                    <span>يعجب بعقار فيضيفه للمفضلة</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">4</span>
+                                    <span>يرسل طلب تواصل للمالك</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">5</span>
+                                    <span>يراقب حالة الطلب ويترقب الموافقة</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">6</span>
+                                    <span>يتابع الإشعارات للرد على المالك</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Property Owner -->
+                    <div class="user-type-card">
+                        <div class="user-type-header owner">
+                            <span class="icon">🏠</span>
+                            <h3>مالك العقار (Owner)</h3>
+                            <span class="badge">مطور عقاري أو مالك</span>
+                        </div>
+                        <div class="user-type-body">
+                            <div class="scenario-box">
+                                <h5>📝 من هو مالك العقار؟</h5>
+                                <p>شخص يمتلك عقارات ويريد عرضها للبيع أو الإيجار. يمكنه إدارة عقاراته والتواصل مع المشترين.</p>
+                            </div>
+                            
+                            <h4 style="margin: 20px 0 15px;">✅ الصلاحيات المسموحة:</h4>
+                            <div class="permissions-list">
+                                <div class="permission-item"><span class="check">✓</span> كل صلاحيات المستخدم العادي</div>
+                                <div class="permission-item"><span class="check">✓</span> إضافة عقارات جديدة</div>
+                                <div class="permission-item"><span class="check">✓</span> تعديل عقاراته</div>
+                                <div class="permission-item"><span class="check">✓</span> حذف عقاراته</div>
+                                <div class="permission-item"><span class="check">✓</span> إضافة صور للعقارات</div>
+                                <div class="permission-item"><span class="check">✓</span> حذف صور من العقارات</div>
+                                <div class="permission-item"><span class="check">✓</span> عرض طلبات التواصل المستلمة</div>
+                                <div class="permission-item"><span class="check">✓</span> الموافقة/رفض طلبات التواصل</div>
+                                <div class="permission-item"><span class="check">✓</span> إضافة عقار كمؤجر</div>
+                                <div class="permission-item"><span class="check">✓</span> إضافة عقار كمباع</div>
+                            </div>
+                            
+                            <h4 style="margin: 20px 0 15px;">❌ الصلاحيات ممنوعة:</h4>
+                            <div class="permissions-list">
+                                <div class="permission-item"><span class="cross">✗</span> إدارة عقارات الآخرين</div>
+                                <div class="permission-item"><span class="cross">✗</span> الوصول للوحة تحكم الأدمن</div>
+                                <div class="permission-item"><span class="cross">✗</span> إدارة المستخدمين</div>
+                            </div>
+                            
+                            <h4 style="margin: 20px 0 15px;">🔄 سيناريو الاستخدام:</h4>
+                            <div class="flow-diagram">
+                                <div class="flow-step">
+                                    <span class="number">1</span>
+                                    <span>يسجل حساب جديد كمالك (role: owner)</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">2</span>
+                                    <span>ينتظر تفعيل حسابه من الأدمن</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">3</span>
+                                    <span>بعد التفعيل، يضيف عقارات جديدة</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">4</span>
+                                    <span>يرفع صور العقار ويكتب التفاصيل</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">5</span>
+                                    <span>ينتظر موافقة الأدمن على العقار</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">6</span>
+                                    <span>يتابع طلبات التواصل من المهتمين</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">7</span>
+                                    <span>يوافق على طلبات التواصل لعرض رقمه</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Admin User -->
+                    <div class="user-type-card">
+                        <div class="user-type-header admin">
+                            <span class="icon">👑</span>
+                            <h3>المدير (Admin)</h3>
+                            <span class="badge">مدير النظام</span>
+                        </div>
+                        <div class="user-type-body">
+                            <div class="scenario-box">
+                                <h5>📝 من هو الأدمن؟</h5>
+                                <p>الشخص المسؤول عن إدارة النظام بالكامل. يتحكم في المستخدمين والعقارات والمحتوى.</p>
+                            </div>
+                            
+                            <h4 style="margin: 20px 0 15px;">✅ الصلاحيات المسموحة:</h4>
+                            <div class="permissions-list">
+                                <div class="permission-item"><span class="check">✓</span> كل الصلاحيات!</div>
+                                <div class="permission-item"><span class="check">✓</span> تفعيل/إلغاء حسابات المالكين</div>
+                                <div class="permission-item"><span class="check">✓</span> الموافقة/رفض العقارات</div>
+                                <div class="permission-item"><span class="check">✓</span> الموافقة/رفض طلبات التواصل</div>
+                                <div class="permission-item"><span class="check">✓</span> حظر/إلغاء حظر المستخدمين</div>
+                                <div class="permission-item"><span class="check">✓</span> ترقية مستخدم لأدمن</div>
+                                <div class="permission-item"><span class="check">✓</span> إضافة مناطق جديدة</div>
+                                <div class="permission-item"><span class="check">✓</span> تعديل الشروط والأحكام</div>
+                                <div class="permission-item"><span class="check">✓</span> إرسال إشعارات Push</div>
+                                <div class="permission-item"><span class="check">✓</span> عرض لوحة التحكم</div>
+                                <div class="permission-item"><span class="check">✓</span> عرض الإحصائيات</div>
+                                <div class="permission-item"><span class="check">✓</span> إدارة طلبات التواصل</div>
+                            </div>
+                            
+                            <h4 style="margin: 20px 0 15px;">❌ لا توجد صلاحيات ممنوعة:</h4>
+                            <div class="permissions-list">
+                                <div class="permission-item"><span class="check">✓</span> الأدمن له السيطرة الكاملة على النظام</div>
+                            </div>
+                            
+                            <h4 style="margin: 20px 0 15px;">🔄 سيناريو الاستخدام:</h4>
+                            <div class="flow-diagram">
+                                <div class="flow-step">
+                                    <span class="number">1</span>
+                                    <span>يدخل لوحة التحكم</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">2</span>
+                                    <span>يرى الإحصائيات والأنشطة الأخيرة</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">3</span>
+                                    <span>يشرف على العقارات المعلقة</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">4</span>
+                                    <span>يوافق على العقارات المناسبة</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">5</span>
+                                    <span>يرفض العقارات المخالفة للشروط</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">6</span>
+                                    <span>يدير طلبات التواصل</span>
+                                </div>
+                                <div class="flow-step">
+                                    <span class="number">7</span>
+                                    <span>يحظر المستخدمين المخالفين</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Summary Table -->
+                    <h3 style="margin: 40px 0 20px; color: #495057;">📊 جدول ملخص الصلاحيات</h3>
+                    <div class="summary-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>الصلاحية</th>
+                                    <th>الزائر</th>
+                                    <th>المستخدم</th>
+                                    <th>المالك</th>
+                                    <th>الأدمن</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>تصفح العقارات</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                                <tr><td>البحث المتقدم</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                                <tr><td>المفضلة</td><td>✗</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                                <tr><td>طلب التواصل</td><td>✗</td><td>✓</td><td>✗</td><td>✓</td></tr>
+                                <tr><td>إضافة عقار</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
+                                <tr><td>إدارة عقاراته</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
+                                <tr><td>إدارة جميع العقارات</td><td>✗</td><td>✗</td><td>✗</td><td>✓</td></tr>
+                                <tr><td>إدارة المستخدمين</td><td>✗</td><td>✗</td><td>✗</td><td>✓</td></tr>
+                                <tr><td>لوحة التحكم</td><td>✗</td><td>✗</td><td>✗</td><td>✓</td></tr>
+                                <tr><td>تعديل الشروط</td><td>✗</td><td>✗</td><td>✗</td><td>✓</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <!-- Authentication Section -->
+            <div class="section" id="auth">
+                <div class="section-header">
+                    <h2>🔐 المصادقة وإدارة الحسابات</h2>
+                    <span class="badge">Authentication</span>
+                </div>
+                <div class="section-content">
+                    
+                    <div class="intro-box">
+                        <h3>🔑 نظام المصادقة</h3>
+                        <p>
+                            يعتمد النظام على Laravel Sanctum للمصادقة. عند تسجيل الدخول يتم إصدار Token يستخدم في جميع الطلبات اللاحقة.
+                            يجب إرسال Token في Header مع كل طلب محمي.
+                        </p>
+                    </div>
+                    
+                    <div class="info-box">
+                        <h5>📌 طريقة إرسال Token</h5>
+                        <div class="code-block">Authorization: Bearer {token}</div>
+                    </div>
+                    
+                    <!-- Register -->
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/auth/register</span>
+                            <span class="auth-tag public">عام</span>
+                        </div>
+                        <div class="api-desc">تسجيل مستخدم جديد في النظام</div>
+                        <div class="api-body">
+                            
+                            <div class="scenario-box">
+                                <h5>💡 متى يُستخدم؟</h5>
+                                <p>عندما يريد شخص جديد إنشاء حساب في النظام. يمكنه التسجيل كمستخدم عادي أو مالك عقار.</p>
+                            </div>
+                            
+                            <div class="block">
+                                <h4>الـ Header</h4>
+                                <div class="code-block">Content-Type: application/json</div>
+                            </div>
+                            
+                            <div class="block">
+                                <h4>الـ Body (Required)</h4>
+                                <table>
+                                    <thead><tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr></thead>
+                                    <tbody>
+                                        <tr><td><code>name</code> <span class="required">*</span></td><td>string</td><td>اسم المستخدم</td></tr>
+                                        <tr><td><code>email</code> <span class="required">*</span></td><td>string</td><td>البريد الإلكتروني (فريد)</td></tr>
+                                        <tr><td><code>password</code> <span class="required">*</span></td><td>string</td><td>كلمة المرور (min: 8)</td></tr>
+                                        <tr><td><code>password_confirmation</code> <span class="required">*</span></td><td>string</td><td>تأكيد كلمة المرور</td></tr>
+                                        <tr><td><code>phone</code> <span class="required">*</span></td><td>string</td><td>رقم سوري (09XXXXXXXX)</td></tr>
+                                        <tr><td><code>role</code> <span class="required">*</span></td><td>string</td><td>user أو owner</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="block">
+                                <h4>مثال الطلب</h4>
+                                <div class="code-block json">{
+    "name": "أحمد محمد",
+    "email": "ahmed@example.com",
+    "password": "password123",
+    "password_confirmation": "password123",
+    "phone": "0912345678",
+    "role": "user"
+}</div>
+                            </div>
+                            
+                            <div class="response-box success">
+                                <div class="response-header">
+                                    <span class="status-code success">201 Created</span>
+                                    <span>تم التسجيل بنجاح</span>
+                                </div>
+                                <div class="code-block json">{
+    "success": true,
+    "message": "تم التسجيل بنجاح",
+    "data": {
+        "user": {
+            "id": 1,
+            "name": "أحمد محمد",
+            "email": "ahmed@example.com",
+            "phone": "0912345678",
+            "role": "user"
+        },
+        "token": "1|abc123..."
+    }
+}</div>
+                            </div>
+                            
+                            <div class="response-box error" style="margin-top: 15px;">
+                                <div class="response-header">
+                                    <span class="status-code error">422</span>
+                                    <span>خطأ في التحقق</span>
+                                </div>
+                                <div class="code-block json">{
+    "success": false,
+    "message": "حدث خطأ في البيانات المدخلة",
+    "errors": {
+        "email": ["البريد الإلكتروني مستخدم من قبل"],
+        "phone": ["رقم الهاتف يجب أن يكون رقم سوري صحيح"]
+    }
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Login -->
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/auth/login</span>
+                            <span class="auth-tag public">عام</span>
+                        </div>
+                        <div class="api-desc">تسجيل الدخول والحصول على Token</div>
+                        <div class="api-body">
+                            
+                            <div class="scenario-box">
+                                <h5>💡 متى يُستخدم؟</h5>
+                                <p>للتعرف على المستخدم وإصدار Token. يجب حفظ Token لاستخدامه في الطلبات اللاحقة.</p>
+                            </div>
+                            
+                            <div class="block">
+                                <h4>مثال الطلب</h4>
+                                <div class="code-block json">{
+    "email": "admin@almiftah.com",
+    "password": "admin123"
+}</div>
+                            </div>
+                            
+                            <div class="response-box success">
+                                <div class="response-header">
+                                    <span class="status-code success">200 OK</span>
+                                    <span>تم تسجيل الدخول</span>
+                                </div>
+                                <div class="code-block json">{
+    "success": true,
+    "message": "تم تسجيل الدخول بنجاح",
+    "data": {
+        "user": { "id": 1, "name": "مدير النظام", "role": "admin" },
+        "token": "2|xyz789..."
+    }
+}</div>
+                            </div>
+                            
+                            <div class="response-box error" style="margin-top: 15px;">
+                                <div class="response-header">
+                                    <span class="status-code error">401</span>
+                                    <span>بيانات خاطئة</span>
+                                </div>
+                                <div class="code-block json">{
+    "success": false,
+    "message": "بيانات الاعتماد غير صحيحة"
+}</div>
+                            </div>
+                            
+                            <div class="response-box error" style="margin-top: 15px;">
+                                <div class="response-header">
+                                    <span class="status-code error">403</span>
+                                    <span>حساب محظور أو غير نشط</span>
+                                </div>
+                                <div class="code-block json">{
+    "success": false,
+    "message": "الحساب محظور. يرجى التواصل مع الإدارة"
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Other Auth APIs -->
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/auth/me</span>
+                            <span class="auth-tag required">يتطلب توثيق</span>
+                        </div>
+                        <div class="api-desc">جلب بيانات المستخدم الحالي</div>
+                        <div class="api-body">
+                            <div class="response-box success">
+                                <div class="response-header">
+                                    <span class="status-code success">200 OK</span>
+                                </div>
+                                <div class="code-block json">{
+    "success": true,
+    "data": {
+        "id": 1,
+        "name": "أحمد محمد",
+        "email": "ahmed@example.com",
+        "phone": "0912345678",
+        "role": "user",
+        "is_admin": false
+    }
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method put">PUT</span>
+                            <span class="api-url">/auth/profile</span>
+                            <span class="auth-tag required">يتطلب توثيق</span>
+                        </div>
+                        <div class="api-desc">تعديل الملف الشخصي</div>
+                        <div class="api-body">
+                            <div class="block">
+                                <h4>الـ Body (Optional)</h4>
+                                <table>
+                                    <thead><tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr></thead>
+                                    <tbody>
+                                        <tr><td><code>name</code></td><td>string</td><td>الاسم الجديد</td></tr>
+                                        <tr><td><code>phone</code></td><td>string</td><td>رقم الهاتف الجديد (سوري)</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/auth/change-password</span>
+                            <span class="auth-tag required">يتطلب توثيق</span>
+                        </div>
+                        <div class="api-desc">تغيير كلمة المرور</div>
+                        <div class="api-body">
+                            <div class="block">
+                                <h4>الـ Body</h4>
+                                <div class="code-block json">{
+    "current_password": "كلمة المرور الحالية",
+    "password": "كلمة المرور الجديدة",
+    "password_confirmation": "تأكيد كلمة المرور الجديدة"
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/auth/logout</span>
+                            <span class="auth-tag required">يتطلب توثيق</span>
+                        </div>
+                        <div class="api-desc">تسجيل الخروج (إلغاء Token)</div>
+                        <div class="api-body">
+                            <div class="info-box">
+                                <h5>📌 ملاحظة</h5>
+                                <p>لا يحتاج Body. يكفي إرسال الـ Token في Header.</p>
+                            </div>
+                            <div class="response-box success">
+                                <div class="code-block json">{
+    "success": true,
+    "message": "تم تسجيل الخروج بنجاح"
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <!-- Properties Section -->
+            <div class="section" id="properties">
+                <div class="section-header">
+                    <h2>🏠 إدارة العقارات</h2>
+                    <span class="badge">Properties</span>
+                </div>
+                <div class="section-content">
+                    
+                    <div class="intro-box">
+                        <h3>🏠 نظام العقارات</h3>
+                        <p>
+                            العقار هو الوحدة الأساسية في النظام. كل عقار له مالك (مالك العقار) ويحتوي على:
+                            عنوان، وصف، سعر، نوع (بيع/إيجار)، نوع العقار (شقة، منزل، إلخ)، موقع، صور.
+                        </p>
+                    </div>
+                    
+                    <h3 style="margin: 30px 0 20px;">📋 أنواع العقارات المتاحة</h3>
+                    <table>
+                        <thead><tr><th>القيمة</th><th>الاسم</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>apartment</code></td><td>شقة</td></tr>
+                            <tr><td><code>house</code></td><td>منزل</td></tr>
+                            <tr><td><code>shop</code></td><td>محل</td></tr>
+                            <tr><td><code>land</code></td><td>أرض</td></tr>
+                            <tr><td><code>farm</code></td><td>مزرعة</td></tr>
+                            <tr><td><code>store</code></td><td>متجر</td></tr>
+                        </tbody>
+                    </table>
+                    
+                    <h3 style="margin: 30px 0 20px;">📋 حالات العقار</h3>
+                    <table>
+                        <thead><tr><th>الحالة</th><th>الوصف</th><th>من يمكنه التغيير؟</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>pending</code></td><td>قيد الانتظار</td><td>النظام (عند الإنشاء)</td></tr>
+                            <tr><td><code>active</code></td><td>نشط ومقبول</td><td>الأدمن فقط</td></tr>
+                            <tr><td><code>rejected</code></td><td>مرفوض</td><td>الأدمن فقط</td></tr>
+                            <tr><td><code>rented</code></td><td>مؤجر</td><td>المالك أو الأدمن</td></tr>
+                            <tr><td><code>sold</code></td><td>مباع</td><td>المالك أو الأدمن</td></tr>
+                        </tbody>
+                    </table>
+                    
+                    <!-- List Properties -->
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/properties</span>
+                            <span class="auth-tag public">عام</span>
+                        </div>
+                        <div class="api-desc">جلب قائمة العقارات المعتمدة (للجميع)</div>
+                        <div class="api-body">
+                            
+                            <div class="scenario-box">
+                                <h5>💡 متى يُستخدم؟</h5>
+                                <p>لعرض قائمة العقارات للزوار والمستخدمين. تعرض فقط العقارات المقبولة (active).</p>
+                            </div>
+                            
+                            <div class="block">
+                                <h4>Query Parameters</h4>
+                                <table>
+                                    <thead><tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr></thead>
+                                    <tbody>
+                                        <tr><td><code>type</code></td><td>string</td><td>sale أو rent</td></tr>
+                                        <tr><td><code>property_type</code></td><td>string</td><td>نوع العقار</td></tr>
+                                        <tr><td><code>region_id</code></td><td>integer</td><td>معرف المنطقة (الحي)</td></tr>
+                                        <tr><td><code>min_price</code></td><td>number</td><td>السعر الأدنى</td></tr>
+                                        <tr><td><code>max_price</code></td><td>number</td><td>السعر الأقصى</td></tr>
+                                        <tr><td><code>search</code></td><td>string</td><td>كلمة البحث</td></tr>
+                                        <tr><td><code>per_page</code></td><td>integer</td><td>عدد بالصفحة (افتراضي: 20)</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="block">
+                                <h4>مثال الطلب</h4>
+                                <div class="code-block">GET /api/properties?type=sale&property_type=apartment&min_price=50000&max_price=200000</div>
+                            </div>
+                            
+                            <div class="response-box success">
+                                <div class="response-header">
+                                    <span class="status-code success">200 OK</span>
+                                </div>
+                                <div class="code-block json">{
+    "success": true,
+    "data": {
+        "data": [
+            {
+                "id": 1,
+                "title": "شقة فاخرة في المزة",
+                "price": "85000000.00",
+                "type": "sale",
+                "property_type": "apartment",
+                "images": [{"id": 1, "image_url": "http://..."}],
+                "owner": {"id": 1, "name": "مكتب المفتاح"}
+            }
+        ],
+        "meta": {
+            "current_page": 1,
+            "last_page": 5,
+            "per_page": 20,
+            "total": 100
+        }
+    }
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Property Types -->
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/properties/types</span>
+                            <span class="auth-tag public">عام</span>
+                        </div>
+                        <div class="api-desc">جلب أنواع العقارات المتاحة</div>
+                        <div class="api-body">
+                            <div class="response-box success">
+                                <div class="code-block json">{
+    "success": true,
+    "data": [
+        {"value": "apartment", "label": "شقة"},
+        {"value": "house", "label": "منزل"},
+        {"value": "shop", "label": "محل"},
+        {"value": "land", "label": "أرض"},
+        {"value": "farm", "label": "مزرعة"},
+        {"value": "store", "label": "متجر"}
+    ]
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Create Property -->
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/properties</span>
+                            <span class="auth-tag required">مالك فقط</span>
+                        </div>
+                        <div class="api-desc">إضافة عقار جديد</div>
+                        <div class="api-body">
+                            
+                            <div class="warning-box">
+                                <h5>⚠️ الشروط</h5>
+                                <p>
+                                    - يجب أن يكون المستخدم مالك (role: owner) و账户 نشط<br>
+                                    - العقار يُنشأ بحالة pending حتى يوافق الأدمن<br>
+                                    - عند الإنشاء يُرسل إشعار للأدمن
+                                </p>
+                            </div>
+                            
+                            <div class="block">
+                                <h4>الـ Body</h4>
+                                <table>
+                                    <thead><tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr></thead>
+                                    <tbody>
+                                        <tr><td><code>title</code> <span class="required">*</span></td><td>string</td><td>عنوان العقار</td></tr>
+                                        <tr><td><code>description</code> <span class="required">*</span></td><td>string</td><td>وصف العقار</td></tr>
+                                        <tr><td><code>price</code> <span class="required">*</span></td><td>numeric</td><td>السعر</td></tr>
+                                        <tr><td><code>type</code> <span class="required">*</span></td><td>string</td><td>sale أو rent</td></tr>
+                                        <tr><td><code>property_type</code> <span class="required">*</span></td><td>string</td><td>apartment, house, shop, land, farm, store</td></tr>
+                                        <tr><td><code>area</code> <span class="required">*</span></td><td>numeric</td><td>المساحة (متر مربع)</td></tr>
+                                        <tr><td><code>region_id</code> <span class="required">*</span></td><td>integer</td><td>معرف الحي (من جدول المناطق)</td></tr>
+                                        <tr><td><code>location</code> <span class="required">*</span></td><td>string</td><td>الموقع النصي</td></tr>
+                                        <tr><td><code>latitude</code></td><td>numeric</td><td>خط العرض (GPS)</td></tr>
+                                        <tr><td><code>longitude</code></td><td>numeric</td><td>خط الطول (GPS)</td></tr>
+                                        <tr><td><code>images[]</code></td><td>file</td><td>صور (max: 10)</td></tr>
+                                        <tr><td><code>images_base64[]</code></td><td>string</td><td>صور Base64 (بديل)</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="block">
+                                <h4>مثال الطلب</h4>
+                                <div class="code-block json">{
+    "title": "شقة جديدة في المزة",
+    "description": "شقة فاخرة 3 غرف نوم مع صالة كبيرة",
+    "price": 100000000,
+    "type": "sale",
+    "property_type": "apartment",
+    "area": 150,
+    "region_id": 29,
+    "location": "دمشق - المزة - شارع الرئيسي",
+    "latitude": 33.8321,
+    "longitude": 36.1067
+}</div>
+                            </div>
+                            
+                            <div class="response-box success">
+                                <div class="response-header">
+                                    <span class="status-code success">201 Created</span>
+                                </div>
+                                <div class="code-block json">{
+    "success": true,
+    "message": "تم إنشاء العقار بنجاح",
+    "data": {
+        "id": 16,
+        "title": "شقة جديدة في المزة",
+        "status": "pending",
+        "created_at": "2026-03-26T12:00:00Z"
+    }
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- My Properties -->
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/properties/my-properties</span>
+                            <span class="auth-tag required">مالك فقط</span>
+                        </div>
+                        <div class="api-desc">جلب عقارات المستخدم الحالي (جميع الحالات)</div>
+                        <div class="api-body">
+                            <div class="info-box">
+                                <h5>📌 الفرق عن /properties</h5>
+                                <p>يُرجع جميع عقارات المالك بما فيها المعلقة والمرفوضة، وليس فقط النشطة.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <!-- Notifications Section -->
+            <div class="section" id="notifications">
+                <div class="section-header">
+                    <h2>🔔 نظام الإشعارات</h2>
+                    <span class="badge">Notifications</span>
+                </div>
+                <div class="section-content">
+                    
+                    <div class="intro-box">
+                        <h3>🔔 كيف تعمل الإشعارات؟</h3>
+                        <p>
+                            يتم حفظ كل إشعار في قاعدة البيانات ويُرسل Push Notification عبر FCM.
+                            يمكن للمستخدم استلام الإشعارات حتى لو كان التطبيق مغلقاً.
+                            أنواع الإشعارات: new_property, contact_request, contact_approved, property_approved, property_rejected
+                        </p>
+                    </div>
+                    
+                    <div class="user-type-card">
+                        <div class="user-type-header" style="background: var(--info);">
+                            <span class="icon">👨‍💻</span>
+                            <h3>من يستلم الإشعارات؟</h3>
+                        </div>
+                        <div class="user-type-body">
+                            <div class="permissions-list">
+                                <div class="permission-item"><span class="check">✓</span> الأدمن: عقارات جديدة، طلبات تواصل جديدة</div>
+                                <div class="permission-item"><span class="check">✓</span> المالك: عند تفعيل حسابه، موافقة/رفض عقاراته</div>
+                                <div class="permission-item"><span class="check">✓</span> المستخدم: عند الموافقة/رفض طلب تواصله</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/notifications</span>
+                            <span class="auth-tag required">يتطلب توثيق</span>
+                        </div>
+                        <div class="api-desc">جلب إشعارات المستخدم الحالي</div>
+                        <div class="api-body">
+                            <div class="block">
+                                <h4>الـ Query Parameters</h4>
+                                <table>
+                                    <thead><tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr></thead>
+                                    <tbody>
+                                        <tr><td><code>per_page</code></td><td>integer</td><td>عدد الإشعارات بالصفحة</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="response-box success">
+                                <div class="code-block json">{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "type": "property_approved",
+            "title": "تمت الموافقة على عقاركم",
+            "body": "تمت الموافقة على عقار: شقة في المزة",
+            "is_read": false,
+            "related_id": 1,
+            "created_at": "2026-03-26T12:00:00Z"
+        }
+    ]
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/notifications/unread-count</span>
+                            <span class="auth-tag required">يتطلب توثيق</span>
+                        </div>
+                        <div class="api-desc">جلب عدد الإشعارات غير المقروءة</div>
+                        <div class="api-body">
+                            <div class="response-box success">
+                                <div class="code-block json">{
+    "success": true,
+    "data": {
+        "unread_count": 5
+    }
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/notifications/{id}/read</span>
+                            <span class="auth-tag required">يتطلب توثيق</span>
+                        </div>
+                        <div class="api-desc">تعليم إشعار كمقروء</div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/notifications/read-all</span>
+                            <span class="auth-tag required">يتطلب توثيق</span>
+                        </div>
+                        <div class="api-desc">تعليم جميع الإشعارات كمقروءة</div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <!-- Favorites Section -->
+            <div class="section" id="favorites">
+                <div class="section-header">
+                    <h2>❤️ نظام المفضلة</h2>
+                    <span class="badge">Favorites</span>
+                </div>
+                <div class="section-content">
+                    
+                    <div class="intro-box">
+                        <h3>❤️ ما هي المفضلة؟</h3>
+                        <p>
+                            تتيح للمستخدمين حفظ العقارات التي تعجبهم للعودة إليها لاحقاً.
+                            يمكن للمستخدم إضافة أو إزالة عقارات من مفضلته في أي وقت.
+                        </p>
+                    </div>
+                    
+                    <div class="user-type-card">
+                        <div class="user-type-header" style="background: var(--warning); color: #000;">
+                            <span class="icon">👥</span>
+                            <h3>من يمكنه استخدام المفضلة؟</h3>
+                        </div>
+                        <div class="user-type-body">
+                            <div class="permissions-list">
+                                <div class="permission-item"><span class="check">✓</span> المستخدم العادي</div>
+                                <div class="permission-item"><span class="check">✓</span> مالك العقار</div>
+                                <div class="permission-item"><span class="check">✓</span> الأدمن</div>
+                                <div class="permission-item"><span class="cross">✗</span> الزائر (غير مسجل)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/favorites</span>
+                            <span class="auth-tag required">يتطلب توثيق</span>
+                        </div>
+                        <div class="api-desc">جلب قائمة العقارات المفضلة</div>
+                        <div class="api-body">
+                            <div class="response-box success">
+                                <div class="code-block json">{
+    "success": true,
+    "data": {
+        "data": [
+            {
+                "id": 1,
+                "title": "شقة فاخرة في المزة",
+                "price": "85000000.00",
+                "type": "sale",
+                "images": [...]
+            }
+        ],
+        "pagination": {
+            "current_page": 1,
+            "total": 5
+        }
+    }
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/favorites/{propertyId}</span>
+                            <span class="auth-tag required">يتطلب توثيق</span>
+                        </div>
+                        <div class="api-desc">إضافة عقار للمفضلة</div>
+                        <div class="api-body">
+                            <div class="response-box success">
+                                <div class="code-block json">{
+    "success": true,
+    "message": "تم إضافة العقار إلى المفضلة"
+}</div>
+                            </div>
+                            <div class="response-box error">
+                                <div class="response-header">
+                                    <span class="status-code error">400</span>
+                                </div>
+                                <div class="code-block json">{
+    "success": false,
+    "message": "العقار موجود بالفعل في المفضلة"
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method delete">DELETE</span>
+                            <span class="api-url">/favorites/{propertyId}</span>
+                            <span class="auth-tag required">يتطلب توثيق</span>
+                        </div>
+                        <div class="api-desc">حذف عقار من المفضلة</div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/favorites/{propertyId}/check</span>
+                            <span class="auth-tag required">يتطلب توثيق</span>
+                        </div>
+                        <div class="api-desc">فحص إذا العقار في المفضلة</div>
+                        <div class="api-body">
+                            <div class="response-box success">
+                                <div class="code-block json">{
+    "success": true,
+    "data": {
+        "is_favorite": true
+    }
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <!-- Regions Section -->
+            <div class="section" id="regions">
+                <div class="section-header">
+                    <h2>🗺️Regions المناطق</h2>
+                    <span class="badge">Regions</span>
+                </div>
+                <div class="section-content">
+                    
+                    <div class="intro-box">
+                        <h3>🗺️ هيكل المناطق</h3>
+                        <p>
+                            المناطق تتبع هيكل هرمي من 4 مستويات:<br>
+                            <strong>الدولة</strong> → <strong>المحافظة</strong> → <strong>المدينة</strong> → <strong>الحي</strong><br>
+                            مثال: سوريا → محافظة دمشق → دمشق → المزة
+                        </p>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/regions</span>
+                            <span class="auth-tag public">عام</span>
+                        </div>
+                        <div class="api-desc">جلب قائمة المناطق</div>
+                        <div class="api-body">
+                            <div class="block">
+                                <h4>Query Parameters</h4>
+                                <table>
+                                    <thead><tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr></thead>
+                                    <tbody>
+                                        <tr><td><code>type</code></td><td>string</td><td>country, governorate, city, neighborhood</td></tr>
+                                        <tr><td><code>parent_id</code></td><td>integer</td><td>المنطقة الأم</td></tr>
+                                        <tr><td><code>search</code></td><td>string</td><td>البحث بالاسم</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/regions/tree</span>
+                            <span class="auth-tag public">عام</span>
+                        </div>
+                        <div class="api-desc">جلب شجرة المناطق الكاملة (هرمي)</div>
+                        <div class="api-body">
+                            <div class="response-box success">
+                                <div class="code-block json">{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "name": "سوريا",
+            "type": "country",
+            "children": [
+                {
+                    "id": 2,
+                    "name": "محافظة دمشق",
+                    "type": "governorate",
+                    "children": [
+                        {
+                            "id": 30,
+                            "name": "دمشق",
+                            "type": "city",
+                            "children": [
+                                {"id": 29, "name": "المزة", "type": "neighborhood"}
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <!-- Contact Section -->
+            <div class="section" id="contact">
+                <div class="section-header">
+                    <h2>📞 نظام التواصل</h2>
+                    <span class="badge">Contact</span>
+                </div>
+                <div class="section-content">
+                    
+                    <div class="intro-box">
+                        <h3>📞 كيف يعمل التواصل؟</h3>
+                        <p>
+                            يتيح هذا النظام للمستخدمين التواصل مع ملاك العقارات بشكل آمن:<br>
+                            1. يرسل المستخدم طلب تواصل يتضمن اسمه ورقم هاتفه<br>
+                            2. يُرسل الإشعار للأدمن<br>
+                            3. يوافق الأدمن على الطلب<br>
+                            4. يرى المستخدم رقم هاتف المالك
+                        </p>
+                    </div>
+                    
+                    <div class="user-type-card">
+                        <div class="user-type-header" style="background: var(--info);">
+                            <span class="icon">📋</span>
+                            <h3>من يمكنه إرسال طلب تواصل؟</h3>
+                        </div>
+                        <div class="user-type-body">
+                            <div class="permissions-list">
+                                <div class="permission-item"><span class="check">✓</span> المستخدم العادي</div>
+                                <div class="permission-item"><span class="cross">✗</span> مالك العقار (لا يمكنه التواصل مع نفسه)</div>
+                                <div class="permission-item"><span class="cross">✗</span> الزائر (غير مسجل)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/contact</span>
+                            <span class="auth-tag required">مستخدم فقط</span>
+                        </div>
+                        <div class="api-desc">إرسال طلب تواصل مع مالك عقار</div>
+                        <div class="api-body">
+                            <div class="block">
+                                <h4>الـ Body</h4>
+                                <table>
+                                    <thead><tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr></thead>
+                                    <tbody>
+                                        <tr><td><code>property_id</code> <span class="required">*</span></td><td>integer</td><td>معرف العقار</td></tr>
+                                        <tr><td><code>name</code> <span class="required">*</span></td><td>string</td><td>اسم المرسل</td></tr>
+                                        <tr><td><code>phone</code> <span class="required">*</span></td><td>string</td><td>رقم الهاتف (سوري)</td></tr>
+                                        <tr><td><code>message</code></td><td>string</td><td>رسالة إضافية</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="response-box success">
+                                <div class="code-block json">{
+    "success": true,
+    "message": "تم إرسال طلب التواصل بنجاح",
+    "data": {
+        "id": 1,
+        "property_id": 1,
+        "status": "pending"
+    }
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/contact/my-requests</span>
+                            <span class="auth-tag required">يتطلب توثيق</span>
+                        </div>
+                        <div class="api-desc">جلب طلبات التواصل المرسلة (أنا → المالكين)</div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/contact/my-received</span>
+                            <span class="auth-tag required">مالك فقط</span>
+                        </div>
+                        <div class="api-desc">جلب طلبات التواصل المستلمة (للمالكين فقط)</div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <!-- Terms Section -->
+            <div class="section" id="terms">
+                <div class="section-header">
+                    <h2>📜 الشروط والأحكام</h2>
+                    <span class="badge">Terms</span>
+                </div>
+                <div class="section-content">
+                    
+                    <div class="intro-box">
+                        <h3>📜 الشروط والأحكام</h3>
+                        <p>
+                            صفحة ثابتة يمكن للأدمن تعديل محتواها. تظهر للمستخدمين عادةً عند التسجيل أو في الفوتر.
+                        </p>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/terms</span>
+                            <span class="auth-tag public">عام</span>
+                        </div>
+                        <div class="api-desc">عرض الشروط والأحكام (لجميع الزوار)</div>
+                        <div class="api-body">
+                            <div class="response-box success">
+                                <div class="code-block json">{
+    "success": true,
+    "data": {
+        "id": 1,
+        "title": "الشروط و الأحكام",
+        "content": "نص الشروط والأحكام الكامل...",
+        "updated_at": "2026-03-26T10:00:00Z"
+    }
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method put">PUT</span>
+                            <span class="api-url">/admin/terms</span>
+                            <span class="auth-tag admin">أدمن فقط</span>
+                        </div>
+                        <div class="api-desc">تعديل الشروط والأحكام</div>
+                        <div class="api-body">
+                            <div class="block">
+                                <h4>الـ Body</h4>
+                                <div class="code-block json">{
+    "title": "الشروط و الأحكام",
+    "content": "المحتوى الجديد للشروط والأحكام..."
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <!-- Admin Section -->
+            <div class="section" id="admin">
+                <div class="section-header">
+                    <h2>👑 لوحة تحكم الأدمن</h2>
+                    <span class="badge">Admin</span>
+                </div>
+                <div class="section-content">
+                    
+                    <div class="intro-box" style="background: linear-gradient(135deg, #f8d7da 0%, #e7f3ff 100%);">
+                        <h3>👑 صلاحيات الأدمن الكاملة</h3>
+                        <p>
+                            الأدمن هو الشخص المسؤول عن إدارة النظام بالكامل. يمكنه:<br>
+                            • الموافقة/رفض العقارات<br>
+                            • الموافقة/رفض طلبات التواصل<br>
+                            • تفعيل/حظر المستخدمين<br>
+                            • تعديل الشروط والأحكام<br>
+                            • إضافة المناطق<br>
+                            • إرسال إشعارات Push<br>
+                            • عرض الإحصائيات
+                        </p>
+                    </div>
+                    
+                    <h3 style="margin: 30px 0 20px;">📊 إدارة المستخدمين</h3>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/admin/users</span>
+                            <span class="auth-tag admin">أدمن فقط</span>
+                        </div>
+                        <div class="api-desc">قائمة جميع المستخدمين</div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/admin/users/{id}/verify</span>
+                            <span class="auth-tag admin">أدمن فقط</span>
+                        </div>
+                        <div class="api-desc">تفعيل حساب مستخدم (للمالكين)</div>
+                        <div class="api-body">
+                            <div class="warning-box">
+                                <h5>⚠️ ملاحظة مهمة</h5>
+                                <p>عند تفعيل حساب مالك، يُرسل له إشعار Push得知 حسابه مفعل.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/admin/users/{id}/ban</span>
+                            <span class="auth-tag admin">أدمن فقط</span>
+                        </div>
+                        <div class="api-desc">حظر مستخدم</div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/admin/users/{id}/unban</span>
+                            <span class="auth-tag admin">أدمن فقط</span>
+                        </div>
+                        <div class="api-desc">إلغاء حظر مستخدم</div>
+                    </div>
+                    
+                    <h3 style="margin: 30px 0 20px;">🏠 إدارة العقارات</h3>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/admin/properties</span>
+                            <span class="auth-tag admin">أدمن فقط</span>
+                        </div>
+                        <div class="api-desc">قائمة جميع العقارات (بجميع الحالات)</div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/admin/properties/{id}/approve</span>
+                            <span class="auth-tag admin">أدمن فقط</span>
+                        </div>
+                        <div class="api-desc">الموافقة على عقار</div>
+                        <div class="api-body">
+                            <div class="info-box">
+                                <h5>📌 ما يحدث عند الموافقة:</h5>
+                                <p>
+                                    1. تتغير حالة العقار إلى active<br>
+                                    2. يُرسل إشعار Push للمالك得知 الموافقة
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/admin/properties/{id}/reject</span>
+                            <span class="auth-tag admin">أدمن فقط</span>
+                        </div>
+                        <div class="api-desc">رفض عقار</div>
+                        <div class="api-body">
+                            <div class="block">
+                                <h4>الـ Body</h4>
+                                <div class="code-block json">{
+    "reason": "سبب الرفض"
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin: 30px 0 20px;">📬 إدارة طلبات التواصل</h3>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/admin/contact-requests</span>
+                            <span class="auth-tag admin">أدمن فقط</span>
+                        </div>
+                        <div class="api-desc">قائمة طلبات التواصل</div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/admin/contact-requests/{id}/approve</span>
+                            <span class="auth-tag admin">أدمن فقط</span>
+                        </div>
+                        <div class="api-desc">الموافقة على طلب التواصل</div>
+                        <div class="api-body">
+                            <div class="info-box">
+                                <h5>📌 ما يحدث:</h5>
+                                <p>يتمكن المستخدم من رؤية رقم هاتف المالك بعد الموافقة.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/admin/contact-requests/{id}/reject</span>
+                            <span class="auth-tag admin">أدمن فقط</span>
+                        </div>
+                        <div class="api-desc">رفض طلب التواصل</div>
+                    </div>
+                    
+                    <h3 style="margin: 30px 0 20px;">📊 لوحة التحكم</h3>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/admin/statistics</span>
+                            <span class="auth-tag admin">أدمن فقط</span>
+                        </div>
+                        <div class="api-desc">الإحصائيات العامة</div>
+                        <div class="api-body">
+                            <div class="response-box success">
+                                <div class="code-block json">{
+    "success": true,
+    "data": {
+        "total_users": 23,
+        "total_properties": 36,
+        "total_contact_requests": 21,
+        "pending_properties": 5,
+        "pending_contact_requests": 3
+    }
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/admin/dashboard/recent-activities</span>
+                            <span class="auth-tag admin">أدمن فقط</span>
+                        </div>
+                        <div class="api-desc">الأنشطة الأخيرة في النظام</div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method get">GET</span>
+                            <span class="api-url">/admin/dashboard/properties-by-region</span>
+                            <span class="auth-tag admin">أدمن فقط</span>
+                        </div>
+                        <div class="api-desc">إحصائيات العقارات حسب المنطقة</div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <!-- FCM Section -->
+            <div class="section" id="fcm">
+                <div class="section-header">
+                    <h2>📱 إشعارات Push (FCM)</h2>
+                    <span class="badge">FCM</span>
+                </div>
+                <div class="section-content">
+                    
+                    <div class="intro-box">
+                        <h3>📱 ما هو FCM؟</h3>
+                        <p>
+                            Firebase Cloud Messaging (FCM) يتيح إرسال إشعارات Push للأجهزة.
+                            يجب على المستخدم حفظ Token الخاص بجهازه ليستقبل الإشعارات.
+                        </p>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/fcm/token</span>
+                            <span class="auth-tag required">يتطلب توثيق</span>
+                        </div>
+                        <div class="api-desc">حفظ FCM Token للجهاز</div>
+                        <div class="api-body">
+                            <div class="block">
+                                <h4>الـ Body</h4>
+                                <div class="code-block json">{
+    "token": "fcm_device_token_here",
+    "device_type": "android"
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method delete">DELETE</span>
+                            <span class="api-url">/fcm/token</span>
+                            <span class="auth-tag required">يتطلب توثيق</span>
+                        </div>
+                        <div class="api-desc">حذف FCM Token (عند تسجيل الخروج)</div>
+                    </div>
+                    
+                    <div class="api-endpoint">
+                        <div class="api-header">
+                            <span class="method post">POST</span>
+                            <span class="api-url">/admin/send-notification</span>
+                            <span class="auth-tag admin">أدمن فقط</span>
+                        </div>
+                        <div class="api-desc">إرسال إشعار Push لمستخدم معين</div>
+                        <div class="api-body">
+                            <div class="block">
+                                <h4>الـ Body</h4>
+                                <div class="code-block json">{
+    "user_id": 1,
+    "title": "عنوان الإشعار",
+    "body": "محتوى الإشعار",
+    "extra": {
+        "type": "custom_type",
+        "id": 123
+    }
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="footer">
+            <p>📄 توثيق API شامل - شركة المفتاح للعقارات</p>
+            <p>© 2026 جميع الحقوق محفوظة - شركة المفتاح</p>
+            <p style="margin-top: 15px; font-size: 0.9em; opacity: 0.7;">
+                Base URL: http://127.0.0.1:8000/api
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,25 +1,18 @@
 {
   "info": {
+    "_postman_id": "7e287739-c431-4267-a220-ea8b626a2f42",
     "name": "شركة المفتاح - المصادقة",
     "description": "# شركة المفتاح - Authentication API\n\n## نظرة عامة\nواجهة برمجة التطبيقات للمصادقة تتضمن 3 سيناريوهات:\n\n### السيناريو 1: التسجيل العادي (بدون توثيق)\n- المستخدم يسجل\n- الأدمن يوثقه يدوياً\n- المستخدم يسجل دخول\n\n### السيناريو 2: التوثيق عبر الإيميل\n- المستخدم يسجل\n- يرسل رابط التوثيق\n- يوثق عبر API\n- يسجل دخول\n\n### السيناريو 3: تغيير كلمة المرور\n- المستخدم يسجل دخول\n- يغير كلمة المرور\n\n---\n\n## الـ Base URL\n```\n{{baseUrl}}\n```\n\n---\n\n## credentials:\n- Admin: admin@almiftah.com / admin123\n- Owner: owner1@almiftah.com / password123\n- User: user1@test.com / password123\n\n## الأدوار (role)\n| القيمة | الوصف |\n|--------|-------|\n| user | مستخدم عادي |\n| owner | مالك عقارات |\n| admin | مدير النظام |\n\n## حالة الحساب\n| الحقل | الوصف |\n|-------|-------|\n| is_active | هل الحساب نشط |\n| is_banned | هل الحساب محظور |\n| email_verified_at | تاريخ توثيق الإيميل (null = غير موثق) |\n\n## رموز حالة تسجيل الدخول\n| القيمة | المعنى |\n|--------|-------|\n| null | نجاح |\n| false | الحساب غير نشط |\n| \"banned\" | الحساب محظور |\n| \"unverified\" | الحساب غير موثق |\n| \"\" (فارغ) | بيانات خاطئة |",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "45241807",
+    "_collection_link": "https://go.postman.co/collection/45241807-7e287739-c431-4267-a220-ea8b626a2f42?source=collection_link"
   },
-  "variable": [
-    { "key": "baseUrl", "value": "https://al-miftah-master-enqeji.free.laravel.cloud/api" },
-    { "key": "adminToken", "value": "" },
-    { "key": "userToken", "value": "" },
-    { "key": "ownerToken", "value": "" },
-    { "key": "newUserEmail", "value": "" },
-    { "key": "newUserId", "value": "" },
-    { "key": "newUserEmail2", "value": "" }
-  ],
   "item": [
     {
       "name": "السيناريو 1: التسجيل العادي (توثيق من الأدمن)",
       "item": [
         {
           "name": "1.1 تسجيل مستخدم جديد",
-          "description": "تسجيل مستخدم جديد. الدور الافتراضي هو user.",
           "event": [
             {
               "listen": "test",
@@ -36,26 +29,42 @@
                   "pm.test('الحساب غير موثق', function() {",
                   "    pm.expect(pm.response.json().data.user.email_verified_at).to.be.null;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/register",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"مستخدم جديد\",\n  \"email\": \"newuser_{{$randomInt}}@test.com\",\n  \"phone\": \"96655{{$randomInt}}\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"role\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "1.2 تسجيل دخول - ❌ تفشل (غير موثق)",
-          "description": "محاولة تسجيل دخول قبل توثيق الحساب",
           "event": [
             {
               "listen": "test",
@@ -67,26 +76,42 @@
                   "pm.test('رسالة الخطأ', function() {",
                   "    pm.expect(pm.response.json().message).to.contain('موثق');",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/login",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{newUserEmail}}\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "1.3 تسجيل دخول الأدمن",
-          "description": "الأدمن يسجل دخول لإدارة المستخدمين",
           "event": [
             {
               "listen": "test",
@@ -96,26 +121,42 @@
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});",
                   "pm.environment.set('adminToken', pm.response.json().data.token);"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/login",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"admin@almiftah.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "1.4 الأدمن يوثق المستخدم",
-          "description": "الأدمن يوثق المستخدم الجديد يدوياً",
           "event": [
             {
               "listen": "test",
@@ -127,22 +168,40 @@
                   "pm.test('الحساب موثق الآن', function() {",
                   "    pm.expect(pm.response.json().data.email_verified_at).to.not.be.null;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/admin/users/{{newUserId}}/verify",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
-              { "key": "Accept", "value": "application/json" }
-            ]
-          }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{newUserId}}/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "{{newUserId}}",
+                "verify"
+              ]
+            }
+          },
+          "response": []
         },
         {
           "name": "1.5 تسجيل دخول المستخدم - ✅ نجاح",
-          "description": "تسجيل دخول بعد توثيق الحساب",
           "event": [
             {
               "listen": "test",
@@ -155,22 +214,39 @@
                   "    pm.expect(pm.response.json().data.token).to.not.be.undefined;",
                   "});",
                   "pm.environment.set('userToken', pm.response.json().data.token);"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/login",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{newUserEmail}}\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -179,7 +255,6 @@
       "item": [
         {
           "name": "2.1 تسجيل مستخدم جديد",
-          "description": "تسجيل مستخدم جديد للسيناريو الثاني",
           "event": [
             {
               "listen": "test",
@@ -189,26 +264,42 @@
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});",
                   "pm.environment.set('newUserEmail2', pm.response.json().data.user.email);"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/register",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"مستخدم 2\",\n  \"email\": \"newuser2_{{$randomInt}}@test.com\",\n  \"phone\": \"96666{{$randomInt}}\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"role\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "2.2 إرسال رابط التوثيق",
-          "description": "إرسال رابط توثيق الإيميل (للحصول على رمز التوثيق)",
           "event": [
             {
               "listen": "test",
@@ -217,26 +308,42 @@
                   "pm.test('✓ تم إرسال رابط التوثيق', function() {",
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/send-verification-email",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{newUserEmail2}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/send-verification-email",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "send-verification-email"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "2.3 توثيق الحساب عبر API",
-          "description": "توثيق الحساب بدون الحاجة لرابط الإيميل (للاختبار)",
           "event": [
             {
               "listen": "test",
@@ -248,26 +355,42 @@
                   "pm.test('الحساب موثق', function() {",
                   "    pm.expect(pm.response.json().data.email_verified_at).to.not.be.null;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/verify-email",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{newUserEmail2}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify-email",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "verify-email"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "2.4 تسجيل دخول - ✅ نجاح",
-          "description": "تسجيل دخول بعد توثيق الإيميل",
           "event": [
             {
               "listen": "test",
@@ -276,22 +399,39 @@
                   "pm.test('✓ تسجيل دخول ناجح', function() {",
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/login",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{newUserEmail2}}\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -300,7 +440,6 @@
       "item": [
         {
           "name": "3.1 تسجيل دخول المالك",
-          "description": "تسجيل دخول بحساب مالك عقارات (owner)",
           "event": [
             {
               "listen": "test",
@@ -313,22 +452,39 @@
                   "pm.test('الدور owner', function() {",
                   "    pm.expect(pm.response.json().data.user.role).to.eq('owner');",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/login",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"owner1@almiftah.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -337,7 +493,6 @@
       "item": [
         {
           "name": "4.1 تسجيل دخول المستخدم",
-          "description": "تسجيل دخول لتغيير كلمة المرور",
           "event": [
             {
               "listen": "test",
@@ -347,26 +502,44 @@
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});",
                   "pm.environment.set('userToken', pm.response.json().data.token);"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/login",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"user1@test.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "4.2 تغيير كلمة المرور - ✅ نجاح",
-          "description": "تغيير كلمة المرور بكلمة مرور صحيحة",
           "event": [
             {
               "listen": "test",
@@ -375,27 +548,46 @@
                   "pm.test('✓ تم تغيير كلمة المرور', function() {",
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/change-password",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{userToken}}" },
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"current_password\": \"password123\",\n  \"password\": \"newpassword123\",\n  \"password_confirmation\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "4.3 تسجيل دخول بكلمة المرور الجديدة - ✅ نجاح",
-          "description": "تسجيل دخول بكلمة المرور الجديدة",
           "event": [
             {
               "listen": "test",
@@ -404,26 +596,42 @@
                   "pm.test('✓ تسجيل دخول ناجح', function() {",
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/login",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"user1@test.com\",\n  \"password\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "4.4 إعادة كلمة المرور القديمة",
-          "description": "إعادة كلمة المرور القديمة للاختبارات",
           "event": [
             {
               "listen": "test",
@@ -432,23 +640,43 @@
                   "pm.test('✓ تم إعادة كلمة المرور', function() {",
                   "    pm.expect(pm.response.json().success).to.be.true;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/change-password",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{userToken}}" },
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"current_password\": \"newpassword123\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -457,7 +685,6 @@
       "item": [
         {
           "name": "5.1 تسجيل دخول - بيانات خاطئة",
-          "description": "بريد إلكتروني أو كلمة مرور خاطئة",
           "event": [
             {
               "listen": "test",
@@ -466,26 +693,42 @@
                   "pm.test('✓ فشل - بيانات خاطئة', function() {",
                   "    pm.expect(pm.response.json().success).to.be.false;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/login",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"wrong@test.com\",\n  \"password\": \"wrongpass\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "5.2 تسجيل دخول - حساب محظور",
-          "description": "تسجيل دخول بحساب محظور",
           "event": [
             {
               "listen": "test",
@@ -494,26 +737,42 @@
                   "pm.test('✓ فشل - حساب محظور', function() {",
                   "    pm.expect(pm.response.json().success).to.be.false;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/login",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"banned@test.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "5.3 تسجيل - بريد مكرر",
-          "description": "التسجيل ببريد إلكتروني مستخدم من قبل",
           "event": [
             {
               "listen": "test",
@@ -522,26 +781,42 @@
                   "pm.test('✓ فشل - بريد مكرر', function() {",
                   "    pm.expect(pm.response.status).to.eq(422);",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/register",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"مستخدم\",\n  \"email\": \"admin@almiftah.com\",\n  \"phone\": \"966501111111\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"role\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "5.4 تغيير كلمة المرور - كلمة قديمة خاطئة",
-          "description": "تغيير كلمة المرور بكلمة مرور قديمة خاطئة",
           "event": [
             {
               "listen": "test",
@@ -550,27 +825,46 @@
                   "pm.test('✓ فشل - كلمة مرور خاطئة', function() {",
                   "    pm.expect(pm.response.json().success).to.be.false;",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/change-password",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{userToken}}" },
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"current_password\": \"wrongpass\",\n  \"password\": \"newpassword123\",\n  \"password_confirmation\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "5.5 تسجيل - بدون دور",
-          "description": "التسجيل بدون تحديد الدور (يجب أن يفشل)",
           "event": [
             {
               "listen": "test",
@@ -579,26 +873,42 @@
                   "pm.test('✓ فشل - الدور مطلوب', function() {",
                   "    pm.expect(pm.response.status).to.eq(422);",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/register",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"مستخدم\",\n  \"email\": \"userwithoutrole@test.com\",\n  \"phone\": \"966507777777\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "5.6 تسجيل - دور غير صالح",
-          "description": "التسmissible بدور غير موجود",
           "event": [
             {
               "listen": "test",
@@ -607,22 +917,39 @@
                   "pm.test('✓ فشل - دور غير صالح', function() {",
                   "    pm.expect(pm.response.status).to.eq(422);",
                   "});"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/auth/register",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"مستخدم\",\n  \"email\": \"userwithinvalidrole@test.com\",\n  \"phone\": \"966508888888\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"role\": \"superadmin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -633,11 +960,72 @@
           "name": "هيكل بيانات المستخدم",
           "request": {
             "method": "GET",
-            "url": { "raw": "", "host": [], "path": [] },
+            "header": [],
+            "url": {
+              "raw": "/",
+              "path": [
+                ""
+              ]
+            },
             "description": "# هيكل بيانات المستخدم\n\n```json\n{\n  \"id\": 1,\n  \"name\": \"أحمد محمد\",\n  \"email\": \"ahmed@test.com\",\n  \"phone\": \"966501234567\",\n  \"role\": \"user\", // user | owner | admin\n  \"is_active\": true,\n  \"is_banned\": false,\n  \"banned_at\": null,\n  \"ban_reason\": null,\n  \"email_verified_at\": \"2026-03-14T04:14:35.000000Z\",\n  \"created_at\": \"2026-03-14T04:14:35.000000Z\",\n  \"updated_at\": \"2026-03-14T04:14:35.000000Z\"\n}\n```\n\n---\n\n## هيكل رد تسجيل الدخول\n\n```json\n{\n  \"success\": true,\n  \"message\": \"تم تسجيل الدخول بنجاح\",\n  \"data\": {\n    \"user\": { /* User object */ },\n    \"token\": \"1|abc123...\"\n  }\n}\n```\n\n---\n\n## ملاحظات للـ Frontend\n\n### 1. تخزين Token\n```javascript\n// بعد تسجيل الدخول الناجح\nlocalStorage.setItem('token', response.data.data.token);\n```\n\n### 2. استخدام Token في الطلبات\n```javascript\nfetch(url, {\n  headers: {\n    'Authorization': `Bearer ${token}`,\n    'Accept': 'application/json'\n  }\n});\n```\n\n### 3. التحقق من حالة تسجيل الدخول\n```javascript\nconst result = response.data;\nif (result.success) {\n    // نجاح - استخدم result.data.token\n} else if (result.message.includes('موثق')) {\n    // الحساب غير موثق - يتطلب توثيق\n} else if (result.message.includes('محظور')) {\n    // الحساب محظور\n} else if (result.message.includes('نشط')) {\n    // الحساب غير نشط\n} else {\n    // بيانات خاطئة\n}\n```\n\n### 4. سيناريو التسجيل\n```javascript\n// 1. تسجيل\nconst registerResponse = await fetch('/api/auth/register', {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },\n    body: JSON.stringify({ name, email, phone, password, password_confirmation, role })\n});\n\n// 2. إذا تم التسجيل بنجاح - يبقى الحساب غير موثق\n// 3. التواصل مع الأدمن لتوثيق الحساب، أو\n// 4. استخدام /auth/send-verification-email ثم /auth/verify-email\n\n// 5. تسجيل الدخول\nconst loginResponse = await fetch('/api/auth/login', {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },\n    body: JSON.stringify({ email, password })\n});\n```"
-          }
+          },
+          "response": []
         }
       ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://al-miftah-master-enqeji.free.laravel.cloud/api"
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "userToken",
+      "value": ""
+    },
+    {
+      "key": "ownerToken",
+      "value": ""
+    },
+    {
+      "key": "newUserEmail",
+      "value": ""
+    },
+    {
+      "key": "newUserId",
+      "value": ""
+    },
+    {
+      "key": "newUserEmail2",
+      "value": ""
     }
   ]
 }

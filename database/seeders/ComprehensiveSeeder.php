@@ -190,7 +190,7 @@ class ComprehensiveSeeder extends Seeder
             'description' => 'فيلا 4 غرف نوم مع حديقة كبيرة، موقف سيارات،near schools',
             'price' => 250000000,
             'type' => 'sale',
-            'property_type' => 'house',
+            'property_type' => 'villa',
             'area' => 350,
             'region_id' => 34, // الصالحية
             'location' => 'دمشق - الصالحية',
