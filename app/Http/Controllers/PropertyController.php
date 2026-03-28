@@ -180,6 +180,12 @@ class PropertyController extends Controller
                 $this->propertyService->addImagesFromBase64($property, $base64Images);
             }
         }
+
+        return $this->successResponse(
+            new PropertyResource($property->load('images', 'region.parent.parent.parent')),
+            'تم إنشاء العقار بنجاح',
+            201
+        );
     }
 
     /**
