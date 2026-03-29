@@ -4,6 +4,10 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\PropertyFavorite;
+use App\Models\Property;
+use App\Models\ContactRequest;
+use App\Models\Notification;
+use App\Models\UserFcmToken;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -15,22 +19,29 @@ class AccountService
             return false;
         }
 
+        $userId = $user->id;
+
         // حذف رموز المصادقة
         $user->tokens()->delete();
 
-        // حذف صور العقارات من التخزين
+        // حذف صور العقارات من التخزين وحذف العقارات
         foreach ($user->properties as $property) {
             try {
                 Storage::disk('public')->deleteDirectory('properties/' . $property->id);
             } catch (\Exception $e) {
                 // تجاهل خطأ حذف المجلد
             }
+            $property->images()->delete();
+            $property->delete();
         }
 
-        // حذف المفضلات يدوياً (لأن belongsToMany لا تدعم onDelete)
-        PropertyFavorite::where('user_id', $user->id)->delete();
+        // حذف جميع السجلات المرتبطة يدوياً
+        PropertyFavorite::where('user_id', $userId)->delete();
+        ContactRequest::where('user_id', $userId)->delete();
+        Notification::where('user_id', $userId)->delete();
+        UserFcmToken::where('user_id', $userId)->delete();
 
-        // حذف المستخدم (العلاقات تحذف تلقائياً بـ Cascade)
+        // حذف المستخدم
         $user->delete();
 
         return true;
