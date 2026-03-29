@@ -19,19 +19,17 @@ class ContactRequestPolicy
 
     public function view(User $user, ContactRequest $contactRequest): bool
     {
-        return $user->isAdmin() 
-            || $contactRequest->user_id === $user->id 
-            || $contactRequest->owner_id === $user->id;
+        return true; // أي مستخدم يمكنه العرض
     }
 
     public function viewMyRequests(User $user): bool
     {
-        return true;
+        return true; // أي مستخدم
     }
 
     public function viewMyReceived(User $user): bool
     {
-        return true;
+        return true; // أي مستخدم
     }
 
     public function viewAnyForAdmin(User $user): bool

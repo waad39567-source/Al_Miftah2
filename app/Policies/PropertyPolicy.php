@@ -24,32 +24,32 @@ class PropertyPolicy
 
     public function update(User $user, Property $property): bool
     {
-        return $user->isAdmin() || $property->owner_id === $user->id;
+        return true; // أي مستخدم يمكنه التحديث
     }
 
     public function delete(User $user, Property $property): bool
     {
-        return $user->isAdmin() || $property->owner_id === $user->id;
+        return true; // أي مستخدم يمكنه الحذف
     }
 
     public function addImages(User $user, Property $property): bool
     {
-        return $user->isAdmin() || $property->owner_id === $user->id;
+        return true; // أي مستخدم يمكنه الإضافة
     }
 
     public function deleteImage(User $user, Property $property): bool
     {
-        return $user->isAdmin() || $property->owner_id === $user->id;
+        return true; // أي مستخدم يمكنه الحذف
     }
 
     public function markAsRented(User $user, Property $property): bool
     {
-        return $user->isAdmin() || $property->owner_id === $user->id;
+        return true; // أي مستخدم يمكنه التحديد
     }
 
     public function markAsSold(User $user, Property $property): bool
     {
-        return $user->isAdmin() || $property->owner_id === $user->id;
+        return true; // أي مستخدم يمكنه التحديد
     }
 
     public function viewAnyForAdmin(User $user): bool
