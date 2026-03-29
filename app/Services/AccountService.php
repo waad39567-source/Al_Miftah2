@@ -14,6 +14,10 @@ class AccountService
             return false;
         }
 
+        // حذف رموز المصادقة
+        $user->tokens()->delete();
+
+        // حذف صور العقارات من التخزين
         foreach ($user->properties as $property) {
             try {
                 Storage::disk('public')->deleteDirectory('properties/' . $property->id);
@@ -22,6 +26,7 @@ class AccountService
             }
         }
 
+        // حذف المستخدم (العلاقات تحذف تلقائياً بـ Cascade)
         $user->delete();
 
         return true;
