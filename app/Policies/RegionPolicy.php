@@ -24,7 +24,7 @@ class RegionPolicy
 
     public function create(User $user): bool
     {
-        return $user->is_admin;
+        return true; // أي مستخدم مسجل يمكنه إضافة حي
     }
 
     public function update(User $user, Region $region): bool
