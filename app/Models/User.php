@@ -79,8 +79,7 @@ class User extends Authenticatable
     public function favoriteProperties()
     {
         return $this->belongsToMany(Property::class, 'property_favorites')
-            ->withTimestamps()
-            ->onDelete('cascade');
+            ->withTimestamps();
     }
 
     /*

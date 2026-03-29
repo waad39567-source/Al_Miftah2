@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Models\PropertyFavorite;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,6 +26,9 @@ class AccountService
                 // تجاهل خطأ حذف المجلد
             }
         }
+
+        // حذف المفضلات يدوياً (لأن belongsToMany لا تدعم onDelete)
+        PropertyFavorite::where('user_id', $user->id)->delete();
 
         // حذف المستخدم (العلاقات تحذف تلقائياً بـ Cascade)
         $user->delete();
