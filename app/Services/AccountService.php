@@ -3,11 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
-use App\Models\PropertyFavorite;
-use App\Models\Property;
-use App\Models\ContactRequest;
-use App\Models\Notification;
-use App\Models\UserFcmToken;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,27 +18,35 @@ class AccountService
         $userId = $user->id;
 
         // حذف رموز المصادقة
-        $user->tokens()->delete();
+        DB::table('personal_access_tokens')->where('tokenable_id', $userId)->delete();
 
-        // حذف صور العقارات من التخزين وحذف العقارات
-        foreach ($user->properties as $property) {
+        // حذف صور العقارات من التخزين
+        $properties = DB::table('properties')->where('owner_id', $userId)->get();
+        foreach ($properties as $property) {
             try {
                 Storage::disk('public')->deleteDirectory('properties/' . $property->id);
             } catch (\Exception $e) {
                 // تجاهل خطأ حذف المجلد
             }
-            $property->images()->delete();
-            $property->delete();
+            // حذف صور العقار
+            DB::table('property_images')->where('property_id', $property->id)->delete();
+            // حذف طلبات التواصل للعقار
+            DB::table('contact_requests')->where('property_id', $property->id)->delete();
+            // حذف المفضلات للعقار
+            DB::table('property_favorites')->where('property_id', $property->id)->delete();
+            // حذف العقار
+            DB::table('properties')->where('id', $property->id)->delete();
         }
 
         // حذف جميع السجلات المرتبطة يدوياً
-        PropertyFavorite::where('user_id', $userId)->delete();
-        ContactRequest::where('user_id', $userId)->delete();
-        Notification::where('user_id', $userId)->delete();
-        UserFcmToken::where('user_id', $userId)->delete();
+        DB::table('property_favorites')->where('user_id', $userId)->delete();
+        DB::table('contact_requests')->where('user_id', $userId)->delete();
+        DB::table('contact_requests')->where('owner_id', $userId)->delete();
+        DB::table('notifications')->where('user_id', $userId)->delete();
+        DB::table('user_fcm_tokens')->where('user_id', $userId)->delete();
 
         // حذف المستخدم
-        $user->delete();
+        DB::table('users')->where('id', $userId)->delete();
 
         return true;
     }
