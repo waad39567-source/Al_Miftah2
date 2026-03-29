@@ -14,7 +14,16 @@ class PropertyPolicy
 
     public function view(User $user, Property $property): bool
     {
-        return true;
+        if ($user && $user->isAdmin()) {
+            return true;
+        }
+        if ($property->status === 'active') {
+            return true;
+        }
+        if ($user && $property->owner_id === $user->id) {
+            return true;
+        }
+        return false;
     }
 
     public function create(User $user): bool
@@ -24,32 +33,32 @@ class PropertyPolicy
 
     public function update(User $user, Property $property): bool
     {
-        return true; // أي مستخدم يمكنه التحديث
+        return $user->isAdmin() || $property->owner_id === $user->id;
     }
 
     public function delete(User $user, Property $property): bool
     {
-        return true; // أي مستخدم يمكنه الحذف
+        return $user->isAdmin() || $property->owner_id === $user->id;
     }
 
     public function addImages(User $user, Property $property): bool
     {
-        return true; // أي مستخدم يمكنه الإضافة
+        return $user->isAdmin() || $property->owner_id === $user->id;
     }
 
     public function deleteImage(User $user, Property $property): bool
     {
-        return true; // أي مستخدم يمكنه الحذف
+        return $user->isAdmin() || $property->owner_id === $user->id;
     }
 
     public function markAsRented(User $user, Property $property): bool
     {
-        return true; // أي مستخدم يمكنه التحديد
+        return $user->isAdmin() || $property->owner_id === $user->id;
     }
 
     public function markAsSold(User $user, Property $property): bool
     {
-        return true; // أي مستخدم يمكنه التحديد
+        return $user->isAdmin() || $property->owner_id === $user->id;
     }
 
     public function viewAnyForAdmin(User $user): bool
