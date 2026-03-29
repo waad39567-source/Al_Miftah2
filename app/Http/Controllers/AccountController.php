@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateEmailRequest;
 use App\Services\AccountService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class AccountController extends Controller
@@ -33,7 +34,10 @@ class AccountController extends Controller
 
             return $this->successResponse(null, 'تم حذف الحساب وجميع البيانات المرتبطة بنجاح');
         } catch (Throwable $e) {
-            return $this->errorResponse('حدث خطأ أثناء حذف الحساب', 500, null, $e->getMessage());
+            Log::error('Delete Account Error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            return $this->errorResponse('حدث خطأ أثناء حذف الحساب: ' . $e->getMessage(), 500);
         }
     }
 
