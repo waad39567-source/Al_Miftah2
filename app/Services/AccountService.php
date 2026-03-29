@@ -15,7 +15,11 @@ class AccountService
         }
 
         foreach ($user->properties as $property) {
-            Storage::disk('public')->deleteDirectory('properties/' . $property->id);
+            try {
+                Storage::disk('public')->deleteDirectory('properties/' . $property->id);
+            } catch (\Exception $e) {
+                // تجاهل خطأ حذف المجلد
+            }
         }
 
         $user->delete();
