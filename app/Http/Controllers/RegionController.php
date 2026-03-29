@@ -56,14 +56,15 @@ class RegionController extends Controller
 
     public function store(RegionRequest $request): JsonResponse
     {
-        $check = $this->checkAdmin($request);
-        if ($check) return $check;
+        if ($request->type !== 'neighborhood') {
+            $check = $this->checkAdmin($request);
+            if ($check) return $check;
+        }
 
         if ($request->parent_id && $request->parent_id == $request->id) {
             return $this->errorResponse('لا يمكن جعل المنطقة كأب لنفسها', 422);
         }
 
-        // Validate region hierarchy
         $validationError = $this->validateRegionHierarchy($request->type, $request->parent_id);
         if ($validationError) {
             return $validationError;
