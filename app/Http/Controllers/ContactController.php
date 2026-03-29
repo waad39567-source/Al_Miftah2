@@ -81,10 +81,8 @@ class ContactController extends Controller
             return $this->errorResponse('غير مصرح لك بعرض الطلبات المستلمة', 403);
         }
 
-        $filters = array_merge($request->only(['per_page']), [
-            'owner_id' => $request->user()->id,
-            'status' => 'approved'
-        ]);
+        $filters = $request->only(['per_page', 'status']);
+        $filters['owner_id'] = $request->user()->id;
 
         $requests = $this->contactService->getAll($filters);
 
