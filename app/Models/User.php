@@ -51,41 +51,36 @@ class User extends Authenticatable
     |--------------------------------------------------------------------------
     */
 
-    // العقارات التي يملكها
     public function properties()
     {
-        return $this->hasMany(Property::class, 'owner_id');
+        return $this->hasMany(Property::class, 'owner_id')->onDelete('cascade');
     }
 
-    // العقارات التي وافق عليها (admin)
     public function approvedProperties()
     {
-        return $this->hasMany(Property::class, 'approved_by');
+        return $this->hasMany(Property::class, 'approved_by')->onDelete('cascade');
     }
 
-    // طلبات التواصل
     public function contactRequests()
     {
-        return $this->hasMany(ContactRequest::class);
+        return $this->hasMany(ContactRequest::class)->onDelete('cascade');
     }
 
-    // الإشعارات
     public function notifications()
     {
-        return $this->hasMany(Notification::class);
+        return $this->hasMany(Notification::class)->onDelete('cascade');
     }
 
-    // FCM Tokens
     public function fcmTokens()
     {
-        return $this->hasMany(UserFcmToken::class);
+        return $this->hasMany(UserFcmToken::class)->onDelete('cascade');
     }
 
-    // العقارات المفضلة
     public function favoriteProperties()
     {
         return $this->belongsToMany(Property::class, 'property_favorites')
-            ->withTimestamps();
+            ->withTimestamps()
+            ->onDelete('cascade');
     }
 
     /*

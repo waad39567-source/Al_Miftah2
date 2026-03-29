@@ -18,13 +18,12 @@ class AuthRequest extends FormRequest
         return match ($method) {
             'register' => [
                 'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
+                'email' => 'nullable|string|email|max:255|unique:users',
                 'password' => 'required|string|min:8|confirmed',
-                'phone' => ['required', 'string', 'regex:/^(\+?963|09)[0-9]{8}$/'],
-                'role' => 'required|in:user,owner',
+                'phone' => 'required|string|min:8|max:20',
             ],
             'login' => [
-                'email' => 'required|string|email',
+                'email' => 'required|string|min:8|max:50',
                 'password' => 'required|string',
             ],
             'changePassword' => [
@@ -37,15 +36,16 @@ class AuthRequest extends FormRequest
             ],
             'createUser' => [
                 'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
+                'email' => 'nullable|string|email|max:255|unique:users',
                 'password' => 'required|string|min:8|confirmed',
-                'phone' => ['nullable', 'string', 'regex:/^(\+?963|09)[0-9]{8}$/'],
-                'role' => 'required|in:user,owner,admin',
+                'phone' => 'required|string|min:8|max:20',
+                'role' => 'nullable|in:user,admin',
                 'is_active' => 'nullable|boolean',
             ],
             'updateProfile' => [
                 'name' => 'sometimes|string|max:255',
-                'phone' => ['sometimes', 'string', 'regex:/^09[0-9]{8}$/'],
+                'email' => 'sometimes|nullable|string|email|max:255|unique:users,email',
+                'phone' => 'sometimes|string|min:8|max:20',
             ],
             default => [],
         };
@@ -60,7 +60,6 @@ class AuthRequest extends FormRequest
             'name.max' => 'الاسم يجب ألا يتجاوز 255 حرف',
 
             // email
-            'email.required' => 'البريد الإلكتروني مطلوب',
             'email.email' => 'البريد الإلكتروني غير صالح',
             'email.unique' => 'البريد الإلكتروني مستخدم من قبل',
             'email.max' => 'البريد الإلكتروني يجب ألا يتجاوز 255 حرف',
@@ -74,7 +73,8 @@ class AuthRequest extends FormRequest
             // phone
             'phone.required' => 'رقم الهاتف مطلوب',
             'phone.string' => 'رقم الهاتف يجب أن يكون نص',
-            'phone.regex' => 'رقم الهاتف يجب أن يكون رقم سوري صحيح (09XXXXXXXX أو +963XXXXXXXX)',
+            'phone.min' => 'رقم الهاتف قصير جداً',
+            'phone.max' => 'رقم الهاتف طويل جداً',
             'phone.unique' => 'رقم الهاتف مستخدم من قبل',
 
             // current password

@@ -78,7 +78,7 @@ class AuthController extends Controller
 
             return $this->successResponse([
                 'user' => new UserResource($result['user']),
-            ], 'تم التسجيل بنجاح. لم يتم توثيق حسابك بعد يرجى التحقق من بريدك الالكتروني لتوثيق الحساب', 201);
+            ], 'تم التسجيل بنجاح', 201);
         } catch (Throwable $e) {
             return $this->errorResponse('حدث خطأ أثناء التسجيل', 500, null, $e->getMessage());
         }
@@ -117,10 +117,6 @@ class AuthController extends Controller
 
             if ($result === 'banned') {
                 return $this->errorResponse('الحساب محظور. يرجى التواصل مع الإدارة', 403);
-            }
-
-            if ($result === 'unverified') {
-                return $this->errorResponse('لم يتم توثيق حسابك بعد يرجى التحقق من بريدك الالكتروني لتوثيق الحساب', 403);
             }
 
             return $this->successResponse([

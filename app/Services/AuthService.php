@@ -11,12 +11,11 @@ class AuthService
     {
         $user = User::create([
             'name' => $data['name'],
-            'email' => $data['email'],
+            'email' => $data['email'] ?? null,
             'password' => Hash::make($data['password']),
-            'phone' => $data['phone'] ?? null,
-            'role' => $data['role'] ?? 'user',
+            'phone' => $data['phone'],
+            'role' => 'user',
             'is_active' => true,
-            'email_verified_at' => null,
         ]);
 
         return [
@@ -26,7 +25,11 @@ class AuthService
 
     public function login(array $data): array|false|null|string
     {
-        $user = User::where('email', $data['email'])->first();
+        $loginField = $data['email'];
+
+        $user = User::where('email', $loginField)
+            ->orWhere('phone', $loginField)
+            ->first();
 
         if (!$user || !Hash::check($data['password'], $user->password)) {
             return null;
@@ -38,10 +41,6 @@ class AuthService
 
         if ($user->is_banned) {
             return 'banned';
-        }
-
-        if (is_null($user->email_verified_at)) {
-            return 'unverified';
         }
 
         $token = $user->createToken('auth-token')->plainTextToken;
@@ -90,10 +89,10 @@ class AuthService
     {
         return User::create([
             'name' => $data['name'],
-            'email' => $data['email'],
+            'email' => $data['email'] ?? null,
             'password' => Hash::make($data['password']),
-            'phone' => $data['phone'] ?? null,
-            'role' => $data['role'],
+            'phone' => $data['phone'],
+            'role' => $data['role'] ?? 'user',
             'is_active' => $data['is_active'] ?? true,
         ]);
     }

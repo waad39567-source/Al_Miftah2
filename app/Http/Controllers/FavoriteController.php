@@ -16,7 +16,7 @@ class FavoriteController extends Controller
 
         $favorites = PropertyFavorite::where('user_id', $request->user()->id)
             ->with(['property' => function ($query) {
-                $query->where('status', 'approved');
+                $query->where('status', 'active');
             }])
             ->orderByDesc('created_at')
             ->paginate($perPage);

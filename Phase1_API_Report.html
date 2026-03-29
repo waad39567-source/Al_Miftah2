@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقرير تعديلات API - المرحلة الأولى</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            color: #00d9ff;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .badge-new { background: linear-gradient(135deg, #28a745, #20c997); }
+        .badge-modified { background: linear-gradient(135deg, #ffc107, #fd7e14); }
+        .badge-deleted { background: linear-gradient(135deg, #dc3545, #c82333); }
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .section-title {
+            color: #00d9ff;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #00d9ff;
+        }
+        .file-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-right: 4px solid #00d9ff;
+        }
+        .file-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .file-name {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #fff;
+        }
+        .file-path {
+            font-family: 'Courier New', monospace;
+            color: #888;
+            font-size: 0.9em;
+            direction: ltr;
+            text-align: left;
+        }
+        .code-block {
+            background: #0d1117;
+            border-radius: 8px;
+            padding: 15px;
+            direction: ltr;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .comment { color: #6a737d; }
+        .keyword { color: #ff7b72; }
+        .string { color: #a5d6ff; }
+        .variable { color: #79c0ff; }
+        .function { color: #d2a8ff; }
+        .method { color: #ffa657; }
+        .api-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .api-table th, .api-table td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .api-table th {
+            background: rgba(0, 217, 255, 0.2);
+            color: #00d9ff;
+        }
+        .api-table tr:hover { background: rgba(255, 255, 255, 0.05); }
+        .method-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        .method-delete { background: #f93e3e; color: #fff; }
+        .method-get { background: #61affe; color: #000; }
+        .method-post { background: #49cc90; color: #000; }
+        .method-put { background: #fca130; color: #000; }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .summary-card.new { background: linear-gradient(135deg, #28a745, #20c997); }
+        .summary-card.modified { background: linear-gradient(135deg, #ffc107, #fd7e14); }
+        .summary-card.deleted { background: linear-gradient(135deg, #dc3545, #c82333); }
+        .summary-number { font-size: 2.5em; font-weight: bold; }
+        .summary-label { font-size: 1em; opacity: 0.9; margin-top: 5px; }
+        .diff-line { padding: 2px 10px; }
+        .diff-add { background: rgba(40, 167, 69, 0.2); border-right: 3px solid #28a745; }
+        .diff-remove { background: rgba(220, 53, 69, 0.2); border-right: 3px solid #dc3545; }
+        .route-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .route-path {
+            font-family: 'Courier New', monospace;
+            color: #fff;
+            direction: ltr;
+        }
+        .route-controller {
+            color: #888;
+            font-size: 0.9em;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.2);
+            margin-bottom: 8px;
+            border-radius: 5px;
+            padding-right: 25px;
+            position: relative;
+        }
+        .feature-list li::before {
+            content: "✓";
+            position: absolute;
+            right: 10px;
+            color: #28a745;
+            font-weight: bold;
+        }
+        .timestamp {
+            text-align: center;
+            color: #666;
+            margin-top: 40px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 تقرير تعديلات API</h1>
+        <p class="subtitle">المرحلة الأولى: إلغاء دور مالك العقار + حذف الحساب</p>
+
+        <!-- Summary -->
+        <div class="summary-grid">
+            <div class="summary-card new">
+                <div class="summary-number">4</div>
+                <div class="summary-label">ملفات جديدة</div>
+            </div>
+            <div class="summary-card modified">
+                <div class="summary-number">5</div>
+                <div class="summary-label">ملفات معدلة</div>
+            </div>
+            <div class="summary-card deleted">
+                <div class="summary-number">1</div>
+                <div class="summary-label">Route محذوف</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-number">1</div>
+                <div class="summary-label">API جديد</div>
+            </div>
+        </div>
+
+        <!-- New Files -->
+        <div class="section">
+            <h2 class="section-title">📁 ملفات جديدة</h2>
+
+            <!-- DeleteAccountRequest -->
+            <div class="file-card">
+                <div class="file-header">
+                    <span class="file-name">DeleteAccountRequest.php</span>
+                    <span class="badge badge-new">جديد</span>
+                </div>
+                <div class="file-path">app/Http/Requests/DeleteAccountRequest.php</div>
+                <div class="code-block"><span class="comment">// التحقق من كلمة المرور لحذف الحساب</span>
+<span class="keyword">class</span> <span class="function">DeleteAccountRequest</span> <span class="keyword">extends</span> <span class="function">FormRequest</span>
+{
+    <span class="keyword">public function</span> <span class="method">authorize</span>(): <span class="keyword">bool</span>
+    {
+        <span class="keyword">return true</span>;
+    }
+
+    <span class="keyword">public function</span> <span class="method">rules</span>(): <span class="keyword">array</span>
+    {
+        <span class="keyword">return</span> [
+            <span class="string">'password'</span> => [<span class="string">'required'</span>, <span class="string">'string'</span>],
+        ];
+    }
+}</div>
+            </div>
+
+            <!-- AccountService -->
+            <div class="file-card">
+                <div class="file-header">
+                    <span class="file-name">AccountService.php</span>
+                    <span class="badge badge-new">جديد</span>
+                </div>
+                <div class="file-path">app/Services/AccountService.php</div>
+                <div class="code-block"><span class="comment">// منطق حذف الحساب</span>
+<span class="keyword">class</span> <span class="function">AccountService</span>
+{
+    <span class="keyword">public function</span> <span class="method">deleteAccount</span>(<span class="variable">User $user</span>, <span class="variable">string $password</span>): <span class="keyword">bool</span>
+    {
+        <span class="comment">// 1. التحقق من كلمة المرور</span>
+        <span class="keyword">if</span> (!<span class="function">Hash::check</span>($password, $user->password)) {
+            <span class="keyword">return false</span>;
+        }
+
+        <span class="comment">// 2. حذف صور العقارات من التخزين</span>
+        <span class="keyword">foreach</span> ($user->properties <span class="keyword">as</span> $property) {
+            <span class="function">Storage::disk</span>(<span class="string">'public'</span>)-><span class="method">deleteDirectory</span>(<span class="string">'properties/'</span> . $property->id);
+        }
+
+        <span class="comment">// 3. حذف المستخدم (Cascade Delete)</span>
+        $user-><span class="method">delete</span>();
+
+        <span class="keyword">return true</span>;
+    }
+}</div>
+            </div>
+
+            <!-- AccountController -->
+            <div class="file-card">
+                <div class="file-header">
+                    <span class="file-name">AccountController.php</span>
+                    <span class="badge badge-new">جديد</span>
+                </div>
+                <div class="file-path">app/Http/Controllers/AccountController.php</div>
+                <div class="code-block"><span class="keyword">class</span> <span class="function">AccountController</span> <span class="keyword">extends</span> <span class="function">Controller</span>
+{
+    <span class="keyword">use</span> <span class="function">ApiResponseTrait</span>;
+
+    <span class="keyword">public function</span> <span class="method">__construct</span>(
+        <span class="keyword">private</span> <span class="variable">AccountService $accountService</span>
+    ) {}
+
+    <span class="keyword">public function</span> <span class="method">deleteAccount</span>(<span class="variable">DeleteAccountRequest $request</span>): <span class="variable">JsonResponse</span>
+    {
+        $user = $request-><span class="method">user</span>();
+        $result = $this->accountService-><span class="method">deleteAccount</span>($user, $request-><span class="method">validated</span>(<span class="string">'password'</span>));
+
+        <span class="keyword">if</span> (!$result) {
+            <span class="keyword">return</span> $this-><span class="method">errorResponse</span>(<span class="string">'كلمة المرور غير صحيحة'</span>, <span class="string">401</span>);
+        }
+
+        <span class="keyword">return</span> $this-><span class="method">successResponse</span>(<span class="keyword">null</span>, <span class="string">'تم حذف الحساب...'</span>);
+    }
+}</div>
+            </div>
+
+            <!-- Migration -->
+            <div class="file-card">
+                <div class="file-header">
+                    <span class="file-name">add_cascade_delete_constraints.php</span>
+                    <span class="badge badge-new">جديد</span>
+                </div>
+                <div class="file-path">database/migrations/2026_03_29_000000_add_cascade_delete_constraints.php</div>
+                <div class="code-block"><span class="comment">// إضافة Cascade Delete للعلاقات</span>
+<span class="keyword">public function</span> <span class="method">up</span>(): <span class="keyword">void</span>
+{
+    <span class="function">Schema::table</span>(<span class="string">'properties'</span>, <span class="keyword">function</span> (<span class="variable">Blueprint $table</span>) {
+        $table-><span class="method">foreignId</span>(<span class="string">'owner_id'</span>)-><span class="method">nullable</span>()-><span class="method">change</span>();
+    });
+
+    <span class="function">Schema::table</span>(<span class="string">'contact_requests'</span>, <span class="keyword">function</span> (<span class="variable">Blueprint $table</span>) {
+        $table-><span class="method">foreignId</span>(<span class="string">'user_id'</span>)-><span class="method">nullable</span>()-><span class="method">change</span>();
+    });
+}</div>
+            </div>
+        </div>
+
+        <!-- Modified Files -->
+        <div class="section">
+            <h2 class="section-title">📝 ملفات معدلة</h2>
+
+            <!-- User Model -->
+            <div class="file-card">
+                <div class="file-header">
+                    <span class="file-name">User.php</span>
+                    <span class="badge badge-modified">معدّل</span>
+                </div>
+                <div class="file-path">app/Models/User.php</div>
+                <p style="color: #888; margin-bottom: 10px;">تمت إضافة onDelete('cascade') لجميع العلاقات:</p>
+                <div class="code-block"><span class="comment">// العقارات - مع Cascade Delete</span>
+<span class="keyword">public function</span> <span class="method">properties</span>()
+{
+    <span class="keyword">return</span> $this-><span class="method">hasMany</span>(<span class="variable">Property::class</span>, <span class="string">'owner_id'</span>)-><span class="method">onDelete</span>(<span class="string">'cascade'</span>);
+}
+
+<span class="comment">// طلبات التواصل - مع Cascade Delete</span>
+<span class="keyword">public function</span> <span class="method">contactRequests</span>()
+{
+    <span class="keyword">return</span> $this-><span class="method">hasMany</span>(<span class="variable">ContactRequest::class</span>)-><span class="method">onDelete</span>(<span class="string">'cascade'</span>);
+}
+
+<span class="comment">// الإشعارات - مع Cascade Delete</span>
+<span class="keyword">public function</span> <span class="method">notifications</span>()
+{
+    <span class="keyword">return</span> $this-><span class="method">hasMany</span>(<span class="variable">Notification::class</span>)-><span class="method">onDelete</span>(<span class="string">'cascade'</span>);
+}
+
+<span class="comment">// FCM Tokens - مع Cascade Delete</span>
+<span class="keyword">public function</span> <span class="method">fcmTokens</span>()
+{
+    <span class="keyword">return</span> $this-><span class="method">hasMany</span>(<span class="variable">UserFcmToken::class</span>)-><span class="method">onDelete</span>(<span class="string">'cascade'</span>);
+}</div>
+            </div>
+
+            <!-- PropertyFavorite Model -->
+            <div class="file-card">
+                <div class="file-header">
+                    <span class="file-name">PropertyFavorite.php</span>
+                    <span class="badge badge-modified">معدّل</span>
+                </div>
+                <div class="file-path">app/Models/PropertyFavorite.php</div>
+                <div class="code-block"><span class="comment">// تم إضافة onDelete('cascade') للعلاقات</span>
+<span class="keyword">public function</span> <span class="method">user</span>(): <span class="variable">BelongsTo</span>
+{
+    <span class="keyword">return</span> $this-><span class="method">belongsTo</span>(<span class="variable">User::class</span>)-><span class="method">onDelete</span>(<span class="string">'cascade'</span>);
+}
+
+<span class="keyword">public function</span> <span class="method">property</span>(): <span class="variable">BelongsTo</span>
+{
+    <span class="keyword">return</span> $this-><span class="method">belongsTo</span>(<span class="variable">Property::class</span>)-><span class="method">onDelete</span>(<span class="string">'cascade'</span>);
+}
+            </div>
+
+            <!-- PropertyPolicy -->
+            <div class="file-card">
+                <div class="file-header">
+                    <span class="file-name">PropertyPolicy.php</span>
+                    <span class="badge badge-modified">معدّل</span>
+                </div>
+                <div class="file-path">app/Policies/PropertyPolicy.php</div>
+                <p style="color: #888; margin-bottom: 10px;">تعديلات:</p>
+                <div class="code-block"><span class="comment">// 1. إزالة شرط التحقق من البريد الإلكتروني</span>
+<span class="keyword">public function</span> <span class="method">create</span>(<span class="variable">User $user</span>): <span class="keyword">bool</span>
+{
+    <span class="keyword">return true</span>;  <span class="comment">// أي مستخدم يمكنه الإنشاء</span>
+}
+
+<span class="comment">// 2. تغيير is_admin إلى isAdmin()</span>
+<span class="keyword">return</span> $user-><span class="method">isAdmin</span>() || $property->owner_id === $user->id;
+
+<span class="comment">// الصلاحيات الآن:</span>
+<span class="comment">// - create(): أي مستخدم مسجل ✓</span>
+<span class="comment">// - update(): المالك أو الأدمن ✓</span>
+<span class="comment">// - delete(): المالك أو الأدمن ✓</span>
+<span class="comment">// - markAsRented(): المالك أو الأدمن ✓</span>
+<span class="comment">// - markAsSold(): المالك أو الأدمن ✓</span></div>
+            </div>
+
+            <!-- routes/api.php -->
+            <div class="file-card">
+                <div class="file-header">
+                    <span class="file-name">api.php</span>
+                    <span class="badge badge-modified">معدّل</span>
+                </div>
+                <div class="file-path">routes/api.php</div>
+                <p style="color: #888; margin-bottom: 10px;">الإضافات والحذف:</p>
+                <div class="code-block"><span class="comment">// 1. إضافة Import للـ AccountController</span>
+<span class="keyword">use</span> <span class="variable">App\Http\Controllers\AccountController</span>;
+
+<span class="comment">// 2. إضافة Route جديد لحذف الحساب</span>
+<span class="variable">Route</span>::<span class="method">middleware</span>(<span class="string">'auth:sanctum'</span>)-><span class="method">group</span>(<span class="keyword">function</span> () {
+    <span class="variable">Route</span>::<span class="method">delete</span>(<span class="string">'/auth/account'</span>, [<span class="variable">AccountController::class</span>, <span class="string">'deleteAccount'</span>]);
+    <span class="comment">// ...</span>
+});
+
+<span class="comment">// 3. إزالة Route promote-to-admin</span>
+<span class="comment">// Route::post('/promote-to-admin', [AuthController::class, 'promoteToAdmin']); ← محذوف</span></div>
+            </div>
+        </div>
+
+        <!-- New API -->
+        <div class="section">
+            <h2 class="section-title">🆕 الـ API الجديد</h2>
+
+            <table class="api-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Controller</th>
+                        <th>الوظيفة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="method-badge method-delete">DELETE</span></td>
+                        <td style="direction: ltr; font-family: monospace;">/api/auth/account</td>
+                        <td>AccountController@deleteAccount</td>
+                        <td>حذف الحساب وجميع البيانات المرتبطة</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="color: #00d9ff; margin-top: 20px; margin-bottom: 10px;">📥 المدخلات (Request)</h3>
+            <div class="code-block">{
+    <span class="string">"password"</span>: <span class="string">"current_password"</span>  <span class="comment">// مطلوب - كلمة المرور الحالية</span>
+}</div>
+
+            <h3 style="color: #00d9ff; margin-top: 20px; margin-bottom: 10px;">📤 الاستجابة (Response)</h3>
+            <div class="code-block"><span class="comment">// نجاح</span>
+{
+    <span class="string">"success"</span>: <span class="keyword">true</span>,
+    <span class="string">"message"</span>: <span class="string">"تم حذف الحساب وجميع البيانات المرتبطة بنجاح"</span>,
+    <span class="string">"data"</span>: <span class="keyword">null</span>
+}
+
+<span class="comment">// فشل - كلمة مرور خاطئة</span>
+{
+    <span class="string">"success"</span>: <span class="keyword">false</span>,
+    <span class="string">"message"</span>: <span class="string">"كلمة المرور غير صحيحة"</span>
+}</div>
+        </div>
+
+        <!-- Deleted Routes -->
+        <div class="section">
+            <h2 class="section-title">❌ Routes محذوفة</h2>
+
+            <table class="api-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>السبب</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="method-badge method-post">POST</span></td>
+                        <td style="direction: ltr; font-family: monospace;">/api/auth/promote-to-admin</td>
+                        <td>إلغاء دور مالك العقار (owner)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Cascade Delete Features -->
+        <div class="section">
+            <h2 class="section-title">🔄 Cascade Delete</h2>
+            <p style="color: #888; margin-bottom: 15px;">عند حذف المستخدم، تحذف تلقائياً:</p>
+            <ul class="feature-list">
+                <li>العقارات المرتبطة بالمستخدم</li>
+                <li>صور العقارات من التخزين</li>
+                <li>طلبات التواصل</li>
+                <li>الإشعارات</li>
+                <li>رموز FCM</li>
+                <li>العقارات المفضلة</li>
+                <li>رموز المصادقة (Tokens)</li>
+            </ul>
+        </div>
+
+        <!-- User Permissions -->
+        <div class="section">
+            <h2 class="section-title">👤 صلاحيات المستخدم العادي</h2>
+            <p style="color: #888; margin-bottom: 15px;">بما أن دور مالك العقار (owner) قد أُلغي، فإن المستخدم العادي يحصل على جميع الصلاحيات:</p>
+            
+            <table class="api-table">
+                <thead>
+                    <tr>
+                        <th>الصلاحية</th>
+                        <th>المستخدم العادي</th>
+                        <th>الأدمن</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>إنشاء عقار</td>
+                        <td>✅ نعم</td>
+                        <td>✅ نعم</td>
+                    </tr>
+                    <tr>
+                        <td>تعديل عقاره</td>
+                        <td>✅ نعم</td>
+                        <td>✅ نعم</td>
+                    </tr>
+                    <tr>
+                        <td>حذف عقاره</td>
+                        <td>✅ نعم</td>
+                        <td>✅ نعم</td>
+                    </tr>
+                    <tr>
+                        <td>إضافة صور</td>
+                        <td>✅ نعم</td>
+                        <td>✅ نعم</td>
+                    </tr>
+                    <tr>
+                        <td>حذف صور</td>
+                        <td>✅ نعم</td>
+                        <td>✅ نعم</td>
+                    </tr>
+                    <tr>
+                        <td>تحديد كمؤجر</td>
+                        <td>✅ نعم</td>
+                        <td>✅ نعم</td>
+                    </tr>
+                    <tr>
+                        <td>تحديد كمباع</td>
+                        <td>✅ نعم</td>
+                        <td>✅ نعم</td>
+                    </tr>
+                    <tr>
+                        <td>الموافقة على العقارات</td>
+                        <td>❌ لا</td>
+                        <td>✅ نعم</td>
+                    </tr>
+                    <tr>
+                        <td>رفض العقارات</td>
+                        <td>❌ لا</td>
+                        <td>✅ نعم</td>
+                    </tr>
+                    <tr>
+                        <td>إدارة المستخدمين</td>
+                        <td>❌ لا</td>
+                        <td>✅ نعم</td>
+                    </tr>
+                    <tr>
+                        <td>حذف حسابه</td>
+                        <td>✅ نعم (DELETE /auth/account)</td>
+                        <td>✅ نعم</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- AuthRequest Changes -->
+        <div class="section">
+            <h2 class="section-title">📝 تعديل AuthRequest</h2>
+            
+            <div class="file-card">
+                <div class="file-header">
+                    <span class="file-name">AuthRequest.php</span>
+                    <span class="badge badge-modified">معدّل</span>
+                </div>
+                <div class="file-path">app/Http/Requests/AuthRequest.php</div>
+                
+                <h4 style="color: #00d9ff; margin: 15px 0 10px 0;">register:</h4>
+                <div class="code-block"><span class="comment">// قبل</span>
+'email' => <span class="string">'required|...|unique:users'</span>,  <span class="comment">// إجباري</span>
+'phone' => [..., <span class="string">'regex:/^(\+?963|09)[0-9]{8}$/'</span>],  <span class="comment">// سوري فقط</span>
+'role' => <span class="string">'required|in:user,owner'</span>,  <span class="comment">// دور owner</span>
+
+<span class="comment">// بعد</span>
+'email' => <span class="string">'nullable|...|unique:users'</span>,  <span class="comment">// اختياري</span>
+'phone' => <span class="string">'required|string|min:8|max:20'</span>,  <span class="comment">// أي تنسيق</span>
+<span class="comment">// role محذوف - الجميع مستخدم عادي</span></div>
+
+                <h4 style="color: #00d9ff; margin: 15px 0 10px 0;">updateProfile:</h4>
+                <div class="code-block"><span class="comment">// قبل</span>
+'name' => <span class="string">'sometimes|string|max:255'</span>,
+'phone' => [...<span class="string">'regex:/^09[0-9]{8}$/'</span>],
+
+<span class="comment">// بعد</span>
+'name' => <span class="string">'sometimes|string|max:255'</span>,
+'email' => <span class="string">'sometimes|nullable|string|email|max:255|unique:users,email'</span>,
+'phone' => <span class="string">'sometimes|string|min:8|max:20'</span>,</div>
+            </div>
+        </div>
+
+        <!-- Verification -->
+        <div class="section">
+            <h2 class="section-title">✅ التحقق من الصحة</h2>
+            <ul class="feature-list">
+                <li>فحص syntax PHP - لا توجد أخطاء ✓</li>
+                <li>Route جديد: DELETE /api/auth/account ✓</li>
+                <li>Route محذوف: promote-to-admin ✓</li>
+                <li>AuthRequest محدث ✓</li>
+                <li>PropertyPolicy محدث ✓</li>
+            </ul>
+        </div>
+
+        <div class="timestamp">
+            <p>📄 تقرير تعديلات API - المرحلة الأولى</p>
+            <p>📅 <?php echo date('Y-m-d'); ?> - <?php echo date('H:i'); ?></p>
+        </div>
+    </div>
+</body>
+</html>

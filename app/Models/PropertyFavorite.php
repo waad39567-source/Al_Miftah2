@@ -16,11 +16,11 @@ class PropertyFavorite extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->onDelete('cascade');
     }
 
     public function property(): BelongsTo
     {
-        return $this->belongsTo(Property::class);
+        return $this->belongsTo(Property::class)->onDelete('cascade');
     }
 }

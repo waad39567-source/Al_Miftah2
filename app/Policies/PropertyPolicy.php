@@ -19,37 +19,37 @@ class PropertyPolicy
 
     public function create(User $user): bool
     {
-        return $user->email_verified_at !== null;
+        return true;
     }
 
     public function update(User $user, Property $property): bool
     {
-        return $user->is_admin || $property->owner_id === $user->id;
+        return $user->isAdmin() || $property->owner_id === $user->id;
     }
 
     public function delete(User $user, Property $property): bool
     {
-        return $user->is_admin || $property->owner_id === $user->id;
+        return $user->isAdmin() || $property->owner_id === $user->id;
     }
 
     public function addImages(User $user, Property $property): bool
     {
-        return $user->is_admin || $property->owner_id === $user->id;
+        return $user->isAdmin() || $property->owner_id === $user->id;
     }
 
     public function deleteImage(User $user, Property $property): bool
     {
-        return $user->is_admin || $property->owner_id === $user->id;
+        return $user->isAdmin() || $property->owner_id === $user->id;
     }
 
     public function markAsRented(User $user, Property $property): bool
     {
-        return $user->is_admin || $property->owner_id === $user->id;
+        return $user->isAdmin() || $property->owner_id === $user->id;
     }
 
     public function markAsSold(User $user, Property $property): bool
     {
-        return $user->is_admin || $property->owner_id === $user->id;
+        return $user->isAdmin() || $property->owner_id === $user->id;
     }
 
     public function viewAnyForAdmin(User $user): bool

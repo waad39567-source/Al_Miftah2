@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
@@ -62,9 +63,10 @@ Route::prefix('auth')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
         Route::put('/profile', [AuthController::class, 'updateProfile']);
+        Route::put('/email', [AccountController::class, 'updateEmail']);
+        Route::delete('/account', [AccountController::class, 'deleteAccount']);
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/change-password', [AuthController::class, 'changePassword']);
-        Route::post('/promote-to-admin', [AuthController::class, 'promoteToAdmin']);
     });
 });
 
@@ -80,6 +82,15 @@ Route::prefix('regions')->group(function () {
     Route::get('/types/list', [RegionController::class, 'types']);
     Route::get('/root/list', [RegionController::class, 'rootRegions']);
     Route::get('/{id}/children', [RegionController::class, 'children']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Regions Routes (Authenticated: Create Neighborhood)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth:sanctum')->prefix('regions')->group(function () {
+    Route::post('/', [RegionController::class, 'store']);
 });
 
 /*
@@ -167,7 +178,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/contact-requests/{id}/reject', [AdminController::class, 'rejectContactRequest']);
         
         // Regions CRUD (Admin Only)
-        Route::post('/regions', [RegionController::class, 'store']);
         Route::put('/regions/{id}', [RegionController::class, 'update']);
         Route::delete('/regions/{id}', [RegionController::class, 'destroy']);
         
