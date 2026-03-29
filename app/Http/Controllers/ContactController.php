@@ -83,6 +83,7 @@ class ContactController extends Controller
 
         $filters = $request->only(['per_page', 'status']);
         $filters['owner_id'] = $request->user()->id;
+        $filters['status'] = $filters['status'] ?? 'approved';
 
         $requests = $this->contactService->getAll($filters);
 
