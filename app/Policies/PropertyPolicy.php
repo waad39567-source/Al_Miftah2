@@ -54,16 +54,16 @@ class PropertyPolicy
 
     public function viewAnyForAdmin(User $user): bool
     {
-        return (bool) $user->is_admin;
+        return $user->isAdmin();
     }
 
     public function approve(User $user, Property $property): bool
     {
-        return (bool) $user->is_admin;
+        return $user->isAdmin();
     }
 
     public function reject(User $user, Property $property): bool
     {
-        return (bool) $user->is_admin;
+        return $user->isAdmin();
     }
 }

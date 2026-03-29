@@ -14,12 +14,12 @@ class ContactRequestPolicy
 
     public function create(User $user): bool
     {
-        return $user->email_verified_at !== null;
+        return true; // أي مستخدم مسجل يمكنه إنشاء طلب
     }
 
     public function view(User $user, ContactRequest $contactRequest): bool
     {
-        return $user->is_admin 
+        return $user->isAdmin() 
             || $contactRequest->user_id === $user->id 
             || $contactRequest->owner_id === $user->id;
     }
@@ -36,16 +36,16 @@ class ContactRequestPolicy
 
     public function viewAnyForAdmin(User $user): bool
     {
-        return $user->is_admin;
+        return $user->isAdmin();
     }
 
     public function approve(User $user, ContactRequest $contactRequest): bool
     {
-        return $user->is_admin;
+        return $user->isAdmin();
     }
 
     public function reject(User $user, ContactRequest $contactRequest): bool
     {
-        return $user->is_admin;
+        return $user->isAdmin();
     }
 }

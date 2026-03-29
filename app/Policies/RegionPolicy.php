@@ -19,7 +19,7 @@ class RegionPolicy
 
     public function viewAnyForAdmin(User $user): bool
     {
-        return $user->is_admin;
+        return $user->isAdmin();
     }
 
     public function create(User $user): bool
@@ -29,11 +29,11 @@ class RegionPolicy
 
     public function update(User $user, Region $region): bool
     {
-        return $user->is_admin;
+        return $user->isAdmin();
     }
 
     public function delete(User $user, Region $region): bool
     {
-        return $user->is_admin;
+        return $user->isAdmin();
     }
 }
