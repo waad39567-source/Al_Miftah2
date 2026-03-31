@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "7e287739-c431-4267-a220-ea8b626a2f42",
     "name": "شركة المفتاح - المصادقة",
-    "description": "# شركة المفتاح - Authentication API\n\n## نظرة عامة\nواجهة برمجة التطبيقات للمصادقة تتضمن 3 سيناريوهات:\n\n### السيناريو 1: التسجيل العادي (بدون توثيق)\n- المستخدم يسجل\n- الأدمن يوثقه يدوياً\n- المستخدم يسجل دخول\n\n### السيناريو 2: التوثيق عبر الإيميل\n- المستخدم يسجل\n- يرسل رابط التوثيق\n- يوثق عبر API\n- يسجل دخول\n\n### السيناريو 3: تغيير كلمة المرور\n- المستخدم يسجل دخول\n- يغير كلمة المرور\n\n---\n\n## الـ Base URL\n```\n{{baseUrl}}\n```\n\n---\n\n## credentials:\n- Admin: admin@almiftah.com / admin123\n- Owner: owner1@almiftah.com / password123\n- User: user1@test.com / password123\n\n## الأدوار (role)\n| القيمة | الوصف |\n|--------|-------|\n| user | مستخدم عادي |\n| owner | مالك عقارات |\n| admin | مدير النظام |\n\n## حالة الحساب\n| الحقل | الوصف |\n|-------|-------|\n| is_active | هل الحساب نشط |\n| is_banned | هل الحساب محظور |\n| email_verified_at | تاريخ توثيق الإيميل (null = غير موثق) |\n\n## رموز حالة تسجيل الدخول\n| القيمة | المعنى |\n|--------|-------|\n| null | نجاح |\n| false | الحساب غير نشط |\n| \"banned\" | الحساب محظور |\n| \"unverified\" | الحساب غير موثق |\n| \"\" (فارغ) | بيانات خاطئة |",
+    "description": "# شركة المفتاح - Authentication API\n\n## نظرة عامة\nواجهة برمجة التطبيقات للمصادقة تتضمن 3 سيناريوهات:\n\n### السيناريو 1: التسجيل العادي (بدون توثيق)\n- المستخدم يسجل\n- الأدمن يوثقه يدوياً\n- المستخدم يسجل دخول\n\n### السيناريو 2: التوثيق عبر الإيميل\n- المستخدم يسجل\n- يرسل رابط التوثيق\n- يوثق عبر API\n- يسجل دخول\n\n### السيناريو 3: تغيير كلمة المرور\n- المستخدم يسجل دخول\n- يغير كلمة المرور\n\n---\n\n## الـ Base URL\n```\n{{baseUrl}}\n```\n\n---\n\n## credentials:\n- Admin: admin@almiftah.com / admin123\n- Owner: owner1@almiftah.com / password123\n- User: user1@test.com / password123\n\n## الأدوار (role)\n| القيمة | الوصف |\n|--------|-------|\n| user | مستخدم عادي |\n| owner | مالك عقارات |\n| admin | مدير النظام |\n\n## حالة الحساب\n| الحقل | الوصف |\n|-------|-------|\n| is_active | هل الحساب نشط |\n| is_banned | هل الحساب محظور |\n| email_verified_at | تاريخ توثيق الإيميل (null = غير موثق) |\n\n## رموز حالة تسجيل الدخول\n| القيمة | المعنى |\n|--------|-------|\n| null | نجاح |\n| false | الحساب غير نشط |\n| \"banned\" | الحساب محظور |\n| \"unverified\" | الحساب غير موثق |\n| \"\" (فارغ) | بيانات خاطئة |\n\n### السيناريو 6: Firebase Login\n- POST /auth/firebase (لجميع أنواع Firebase Auth)\n\n### السيناريو 7: تعيين كلمة مرور Firebase\n- POST /auth/firebase/set-password\n\n## حقل auth_provider الجديد: email | phone | google",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "45241807",
     "_collection_link": "https://go.postman.co/collection/45241807-7e287739-c431-4267-a220-ea8b626a2f42?source=collection_link"
@@ -954,6 +954,465 @@
       ]
     },
     {
+      "name": "السيناريو 6: تسجيل الدخول عبر Firebase (Google / Phone / Email)",
+      "item": [
+        {
+          "name": "6.1 تسجيل الدخول بـ Google (Firebase)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_token\": \"{{firebaseIdToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/firebase",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "firebase"
+              ]
+            },
+            "description": "سجّل الدخول عبر Google. ضع Firebase ID Token في متغير firebaseIdToken"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم تسجيل الدخول بنجاح', function() { pm.expect(pm.response.json().success).to.be.true; });",
+                  "var data = pm.response.json().data;",
+                  "pm.test('auth_provider = google', function() { pm.expect(data.user.auth_provider).to.eq('google'); });",
+                  "pm.environment.set('firebaseUserToken', data.token);",
+                  "pm.environment.set('firebaseUserId', data.user.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "6.2 تسجيل الدخول برقم الهاتف (Firebase OTP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_token\": \"{{firebaseIdToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/firebase",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "firebase"
+              ]
+            },
+            "description": "تسجيل دخول عبر OTP. احصل على ID Token بعد التحقق من الكود"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم تسجيل الدخول بنجاح', function() { pm.expect(pm.response.json().success).to.be.true; });",
+                  "var data = pm.response.json().data;",
+                  "pm.test('auth_provider = phone', function() { pm.expect(data.user.auth_provider).to.eq('phone'); });",
+                  "pm.environment.set('firebaseUserToken', data.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "6.3 تسجيل الدخول بالإيميل عبر Firebase",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_token\": \"{{firebaseIdToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/firebase",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "firebase"
+              ]
+            },
+            "description": "نفس الـ endpoint لجميع أنواع Firebase Auth"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم تسجيل الدخول بنجاح', function() { pm.expect(pm.response.json().success).to.be.true; });",
+                  "pm.environment.set('firebaseUserToken', pm.response.json().data.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "6.4 جلب بيانات المستخدم بعد Firebase Login",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebaseUserToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم جلب بيانات المستخدم', function() { pm.expect(pm.response.json().success).to.be.true; });",
+                  "pm.test('يوجد auth_provider', function() { pm.expect(pm.response.json().data).to.have.property('auth_provider'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "6.5 Firebase token غير صالح - فشل",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_token\": \"invalid.token.here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/firebase",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "firebase"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('فشل - token غير صالح', function() { pm.expect(pm.response.json().success).to.be.false; });",
+                  "pm.test('الحالة 401', function() { pm.expect(pm.response.code).to.eq(401); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "6.6 Firebase token مفقود - فشل",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/firebase",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "firebase"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('فشل - token مطلوب', function() { pm.expect(pm.response.code).to.eq(422); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "السيناريو 7: تعيين كلمة مرور لمستخدمي Firebase",
+      "item": [
+        {
+          "name": "7.1 تعيين كلمة مرور جديدة - نجاح",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebaseUserToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_token\": \"{{firebaseIdToken}}\",\n  \"password\": \"newpassword123\",\n  \"password_confirmation\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/firebase/set-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "firebase",
+                "set-password"
+              ]
+            },
+            "description": "يتطلب: firebaseUserToken (من السيناريو 6) + firebaseIdToken للتحقق من الهوية"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم تعيين كلمة المرور بنجاح', function() { pm.expect(pm.response.json().success).to.be.true; });",
+                  "pm.test('الحالة 200', function() { pm.expect(pm.response.code).to.eq(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "7.2 تسجيل دخول بكلمة المرور الجديدة",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{firebaseUserEmail}}\",\n  \"password\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "بعد تعيين كلمة المرور يمكن الدخول بالإيميل وكلمة المرور العادية"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('تم تسجيل الدخول بكلمة المرور الجديدة', function() { pm.expect(pm.response.json().success).to.be.true; });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "7.3 مستخدم عادي (غير Firebase) - فشل",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_token\": \"{{firebaseIdToken}}\",\n  \"password\": \"newpassword123\",\n  \"password_confirmation\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/firebase/set-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "firebase",
+                "set-password"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('فشل - ليس مستخدم Firebase', function() { pm.expect(pm.response.json().success).to.be.false; });",
+                  "pm.test('الحالة 403', function() { pm.expect(pm.response.code).to.eq(403); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "7.4 Firebase token لا يطابق الحساب - فشل",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebaseUserToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_token\": \"wrong.user.token\",\n  \"password\": \"newpassword123\",\n  \"password_confirmation\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/firebase/set-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "firebase",
+                "set-password"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('فشل - token لا يطابق', function() { pm.expect(pm.response.json().success).to.be.false; });",
+                  "pm.test('الحالة 401', function() { pm.expect(pm.response.code).to.eq(401); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "ملحق: هيكل البيانات",
       "item": [
         {
@@ -1025,6 +1484,18 @@
     },
     {
       "key": "newUserEmail2",
+      "value": ""
+    },
+    {
+      "key": "firebaseIdToken",
+      "value": ""
+    },
+    {
+      "key": "firebaseUserToken",
+      "value": ""
+    },
+    {
+      "key": "firebaseUserEmail",
       "value": ""
     }
   ]
