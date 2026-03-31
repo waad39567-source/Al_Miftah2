@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 return [
     'project_id'      => 'almiftah-real-estate',
