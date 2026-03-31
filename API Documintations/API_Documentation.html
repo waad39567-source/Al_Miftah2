@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>توثيق API - شركة المفتاح</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -34,15 +30,8 @@
             text-align: center;
         }
         
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
         
         .base-url {
             background: #f8f9fa;
@@ -67,11 +56,7 @@
             border-bottom: 2px solid #e9ecef;
         }
         
-        .toc h2 {
-            color: #495057;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-        }
+        .toc h2 { color: #495057; margin-bottom: 20px; font-size: 1.5em; }
         
         .toc-grid {
             display: grid;
@@ -91,14 +76,9 @@
             border: 2px solid transparent;
         }
         
-        .toc a:hover {
-            border-color: #667eea;
-            transform: translateY(-2px);
-        }
+        .toc a:hover { border-color: #667eea; transform: translateY(-2px); }
         
-        .content {
-            padding: 40px;
-        }
+        .content { padding: 40px; }
         
         .section {
             margin-bottom: 50px;
@@ -116,10 +96,7 @@
             gap: 15px;
         }
         
-        .section-header h2 {
-            font-size: 1.5em;
-        }
-        
+        .section-header h2 { font-size: 1.5em; }
         .section-header .badge {
             background: rgba(255,255,255,0.2);
             padding: 5px 15px;
@@ -127,9 +104,7 @@
             font-size: 0.9em;
         }
         
-        .section-content {
-            padding: 30px;
-        }
+        .section-content { padding: 30px; }
         
         .endpoint {
             margin-bottom: 30px;
@@ -159,14 +134,8 @@
         .method.post { background: #49cc90; color: white; }
         .method.put { background: #fca130; color: white; }
         .method.delete { background: #f93e3e; color: white; }
-        .method.patch { background: #50e3c2; color: white; }
         
-        .endpoint-url {
-            font-family: monospace;
-            font-size: 1em;
-            color: #3b4151;
-            direction: ltr;
-        }
+        .endpoint-url { font-family: monospace; font-size: 1em; color: #3b4151; direction: ltr; }
         
         .auth-badge {
             padding: 5px 12px;
@@ -175,20 +144,9 @@
             font-weight: bold;
         }
         
-        .auth-badge.required {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .auth-badge.public {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .auth-badge.admin {
-            background: #f8d7da;
-            color: #721c24;
-        }
+        .auth-badge.required { background: #fff3cd; color: #856404; }
+        .auth-badge.public { background: #d4edda; color: #155724; }
+        .auth-badge.admin { background: #f8d7da; color: #721c24; }
         
         .endpoint-desc {
             padding: 15px 25px;
@@ -198,13 +156,8 @@
             font-style: italic;
         }
         
-        .endpoint-body {
-            padding: 25px;
-        }
-        
-        .block {
-            margin-bottom: 20px;
-        }
+        .endpoint-body { padding: 25px; }
+        .block { margin-bottom: 20px; }
         
         .block h4 {
             color: #495057;
@@ -215,9 +168,7 @@
             gap: 8px;
         }
         
-        .block h4::before {
-            content: "📋";
-        }
+        .block h4::before { content: "📋"; }
         
         .code-block {
             background: #2d3748;
@@ -232,19 +183,9 @@
             white-space: pre;
         }
         
-        .code-block.json {
-            background: #1a202c;
-        }
+        .code-block.json { background: #1a202c; }
         
-        .table-container {
-            overflow-x: auto;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95em;
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 0.95em; }
         
         th, td {
             padding: 12px 15px;
@@ -252,15 +193,8 @@
             border-bottom: 1px solid #e9ecef;
         }
         
-        th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #495057;
-        }
-        
-        td {
-            color: #6c757d;
-        }
+        th { background: #f8f9fa; font-weight: 600; color: #495057; }
+        td { color: #6c757d; }
         
         code {
             background: #e9ecef;
@@ -272,11 +206,7 @@
             display: inline-block;
         }
         
-        .required-field {
-            color: #dc3545;
-            font-weight: bold;
-        }
-        
+        .required-field { color: #dc3545; font-weight: bold; }
         .success-response { border-right: 4px solid #28a745; }
         .error-response { border-right: 4px solid #dc3545; }
         
@@ -297,53 +227,6 @@
         .status-code.success { background: #d4edda; color: #155724; }
         .status-code.error { background: #f8d7da; color: #721c24; }
         
-        .nav {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            max-height: calc(100vh - 40px);
-            overflow-y: auto;
-            z-index: 1000;
-        }
-        
-        .nav h3 {
-            color: #495057;
-            margin-bottom: 15px;
-            font-size: 1em;
-        }
-        
-        .nav a {
-            display: block;
-            padding: 8px 12px;
-            color: #667eea;
-            text-decoration: none;
-            font-size: 0.9em;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-        
-        .nav a:hover {
-            background: #f8f9fa;
-        }
-        
-        @media (max-width: 768px) {
-            .nav { display: none; }
-            .header h1 { font-size: 1.8em; }
-            .content { padding: 20px; }
-        }
-        
-        .footer {
-            background: #f8f9fa;
-            padding: 30px;
-            text-align: center;
-            color: #6c757d;
-            border-top: 2px solid #e9ecef;
-        }
-        
         .info-box {
             background: #e7f3ff;
             border: 1px solid #b6d4fe;
@@ -352,15 +235,8 @@
             margin-bottom: 20px;
         }
         
-        .info-box h4 {
-            color: #084298;
-            margin-bottom: 10px;
-        }
-        
-        .info-box p {
-            color: #0c63e4;
-            line-height: 1.6;
-        }
+        .info-box h4 { color: #084298; margin-bottom: 10px; }
+        .info-box p { color: #0c63e4; line-height: 1.6; }
         
         .warning-box {
             background: #fff3cd;
@@ -370,14 +246,31 @@
             margin-bottom: 20px;
         }
         
-        .warning-box h4 {
-            color: #856404;
-            margin-bottom: 10px;
+        .warning-box h4 { color: #856404; margin-bottom: 10px; }
+        .warning-box p { color: #664d03; line-height: 1.6; }
+        
+        .change-log {
+            background: linear-gradient(135deg, #fff3cd 0%, #fff 100%);
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
         }
         
-        .warning-box p {
-            color: #664d03;
-            line-height: 1.6;
+        .change-log h4 { color: #856404; margin-bottom: 15px; }
+        .change-log ul { padding-right: 25px; line-height: 2; color: #664d03; }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #6c757d;
+            border-top: 2px solid #e9ecef;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8em; }
+            .content { padding: 20px; }
         }
     </style>
 </head>
@@ -386,7 +279,7 @@
         <div class="header">
             <h1>🏢 شركة المفتاح</h1>
             <p>توثيق API - نظام إدارة العقارات</p>
-            <p style="margin-top: 15px; font-size: 0.9em;">النسخة 1.0.0</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">النسخة 2.0.0 - مارس 2026</p>
         </div>
         
         <div class="base-url">
@@ -396,6 +289,7 @@
         <div class="toc">
             <h2>📑 فهرس الأقسام</h2>
             <div class="toc-grid">
+                <a href="#updates">آخر التحديثات</a>
                 <a href="#auth">المصادقة</a>
                 <a href="#properties">العقارات</a>
                 <a href="#notifications">الإشعارات</a>
@@ -404,14 +298,35 @@
                 <a href="#terms">الشروط والأحكام</a>
                 <a href="#contact">التواصل</a>
                 <a href="#fcm">إشعارات FCM</a>
-                <a href="#admin-users">إدارة المستخدمين</a>
-                <a href="#admin-properties">إدارة العقارات</a>
-                <a href="#admin-contact">إدارة التواصل</a>
-                <a href="#admin-dashboard">لوحة التحكم</a>
+                <a href="#admin">الإدارة</a>
             </div>
         </div>
         
         <div class="content">
+            
+            <!-- التحديثات -->
+            <div class="section" id="updates">
+                <div class="section-header">
+                    <h2>📝 آخر التحديثات</h2>
+                    <span class="badge">Updates</span>
+                </div>
+                <div class="section-content">
+                    <div class="change-log">
+                        <h4>📋 التغييرات في النسخة 2.0.0:</h4>
+                        <ul>
+                            <li>إزالة دور "مالك العقار" - أي مستخدم مسجل يمكنه إضافة عقارات</li>
+                            <li>إضافة إمكانية تغيير البريد الإلكتروني (PUT /auth/email)</li>
+                            <li>إضافة إمكانية حذف الحساب (DELETE /auth/account)</li>
+                            <li>تسجيل الدخول بالبريد الإلكتروني أو رقم الهاتف</li>
+                            <li>إزالة التحقق من البريد الإلكتروني عند تسجيل الدخول</li>
+                            <li>تحديث صلاحيات رؤية العقارات: الأدمن يرى الكل، المستخدم يرى نشطاته + نشط</li>
+                            <li>تحديث طلبات التواصل: المالك يرى طلباته المقبولة فقط</li>
+                            <li>إضافة villa كنوع عقار</li>
+                            <li>إزالة route ترقية الأدمن</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
             
             <!-- Authentication Section -->
             <div class="section" id="auth">
@@ -428,114 +343,47 @@
                             <span class="endpoint-url">/auth/register</span>
                             <span class="auth-badge public">عام</span>
                         </div>
-                        <div class="endpoint-desc">تسجيل مستخدم جديد في النظام</div>
+                        <div class="endpoint-desc">تسجيل مستخدم جديد</div>
                         <div class="endpoint-body">
                             
                             <div class="info-box">
-                                <h4>📝 معلومات عامة</h4>
-                                <p>يسمح بتسجيل مستخدمين عاديين أو ملاك العقارات. يجب توثيق البريد الإلكتروني بعد التسجيل.</p>
+                                <h4>📝 ملاحظة</h4>
+                                <p>أي مستخدم جديد يمكنه إضافة عقارات. البريد الإلكتروني اختياري.</p>
                             </div>
                             
                             <div class="block">
-                                <h4>Header</h4>
-                                <div class="code-block">
-Content-Type: application/json
-                                </div>
-                            </div>
-                            
-                            <div class="block">
-                                <h4>Body (Required)</h4>
+                                <h4>Body</h4>
                                 <table>
-                                    <thead>
-                                        <tr>
-                                            <th>المعامل</th>
-                                            <th>النوع</th>
-                                            <th>الوصف</th>
-                                        </tr>
-                                    </thead>
+                                    <thead><tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr></thead>
                                     <tbody>
-                                        <tr>
-                                            <td><code>name</code> <span class="required-field">*</span></td>
-                                            <td>string</td>
-                                            <td>اسم المستخدم (max: 255)</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>email</code> <span class="required-field">*</span></td>
-                                            <td>string</td>
-                                            <td>البريد الإلكتروني (يجب أن يكون فريد)</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>password</code> <span class="required-field">*</span></td>
-                                            <td>string</td>
-                                            <td>كلمة المرور (min: 8 أحرف)</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>password_confirmation</code> <span class="required-field">*</span></td>
-                                            <td>string</td>
-                                            <td>تأكيد كلمة المرور</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>phone</code> <span class="required-field">*</span></td>
-                                            <td>string</td>
-                                            <td>رقم الهاتف السوري (09XXXXXXXX أو +963XXXXXXXX)</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>role</code> <span class="required-field">*</span></td>
-                                            <td>string</td>
-                                            <td>الدور: <code>user</code> أو <code>owner</code></td>
-                                        </tr>
+                                        <tr><td><code>name</code> <span class="required-field">*</span></td><td>string</td><td>اسم المستخدم</td></tr>
+                                        <tr><td><code>email</code></td><td>string</td><td>البريد الإلكتروني (اختياري)</td></tr>
+                                        <tr><td><code>password</code> <span class="required-field">*</span></td><td>string</td><td>كلمة المرور (min: 8)</td></tr>
+                                        <tr><td><code>password_confirmation</code> <span class="required-field">*</span></td><td>string</td><td>تأكيد كلمة المرور</td></tr>
+                                        <tr><td><code>phone</code> <span class="required-field">*</span></td><td>string</td><td>رقم الهاتف</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                             
                             <div class="block">
-                                <h4>مثال Body</h4>
+                                <h4>مثال</h4>
                                 <div class="code-block json">{
     "name": "أحمد محمد",
     "email": "ahmed@example.com",
     "password": "password123",
     "password_confirmation": "password123",
-    "phone": "0912345678",
-    "role": "user"
+    "phone": "0912345678"
 }</div>
                             </div>
                             
                             <div class="block success-response">
-                                <h4>استجابة ناجحة (201)</h4>
-                                <div class="response-header">
-                                    <span class="status-code success">201 Created</span>
-                                </div>
+                                <h4>استجابة (201)</h4>
                                 <div class="code-block json">{
     "success": true,
-    "message": "تم التسجيل بنجاح. لم يتم توثيق حسابك بعد يرجى التحقق من بريدك الالكتروني لتوثيق الحساب",
+    "message": "تم التسجيل بنجاح",
     "data": {
-        "user": {
-            "id": 1,
-            "name": "أحمد محمد",
-            "email": "ahmed@example.com",
-            "phone": "0912345678",
-            "role": "user",
-            "is_admin": false,
-            "email_verified_at": null,
-            "created_at": "2026-03-26T12:00:00.000000Z"
-        },
+        "user": { "id": 1, "name": "أحمد محمد", "email": "ahmed@example.com", "phone": "0912345678", "is_admin": false },
         "token": "1|abc123xyz..."
-    }
-}</div>
-                            </div>
-                            
-                            <div class="block error-response">
-                                <h4>استجابة خطأ - التحقق من البيانات (422)</h4>
-                                <div class="response-header">
-                                    <span class="status-code error">422 Unprocessable Entity</span>
-                                </div>
-                                <div class="code-block json">{
-    "success": false,
-    "message": "حدث خطأ في البيانات المدخلة",
-    "errors": {
-        "email": ["البريد الإلكتروني مستخدم من قبل"],
-        "phone": ["رقم الهاتف يجب أن يكون رقم سوري صحيح (09XXXXXXXX أو +963XXXXXXXX)"],
-        "password": ["كلمة المرور يجب أن تكون 8 أحرف على الأقل"]
     }
 }</div>
                             </div>
@@ -549,107 +397,50 @@ Content-Type: application/json
                             <span class="endpoint-url">/auth/login</span>
                             <span class="auth-badge public">عام</span>
                         </div>
-                        <div class="endpoint-desc">تسجيل الدخول والحصول على Token</div>
+                        <div class="endpoint-desc">تسجيل الدخول (بالبريد أو الهاتف)</div>
                         <div class="endpoint-body">
                             
-                            <div class="block">
-                                <h4>Header</h4>
-                                <div class="code-block">
-Content-Type: application/json
-                                </div>
+                            <div class="info-box">
+                                <h4>📝 ملاحظة</h4>
+                                <p>يمكن تسجيل الدخول بالبريد الإلكتروني أو رقم الهاتف.</p>
                             </div>
                             
                             <div class="block">
-                                <h4>Body (Required)</h4>
+                                <h4>Body</h4>
                                 <table>
-                                    <thead>
-                                        <tr>
-                                            <th>المعامل</th>
-                                            <th>النوع</th>
-                                            <th>الوصف</th>
-                                        </tr>
-                                    </thead>
+                                    <thead><tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr></thead>
                                     <tbody>
-                                        <tr>
-                                            <td><code>email</code> <span class="required-field">*</span></td>
-                                            <td>string</td>
-                                            <td>البريد الإلكتروني</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>password</code> <span class="required-field">*</span></td>
-                                            <td>string</td>
-                                            <td>كلمة المرور</td>
-                                        </tr>
+                                        <tr><td><code>email</code> <span class="required-field">*</span></td><td>string</td><td>البريد الإلكتروني أو رقم الهاتف</td></tr>
+                                        <tr><td><code>password</code> <span class="required-field">*</span></td><td>string</td><td>كلمة المرور</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                             
                             <div class="block">
-                                <h4>مثال Body</h4>
+                                <h4>مثال</h4>
                                 <div class="code-block json">{
-    "email": "admin@almiftah.com",
+    "email": "0912345678",
     "password": "admin123"
 }</div>
                             </div>
                             
                             <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="response-header">
-                                    <span class="status-code success">200 OK</span>
-                                </div>
+                                <h4>استجابة (200)</h4>
                                 <div class="code-block json">{
     "success": true,
     "message": "تم تسجيل الدخول بنجاح",
     "data": {
-        "user": {
-            "id": 1,
-            "name": "مدير النظام",
-            "email": "admin@almiftah.com",
-            "phone": "0912345678",
-            "role": "admin",
-            "is_admin": true,
-            "email_verified_at": "2026-03-26T10:00:00.000000Z"
-        },
+        "user": { "id": 1, "name": "مدير النظام", "is_admin": true },
         "token": "2|xyz789abc..."
     }
 }</div>
                             </div>
                             
                             <div class="block error-response">
-                                <h4>استجابة خطأ - بيانات غير صحيحة (401)</h4>
-                                <div class="response-header">
-                                    <span class="status-code error">401 Unauthorized</span>
-                                </div>
-                                <div class="code-block json">{
-    "success": false,
-    "message": "بيانات الاعتماد غير صحيحة"
-}</div>
-                            </div>
-                            
-                            <div class="block error-response">
-                                <h4>استجابة خطأ - حساب غير نشط (403)</h4>
-                                <div class="response-header">
-                                    <span class="status-code error">403 Forbidden</span>
-                                </div>
-                                <div class="code-block json">{
-    "success": false,
-    "message": "الحساب غير نشط"
-}</div>
-                            </div>
-                            
-                            <div class="block error-response">
-                                <h4>استجابة خطأ - حساب محظور (403)</h4>
+                                <h4>خطأ - حساب محظور (403)</h4>
                                 <div class="code-block json">{
     "success": false,
     "message": "الحساب محظور. يرجى التواصل مع الإدارة"
-}</div>
-                            </div>
-                            
-                            <div class="block error-response">
-                                <h4>استجابة خطأ - غير موثق (403)</h4>
-                                <div class="code-block json">{
-    "success": false,
-    "message": "لم يتم توثيق حسابك بعد يرجى التحقق من بريدك الالكتروني لتوثيق الحساب"
 }</div>
                             </div>
                         </div>
@@ -664,30 +455,12 @@ Content-Type: application/json
                         </div>
                         <div class="endpoint-desc">جلب بيانات المستخدم الحالي</div>
                         <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Header</h4>
-                                <div class="code-block">
-Authorization: Bearer {token}
-Content-Type: application/json
-                                </div>
-                            </div>
-                            
                             <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
+                                <h4>استجابة (200)</h4>
                                 <div class="code-block json">{
     "success": true,
     "data": {
-        "id": 1,
-        "name": "مدير النظام",
-        "email": "admin@almiftah.com",
-        "phone": "0912345678",
-        "role": "admin",
-        "is_admin": true,
-        "is_active": true,
-        "is_banned": false,
-        "email_verified_at": "2026-03-26T10:00:00.000000Z",
-        "created_at": "2026-03-26T10:00:00.000000Z"
+        "id": 1, "name": "أحمد محمد", "email": "ahmed@example.com", "phone": "0912345678", "is_admin": false
     }
 }</div>
                             </div>
@@ -701,74 +474,38 @@ Content-Type: application/json
                             <span class="endpoint-url">/auth/profile</span>
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
-                        <div class="endpoint-desc">تعديل بيانات الملف الشخصي</div>
+                        <div class="endpoint-desc">تعديل الملف الشخصي</div>
                         <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Header</h4>
-                                <div class="code-block">
-Authorization: Bearer {token}
-Content-Type: application/json
-                                </div>
-                            </div>
-                            
                             <div class="block">
                                 <h4>Body (Optional)</h4>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>المعامل</th>
-                                            <th>النوع</th>
-                                            <th>الوصف</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><code>name</code></td>
-                                            <td>string</td>
-                                            <td>الاسم الجديد (max: 255)</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>phone</code></td>
-                                            <td>string</td>
-                                            <td>رقم الهاتف الجديد (09XXXXXXXX)</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="block">
-                                <h4>مثال Body</h4>
                                 <div class="code-block json">{
-    "name": "اسم المستخدم الجديد",
-    "phone": "0912345678"
+    "name": "الاسم الجديد",
+    "phone": "رقم الهاتف الجديد"
 }</div>
                             </div>
-                            
+                        </div>
+                    </div>
+                    
+                    <!-- Update Email -->
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method put">PUT</span>
+                            <span class="endpoint-url">/auth/email</span>
+                            <span class="auth-badge required">يتطلب توثيق</span>
+                        </div>
+                        <div class="endpoint-desc">تغيير البريد الإلكتروني</div>
+                        <div class="endpoint-body">
+                            <div class="block">
+                                <h4>Body</h4>
+                                <div class="code-block json">{
+    "email": "newemail@example.com"
+}</div>
+                            </div>
                             <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
+                                <h4>استجابة (200)</h4>
                                 <div class="code-block json">{
     "success": true,
-    "message": "تم تحديث الملف الشخصي بنجاح",
-    "data": {
-        "id": 1,
-        "name": "اسم المستخدم الجديد",
-        "email": "user@example.com",
-        "phone": "0912345678",
-        "role": "user",
-        "is_admin": false
-    }
-}</div>
-                            </div>
-                            
-                            <div class="block error-response">
-                                <h4>استجابة خطأ - رقم الهاتف مكرر (422)</h4>
-                                <div class="code-block json">{
-    "success": false,
-    "message": "حدث خطأ في البيانات المدخلة",
-    "errors": {
-        "phone": ["رقم الهاتف مستخدم من قبل"]
-    }
+    "message": "تم تغيير البريد الإلكتروني بنجاح"
 }</div>
                             </div>
                         </div>
@@ -783,58 +520,44 @@ Content-Type: application/json
                         </div>
                         <div class="endpoint-desc">تغيير كلمة المرور</div>
                         <div class="endpoint-body">
-                            
                             <div class="block">
-                                <h4>Header</h4>
-                                <div class="code-block">
-Authorization: Bearer {token}
-Content-Type: application/json
-                                </div>
-                            </div>
-                            
-                            <div class="block">
-                                <h4>Body (Required)</h4>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>المعامل</th>
-                                            <th>النوع</th>
-                                            <th>الوصف</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><code>current_password</code> <span class="required-field">*</span></td>
-                                            <td>string</td>
-                                            <td>كلمة المرور الحالية</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>password</code> <span class="required-field">*</span></td>
-                                            <td>string</td>
-                                            <td>كلمة المرور الجديدة (min: 8)</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>password_confirmation</code> <span class="required-field">*</span></td>
-                                            <td>string</td>
-                                            <td>تأكيد كلمة المرور الجديدة</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
+                                <h4>Body</h4>
                                 <div class="code-block json">{
-    "success": true,
-    "message": "تم تغيير كلمة المرور بنجاح"
+    "current_password": "كلمة المرور الحالية",
+    "password": "كلمة المرور الجديدة",
+    "password_confirmation": "تأكيد كلمة المرور الجديدة"
+}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Delete Account -->
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method delete">DELETE</span>
+                            <span class="endpoint-url">/auth/account</span>
+                            <span class="auth-badge required">يتطلب توثيق</span>
+                        </div>
+                        <div class="endpoint-desc">حذف الحساب وجميع البيانات المرتبطة</div>
+                        <div class="endpoint-body">
+                            
+                            <div class="warning-box">
+                                <h4>⚠️ تحذير</h4>
+                                <p>هذا الإجراء لا يمكن التراجع عنه! سيتم حذف الحساب والعقارات والمفضلات والإشعارات نهائياً.</p>
+                            </div>
+                            
+                            <div class="block">
+                                <h4>Body</h4>
+                                <div class="code-block json">{
+    "password": "كلمة المرور للتأكيد"
 }</div>
                             </div>
                             
-                            <div class="block error-response">
-                                <h4>استجابة خطأ - كلمة المرور الحالية خاطئة (400)</h4>
+                            <div class="block success-response">
+                                <h4>استجابة (200)</h4>
                                 <div class="code-block json">{
-    "success": false,
-    "message": "كلمة المرور الحالية غير صحيحة"
+    "success": true,
+    "message": "تم حذف الحساب بنجاح"
 }</div>
                             </div>
                         </div>
@@ -847,72 +570,13 @@ Content-Type: application/json
                             <span class="endpoint-url">/auth/logout</span>
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
-                        <div class="endpoint-desc">تسجيل الخروج (إلغاء Token)</div>
+                        <div class="endpoint-desc">تسجيل الخروج</div>
                         <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Header</h4>
-                                <div class="code-block">
-Authorization: Bearer {token}
-                                </div>
-                            </div>
-                            
                             <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
+                                <h4>استجابة (200)</h4>
                                 <div class="code-block json">{
     "success": true,
     "message": "تم تسجيل الخروج بنجاح"
-}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Verify Email -->
-                    <div class="endpoint">
-                        <div class="endpoint-header">
-                            <span class="method post">POST</span>
-                            <span class="endpoint-url">/auth/verify-email</span>
-                            <span class="auth-badge public">عام</span>
-                        </div>
-                        <div class="endpoint-desc">توثيق البريد الإلكتروني</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Body (Required)</h4>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>المعامل</th>
-                                            <th>النوع</th>
-                                            <th>الوصف</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><code>email</code> <span class="required-field">*</span></td>
-                                            <td>string</td>
-                                            <td>البريد الإلكتروني</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم توثيق البريد الإلكتروني بنجاح",
-    "data": {
-        "email_verified_at": "2026-03-26T12:00:00.000000Z"
-    }
-}</div>
-                            </div>
-                            
-                            <div class="block error-response">
-                                <h4>استجابة خطأ - تم التوثيق مسبقاً (400)</h4>
-                                <div class="code-block json">{
-    "success": false,
-    "message": "تم توثيق البريد الإلكتروني مسبقاً"
 }</div>
                             </div>
                         </div>
@@ -929,6 +593,15 @@ Authorization: Bearer {token}
                 </div>
                 <div class="section-content">
                     
+                    <div class="info-box">
+                        <h4>📌 صلاحيات رؤية العقارات</h4>
+                        <p>
+                            <strong>الزائر:</strong> يرى العقارات النشطة فقط<br>
+                            <strong>المستخدم:</strong> يرى العقارات النشطة + عقاراته (كل الحالات)<br>
+                            <strong>الأدمن:</strong> يرى جميع العقارات بجميع الحالات
+                        </p>
+                    </div>
+                    
                     <!-- List Properties -->
                     <div class="endpoint">
                         <div class="endpoint-header">
@@ -936,73 +609,31 @@ Authorization: Bearer {token}
                             <span class="endpoint-url">/properties</span>
                             <span class="auth-badge public">عام</span>
                         </div>
-                        <div class="endpoint-desc">جلب قائمة العقارات المنشورة</div>
+                        <div class="endpoint-desc">جلب قائمة العقارات النشطة</div>
                         <div class="endpoint-body">
-                            
                             <div class="block">
-                                <h4>Query Parameters (Optional)</h4>
+                                <h4>Query Parameters</h4>
                                 <table>
-                                    <thead>
-                                        <tr>
-                                            <th>المعامل</th>
-                                            <th>النوع</th>
-                                            <th>الوصف</th>
-                                        </tr>
-                                    </thead>
+                                    <thead><tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr></thead>
                                     <tbody>
-                                        <tr><td><code>type</code></td><td>string</td><td>النوع: sale أو rent</td></tr>
-                                        <tr><td><code>property_type</code></td><td>string</td><td>نوع العقار: apartment, house, shop, land, farm, store</td></tr>
+                                        <tr><td><code>type</code></td><td>string</td><td>sale أو rent</td></tr>
+                                        <tr><td><code>property_type</code></td><td>string</td><td>apartment, house, villa, shop, land, farm, store</td></tr>
                                         <tr><td><code>region_id</code></td><td>integer</td><td>معرف المنطقة</td></tr>
-                                        <tr><td><code>region_ids</code></td><td>string</td><td>معرفات المناطق مفصولة بفواصل</td></tr>
                                         <tr><td><code>search</code></td><td>string</td><td>كلمة البحث</td></tr>
                                         <tr><td><code>min_price</code></td><td>number</td><td>السعر الأدنى</td></tr>
                                         <tr><td><code>max_price</code></td><td>number</td><td>السعر الأقصى</td></tr>
-                                        <tr><td><code>min_area</code></td><td>number</td><td>المساحة الأدنى</td></tr>
-                                        <tr><td><code>max_area</code></td><td>number</td><td>المساحة الأقصى</td></tr>
-                                        <tr><td><code>sort_by</code></td><td>string</td><td>الترتيب حسب: price, created_at, area</td></tr>
-                                        <tr><td><code>sort_order</code></td><td>string</td><td>اتجاه الترتيب: asc أو desc</td></tr>
-                                        <tr><td><code>per_page</code></td><td>integer</td><td>عدد العناصر بالصفحة (افتراضي: 20)</td></tr>
+                                        <tr><td><code>per_page</code></td><td>integer</td><td>عدد بالصفحة (افتراضي: 20)</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                             
-                            <div class="block">
-                                <h4>مثال الطلب</h4>
-                                <div class="code-block">
-GET /api/properties?type=sale&property_type=apartment&min_price=50000&max_price=200000&per_page=10
-                                </div>
-                            </div>
-                            
                             <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
+                                <h4>استجابة (200)</h4>
                                 <div class="code-block json">{
     "success": true,
     "data": {
-        "data": [
-            {
-                "id": 1,
-                "title": "شقة فاخرة في المزة",
-                "description": "شقة حديثة 3 غرف نوم...",
-                "price": "85000000.00",
-                "type": "sale",
-                "property_type": "apartment",
-                "area": 150,
-                "location": "دمشق - المزة",
-                "images": [
-                    {"id": 1, "image_url": "http://..."}
-                ],
-                "owner": {
-                    "id": 1,
-                    "name": "مكتب المفتاح"
-                }
-            }
-        ],
-        "meta": {
-            "current_page": 1,
-            "last_page": 5,
-            "per_page": 10,
-            "total": 50
-        }
+        "data": [{ "id": 1, "title": "شقة فاخرة في المزة", "price": "85000000.00", "type": "sale", "images": [...], "owner": { "id": 1, "name": "مكتب المفتاح" } }],
+        "meta": { "current_page": 1, "last_page": 5, "per_page": 20, "total": 100 }
     }
 }</div>
                             </div>
@@ -1016,16 +647,16 @@ GET /api/properties?type=sale&property_type=apartment&min_price=50000&max_price=
                             <span class="endpoint-url">/properties/types</span>
                             <span class="auth-badge public">عام</span>
                         </div>
-                        <div class="endpoint-desc">جلب أنواع العقارات المتاحة</div>
+                        <div class="endpoint-desc">جلب أنواع العقارات</div>
                         <div class="endpoint-body">
-                            
                             <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
+                                <h4>استجابة (200)</h4>
                                 <div class="code-block json">{
     "success": true,
     "data": [
         {"value": "apartment", "label": "شقة"},
         {"value": "house", "label": "منزل"},
+        {"value": "villa", "label": "فيلا"},
         {"value": "shop", "label": "محل"},
         {"value": "land", "label": "أرض"},
         {"value": "farm", "label": "مزرعة"},
@@ -1045,77 +676,12 @@ GET /api/properties?type=sale&property_type=apartment&min_price=50000&max_price=
                         </div>
                         <div class="endpoint-desc">جلب تفاصيل عقار</div>
                         <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Path Parameters</h4>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>المعامل</th>
-                                            <th>النوع</th>
-                                            <th>الوصف</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><code>id</code> <span class="required-field">*</span></td>
-                                            <td>integer</td>
-                                            <td>معرف العقار</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": {
-        "property": {
-            "id": 1,
-            "title": "شقة فاخرة في المزة",
-            "description": "شقة حديثة 3 غرف نوم، صالة كبيرة...",
-            "price": "85000000.00",
-            "type": "sale",
-            "property_type": "apartment",
-            "area": 150,
-            "location": "دمشق - المزة",
-            "latitude": "33.83210000",
-            "longitude": "36.10670000",
-            "status": "active",
-            "images": [...],
-            "owner": {
-                "id": 1,
-                "name": "مكتب المفتاح للعقارات",
-                "phone": "0912345678"
-            },
-            "region": {
-                "id": 29,
-                "name": "المزة",
-                "parent": {
-                    "id": 30,
-                    "name": "دمشق",
-                    "parent": {
-                        "id": 21,
-                        "name": "محافظة دمشق"
-                    }
-                }
-            }
-        },
-        "contact_info": {
-            "owner_name": "مكتب المفتاح للعقارات",
-            "owner_phone": "0912345678"
-        }
-    }
-}</div>
-                            </div>
-                            
-                            <div class="block error-response">
-                                <h4>استجابة خطأ - العقار غير موجود (404)</h4>
-                                <div class="code-block json">{
-    "success": false,
-    "message": "العقار غير موجود"
-}</div>
+                            <div class="info-box">
+                                <h4>📌 قواعد العرض</h4>
+                                <p>
+                                    <strong>العقار نشط:</strong> الجميع<br>
+                                    <strong>العقار غير نشط:</strong> المالك أو الأدمن فقط
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -1130,88 +696,37 @@ GET /api/properties?type=sale&property_type=apartment&min_price=50000&max_price=
                         <div class="endpoint-desc">إضافة عقار جديد</div>
                         <div class="endpoint-body">
                             
-                            <div class="warning-box">
-                                <h4>⚠️ الشروط المطلوبة</h4>
-                                <p>يجب أن يكون المستخدم مالك عقار (role: owner) أو أدمن. سيتم إرسال إشعار للأدمن عند إضافة عقار جديد.</p>
+                            <div class="info-box">
+                                <h4>📌 ملاحظة</h4>
+                                <p>أي مستخدم مسجل يمكنه إضافة عقارات. العقار يُنشأ بحالة pending حتى يوافق الأدمن.</p>
                             </div>
                             
                             <div class="block">
-                                <h4>Header</h4>
-                                <div class="code-block">
-Authorization: Bearer {token}
-Content-Type: application/json
-                                </div>
-                            </div>
-                            
-                            <div class="block">
-                                <h4>Body (Required)</h4>
+                                <h4>Body</h4>
                                 <table>
-                                    <thead>
-                                        <tr>
-                                            <th>المعامل</th>
-                                            <th>النوع</th>
-                                            <th>الوصف</th>
-                                        </tr>
-                                    </thead>
+                                    <thead><tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr></thead>
                                     <tbody>
                                         <tr><td><code>title</code> <span class="required-field">*</span></td><td>string</td><td>عنوان العقار</td></tr>
                                         <tr><td><code>description</code> <span class="required-field">*</span></td><td>string</td><td>وصف العقار</td></tr>
                                         <tr><td><code>price</code> <span class="required-field">*</span></td><td>numeric</td><td>السعر</td></tr>
                                         <tr><td><code>type</code> <span class="required-field">*</span></td><td>string</td><td>sale أو rent</td></tr>
-                                        <tr><td><code>property_type</code> <span class="required-field">*</span></td><td>string</td><td>apartment, house, shop, land, farm, store</td></tr>
-                                        <tr><td><code>area</code> <span class="required-field">*</span></td><td>numeric</td><td>المساحة (متر مربع)</td></tr>
-                                        <tr><td><code>region_id</code> <span class="required-field">*</span></td><td>integer</td><td>معرف الحي (من المناطق)</td></tr>
+                                        <tr><td><code>property_type</code> <span class="required-field">*</span></td><td>string</td><td>apartment, house, villa, shop, land, farm, store</td></tr>
+                                        <tr><td><code>area</code> <span class="required-field">*</span></td><td>numeric</td><td>المساحة (م²)</td></tr>
+                                        <tr><td><code>region_id</code> <span class="required-field">*</span></td><td>integer</td><td>معرف الحي</td></tr>
                                         <tr><td><code>location</code> <span class="required-field">*</span></td><td>string</td><td>الموقع النصي</td></tr>
-                                        <tr><td><code>latitude</code></td><td>numeric</td><td>خط العرض (بين -90 و 90)</td></tr>
-                                        <tr><td><code>longitude</code></td><td>numeric</td><td>خط الطول (بين -180 و 180)</td></tr>
-                                        <tr><td><code>images[]</code></td><td>file</td><td>صور (max: 10, each: 2MB)</td></tr>
-                                        <tr><td><code>images_base64[]</code></td><td>string</td><td>صور بـ Base64 (max: 10)</td></tr>
+                                        <tr><td><code>latitude</code></td><td>numeric</td><td>خط العرض</td></tr>
+                                        <tr><td><code>longitude</code></td><td>numeric</td><td>خط الطول</td></tr>
+                                        <tr><td><code>images[]</code></td><td>file</td><td>صور (max: 10)</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                             
-                            <div class="block">
-                                <h4>مثال Body</h4>
-                                <div class="code-block json">{
-    "title": "شقة جديدة في المزة",
-    "description": "شقة فاخرة 3 غرف نوم مع صالة",
-    "price": 100000000,
-    "type": "sale",
-    "property_type": "apartment",
-    "area": 150,
-    "region_id": 29,
-    "location": "دمشق - المزة - شارع الرئيسي",
-    "latitude": 33.8321,
-    "longitude": 36.1067
-}</div>
-                            </div>
-                            
                             <div class="block success-response">
-                                <h4>استجابة ناجحة (201)</h4>
+                                <h4>استجابة (201)</h4>
                                 <div class="code-block json">{
     "success": true,
     "message": "تم إنشاء العقار بنجاح",
-    "data": {
-        "id": 16,
-        "title": "شقة جديدة في المزة",
-        "description": "شقة فاخرة 3 غرف نوم مع صالة",
-        "price": "100000000.00",
-        "type": "sale",
-        "property_type": "apartment",
-        "area": 150,
-        "region_id": 29,
-        "location": "دمشق - المزة - شارع الرئيسي",
-        "status": "pending",
-        "images": []
-    }
-}</div>
-                            </div>
-                            
-                            <div class="block error-response">
-                                <h4>استجابة خطأ - غير مصرح (403)</h4>
-                                <div class="code-block json">{
-    "success": false,
-    "message": "غير مصرح لك بإنشاء عقار"
+    "data": { "id": 16, "title": "شقة جديدة", "status": "pending" }
 }</div>
                             </div>
                         </div>
@@ -1224,38 +739,11 @@ Content-Type: application/json
                             <span class="endpoint-url">/properties/my-properties</span>
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
-                        <div class="endpoint-desc">جلب عقارات المستخدم الحالي</div>
+                        <div class="endpoint-desc">جلب عقارات المستخدم (جميع الحالات)</div>
                         <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Header</h4>
-                                <div class="code-block">
-Authorization: Bearer {token}
-                                </div>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": {
-        "data": [
-            {
-                "id": 1,
-                "title": "شقة فاخرة في المزة",
-                "status": "pending",
-                "type": "sale",
-                "price": "85000000.00"
-            }
-        ],
-        "meta": {
-            "current_page": 1,
-            "last_page": 1,
-            "per_page": 20,
-            "total": 1
-        }
-    }
-}</div>
+                            <div class="info-box">
+                                <h4>📌 ملاحظة</h4>
+                                <p>يُرجع جميع عقارات المستخدم بما فيها المعلقة والمرفوضة.</p>
                             </div>
                         </div>
                     </div>
@@ -1267,45 +755,11 @@ Authorization: Bearer {token}
                             <span class="endpoint-url">/properties/{id}</span>
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
-                        <div class="endpoint-desc">تعديل عقار</div>
+                        <div class="endpoint-desc">تعديل عقار (المالك أو الأدمن)</div>
                         <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Header</h4>
-                                <div class="code-block">
-Authorization: Bearer {token}
-Content-Type: application/json
-                                </div>
-                            </div>
-                            
-                            <div class="block">
-                                <h4>Path Parameters</h4>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>المعامل</th>
-                                            <th>النوع</th>
-                                            <th>الوصف</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td><code>id</code> <span class="required-field">*</span></td><td>integer</td><td>معرف العقار</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="block">
-                                <h4>Body (Optional)</h4>
-                                <p>أي من معاملات إنشاء العقار يمكن تعديله</p>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم تحديث العقار بنجاح",
-    "data": {...}
-}</div>
+                            <div class="info-box">
+                                <h4>📌 ملاحظة</h4>
+                                <p>المستخدم يمكنه تعديل عقاراته فقط. الأدمن يمكنه تعديل أي عقار.</p>
                             </div>
                         </div>
                     </div>
@@ -1317,25 +771,27 @@ Content-Type: application/json
                             <span class="endpoint-url">/properties/{id}</span>
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
-                        <div class="endpoint-desc">حذف عقار</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم حذف العقار بنجاح"
-}</div>
-                            </div>
-                            
-                            <div class="block error-response">
-                                <h4>استجابة خطأ - غير مصرح (403)</h4>
-                                <div class="code-block json">{
-    "success": false,
-    "message": "غير مصرح لك بحذف هذا العقار"
-}</div>
-                            </div>
+                        <div class="endpoint-desc">حذف عقار (المالك أو الأدمن)</div>
+                    </div>
+                    
+                    <!-- Mark as Rented -->
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method post">POST</span>
+                            <span class="endpoint-url">/properties/{id}/rented</span>
+                            <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
+                        <div class="endpoint-desc">تعليم العقار كمؤجر</div>
+                    </div>
+                    
+                    <!-- Mark as Sold -->
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method post">POST</span>
+                            <span class="endpoint-url">/properties/{id}/sold</span>
+                            <span class="auth-badge required">يتطلب توثيق</span>
+                        </div>
+                        <div class="endpoint-desc">تعليم العقار كمباع</div>
                     </div>
                     
                 </div>
@@ -1349,91 +805,33 @@ Content-Type: application/json
                 </div>
                 <div class="section-content">
                     
-                    <!-- List Notifications -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method get">GET</span>
                             <span class="endpoint-url">/notifications</span>
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
-                        <div class="endpoint-desc">جلب إشعارات المستخدم الحالي</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Query Parameters (Optional)</h4>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>المعامل</th>
-                                            <th>النوع</th>
-                                            <th>الوصف</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td><code>per_page</code></td><td>integer</td><td>عدد العناصر (افتراضي: 20)</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": {
-        "current_page": 1,
-        "data": [
-            {
-                "id": 1,
-                "user_id": 1,
-                "type": "new_property",
-                "title": "عقار جديد",
-                "body": "تمت إضافة عقار جديد: شقة في المزة",
-                "is_read": false,
-                "related_id": 1,
-                "related_type": "new_property",
-                "created_at": "2026-03-26T12:00:00.000000Z"
-            },
-            {
-                "id": 2,
-                "user_id": 1,
-                "type": "property_approved",
-                "title": "تمت الموافقة على عقاركم",
-                "body": "تمت الموافقة على عقار: شقة في المزة",
-                "is_read": true,
-                "created_at": "2026-03-26T11:00:00.000000Z"
-            }
-        ],
-        "per_page": 20,
-        "total": 2
-    }
-}</div>
-                            </div>
-                        </div>
+                        <div class="endpoint-desc">جلب إشعارات المستخدم</div>
                     </div>
                     
-                    <!-- Unread Count -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method get">GET</span>
                             <span class="endpoint-url">/notifications/unread-count</span>
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
-                        <div class="endpoint-desc">جلب عدد الإشعارات غير المقروءة</div>
+                        <div class="endpoint-desc">عدد الإشعارات غير المقروءة</div>
                         <div class="endpoint-body">
-                            
                             <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
+                                <h4>استجابة (200)</h4>
                                 <div class="code-block json">{
     "success": true,
-    "data": {
-        "unread_count": 5
-    }
+    "data": { "unread_count": 5 }
 }</div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Mark as Read -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method post">POST</span>
@@ -1441,27 +839,8 @@ Content-Type: application/json
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
                         <div class="endpoint-desc">تعليم إشعار كمقروء</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم تعليم الإشعار كمقروء"
-}</div>
-                            </div>
-                            
-                            <div class="block error-response">
-                                <h4>استجابة خطأ - غير موجود (404)</h4>
-                                <div class="code-block json">{
-    "success": false,
-    "message": "الإشعار غير موجود"
-}</div>
-                            </div>
-                        </div>
                     </div>
                     
-                    <!-- Mark All as Read -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method post">POST</span>
@@ -1469,16 +848,6 @@ Content-Type: application/json
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
                         <div class="endpoint-desc">تعليم جميع الإشعارات كمقروءة</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم تعليم جميع الإشعارات كمقروءة"
-}</div>
-                            </div>
-                        </div>
                     </div>
                     
                 </div>
@@ -1492,132 +861,40 @@ Content-Type: application/json
                 </div>
                 <div class="section-content">
                     
-                    <!-- List Favorites -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method get">GET</span>
                             <span class="endpoint-url">/favorites</span>
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
-                        <div class="endpoint-desc">جلب قائمة العقارات المفضلة</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": {
-        "data": [
-            {
-                "id": 1,
-                "title": "شقة فاخرة في المزة",
-                "price": "85000000.00",
-                "type": "sale",
-                "property_type": "apartment",
-                "images": [...]
-            }
-        ],
-        "pagination": {
-            "current_page": 1,
-            "last_page": 1,
-            "per_page": 20,
-            "total": 1
-        }
-    }
-}</div>
-                            </div>
-                        </div>
+                        <div class="endpoint-desc">جلب قائمة المفضلة</div>
                     </div>
                     
-                    <!-- Add to Favorites -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method post">POST</span>
                             <span class="endpoint-url">/favorites/{propertyId}</span>
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
-                        <div class="endpoint-desc">إضافة عقار للمفضلة</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (201)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم إضافة العقار إلى المفضلة",
-    "data": {
-        "user_id": 1,
-        "property_id": 1,
-        "created_at": "2026-03-26T12:00:00.000000Z"
-    }
-}</div>
-                            </div>
-                            
-                            <div class="block error-response">
-                                <h4>استجابة خطأ - موجود مسبقاً (400)</h4>
-                                <div class="code-block json">{
-    "success": false,
-    "message": "العقار موجود بالفعل في المفضلة"
-}</div>
-                            </div>
-                            
-                            <div class="block error-response">
-                                <h4>استجابة خطأ - العقار غير موجود (404)</h4>
-                                <div class="code-block json">{
-    "success": false,
-    "message": "العقار غير موجود"
-}</div>
-                            </div>
-                        </div>
+                        <div class="endpoint-desc">إضافة للمفضلة</div>
                     </div>
                     
-                    <!-- Check Favorite -->
-                    <div class="endpoint">
-                        <div class="endpoint-header">
-                            <span class="method get">GET</span>
-                            <span class="endpoint-url">/favorites/{propertyId}/check</span>
-                            <span class="auth-badge required">يتطلب توثيق</span>
-                        </div>
-                        <div class="endpoint-desc">فحص إذا العقار في المفضلة</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": {
-        "is_favorite": true
-    }
-}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Remove from Favorites -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method delete">DELETE</span>
                             <span class="endpoint-url">/favorites/{propertyId}</span>
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
-                        <div class="endpoint-desc">حذف عقار من المفضلة</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم حذف العقار من المفضلة"
-}</div>
-                            </div>
-                            
-                            <div class="block error-response">
-                                <h4>استجابة خطأ - غير موجود (404)</h4>
-                                <div class="code-block json">{
-    "success": false,
-    "message": "العقار غير موجود في المفضلة"
-}</div>
-                            </div>
+                        <div class="endpoint-desc">حذف من المفضلة</div>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="method get">GET</span>
+                            <span class="endpoint-url">/favorites/{propertyId}/check</span>
+                            <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
+                        <div class="endpoint-desc">فحص إذا في المفضلة</div>
                     </div>
                     
                 </div>
@@ -1631,7 +908,6 @@ Content-Type: application/json
                 </div>
                 <div class="section-content">
                     
-                    <!-- List Regions -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method get">GET</span>
@@ -1639,96 +915,17 @@ Content-Type: application/json
                             <span class="auth-badge public">عام</span>
                         </div>
                         <div class="endpoint-desc">جلب قائمة المناطق</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Query Parameters (Optional)</h4>
-                                <table>
-                                    <thead>
-                                        <tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td><code>type</code></td><td>string</td><td>country, governorate, city, neighborhood</td></tr>
-                                        <tr><td><code>parent_id</code></td><td>integer</td><td>معرف المنطقة الأم</td></tr>
-                                        <tr><td><code>search</code></td><td>string</td><td>البحث بالاسم</td></tr>
-                                        <tr><td><code>per_page</code></td><td>integer</td><td>عدد العناصر</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": [
-        {
-            "id": 1,
-            "name": "سوريا",
-            "type": "country",
-            "parent_id": null,
-            "children": []
-        },
-        {
-            "id": 2,
-            "name": "محافظة دمشق",
-            "type": "governorate",
-            "parent_id": 1,
-            "children": []
-        }
-    ]
-}</div>
-                            </div>
-                        </div>
                     </div>
                     
-                    <!-- Region Tree -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method get">GET</span>
                             <span class="endpoint-url">/regions/tree</span>
                             <span class="auth-badge public">عام</span>
                         </div>
-                        <div class="endpoint-desc">جلب شجرة المناطق الكاملة</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": [
-        {
-            "id": 1,
-            "name": "سوريا",
-            "type": "country",
-            "children": [
-                {
-                    "id": 2,
-                    "name": "محافظة دمشق",
-                    "type": "governorate",
-                    "children": [
-                        {
-                            "id": 30,
-                            "name": "دمشق",
-                            "type": "city",
-                            "children": [
-                                {
-                                    "id": 29,
-                                    "name": "المزة",
-                                    "type": "neighborhood"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-}</div>
-                            </div>
-                        </div>
+                        <div class="endpoint-desc">جلب شجرة المناطق</div>
                     </div>
                     
-                    <!-- Region Details -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method get">GET</span>
@@ -1736,70 +933,19 @@ Content-Type: application/json
                             <span class="auth-badge public">عام</span>
                         </div>
                         <div class="endpoint-desc">جلب تفاصيل منطقة</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": {
-        "id": 29,
-        "name": "المزة",
-        "type": "neighborhood",
-        "parent": {
-            "id": 30,
-            "name": "دمشق"
-        },
-        "children": []
-    }
-}</div>
-                            </div>
-                        </div>
                     </div>
                     
-                    <!-- Create Region (Admin) -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method post">POST</span>
-                            <span class="endpoint-url">/admin/regions</span>
-                            <span class="auth-badge admin">أدمن فقط</span>
+                            <span class="endpoint-url">/regions</span>
+                            <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
                         <div class="endpoint-desc">إضافة منطقة جديدة</div>
                         <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Header</h4>
-                                <div class="code-block">
-Authorization: Bearer {token}
-                                </div>
-                            </div>
-                            
-                            <div class="block">
-                                <h4>Body (Required)</h4>
-                                <table>
-                                    <thead>
-                                        <tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td><code>name</code> <span class="required-field">*</span></td><td>string</td><td>اسم المنطقة</td></tr>
-                                        <tr><td><code>type</code> <span class="required-field">*</span></td><td>string</td><td>النوع: country, governorate, city, neighborhood</td></tr>
-                                        <tr><td><code>parent_id</code></td><td>integer</td><td>معرف المنطقة الأم</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (201)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم إنشاء المنطقة بنجاح",
-    "data": {
-        "id": 100,
-        "name": "حي جديد",
-        "type": "neighborhood",
-        "parent_id": 30
-    }
-}</div>
+                            <div class="info-box">
+                                <h4>📌 ملاحظة</h4>
+                                <p>أي مستخدم مسجل يمكنه إضافة منطقة جديدة.</p>
                             </div>
                         </div>
                     </div>
@@ -1815,41 +961,15 @@ Authorization: Bearer {token}
                 </div>
                 <div class="section-content">
                     
-                    <!-- Get Terms -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method get">GET</span>
                             <span class="endpoint-url">/terms</span>
                             <span class="auth-badge public">عام</span>
                         </div>
-                        <div class="endpoint-desc">جلب الشروط والأحكام</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": {
-        "id": 1,
-        "title": "الشروط و الأحكام",
-        "content": "نص الشروط والأحكام الكامل...",
-        "created_at": "2026-03-26T10:00:00.000000Z",
-        "updated_at": "2026-03-26T10:00:00.000000Z"
-    }
-}</div>
-                            </div>
-                            
-                            <div class="block error-response">
-                                <h4>استجابة خطأ - غير موجود (404)</h4>
-                                <div class="code-block json">{
-    "success": false,
-    "message": "الشروط والأحكام غير موجودة"
-}</div>
-                            </div>
-                        </div>
+                        <div class="endpoint-desc">عرض الشروط والأحكام</div>
                     </div>
                     
-                    <!-- Update Terms (Admin) -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method put">PUT</span>
@@ -1857,51 +977,6 @@ Authorization: Bearer {token}
                             <span class="auth-badge admin">أدمن فقط</span>
                         </div>
                         <div class="endpoint-desc">تعديل الشروط والأحكام</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Header</h4>
-                                <div class="code-block">
-Authorization: Bearer {token}
-Content-Type: application/json
-                                </div>
-                            </div>
-                            
-                            <div class="block">
-                                <h4>Body (Required)</h4>
-                                <table>
-                                    <thead>
-                                        <tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td><code>title</code></td><td>string</td><td>العنوان الجديد</td></tr>
-                                        <tr><td><code>content</code> <span class="required-field">*</span></td><td>string</td><td>المحتوى الجديد</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="block">
-                                <h4>مثال Body</h4>
-                                <div class="code-block json">{
-    "title": "الشروط و الأحكام",
-    "content": "نص الشروط والأحكام المحدث باللغة العربية..."
-}</div>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم تحديث الشروط والأحكام بنجاح",
-    "data": {
-        "id": 1,
-        "title": "الشروط و الأحكام",
-        "content": "نص الشروط والأحكام المحدث...",
-        "updated_at": "2026-03-26T14:00:00.000000Z"
-    }
-}</div>
-                            </div>
-                        </div>
                     </div>
                     
                 </div>
@@ -1915,6 +990,15 @@ Content-Type: application/json
                 </div>
                 <div class="section-content">
                     
+                    <div class="info-box">
+                        <h4>📱 كيف يعمل نظام التواصل</h4>
+                        <p>
+                            1. المستخدم يرسل طلب تواصل → يُرسل إشعار للأدمن<br>
+                            2. الأدمن يوافق/يرفض الطلب<br>
+                            3. إذا وافق الأدمن → المستخدم يرى رقم المالك
+                        </p>
+                    </div>
+                    
                     <!-- Send Contact Request -->
                     <div class="endpoint">
                         <div class="endpoint-header">
@@ -1924,53 +1008,25 @@ Content-Type: application/json
                         </div>
                         <div class="endpoint-desc">إرسال طلب تواصل</div>
                         <div class="endpoint-body">
-                            
                             <div class="block">
-                                <h4>Header</h4>
-                                <div class="code-block">
-Authorization: Bearer {token}
-Content-Type: application/json
-                                </div>
-                            </div>
-                            
-                            <div class="block">
-                                <h4>Body (Required)</h4>
+                                <h4>Body</h4>
                                 <table>
-                                    <thead>
-                                        <tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr>
-                                    </thead>
+                                    <thead><tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr></thead>
                                     <tbody>
                                         <tr><td><code>property_id</code> <span class="required-field">*</span></td><td>integer</td><td>معرف العقار</td></tr>
                                         <tr><td><code>name</code> <span class="required-field">*</span></td><td>string</td><td>الاسم</td></tr>
-                                        <tr><td><code>phone</code> <span class="required-field">*</span></td><td>string</td><td>رقم الهاتف السوري</td></tr>
+                                        <tr><td><code>phone</code> <span class="required-field">*</span></td><td>string</td><td>رقم الهاتف</td></tr>
                                         <tr><td><code>message</code></td><td>string</td><td>رسالة إضافية</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                             
-                            <div class="block">
-                                <h4>مثال Body</h4>
-                                <div class="code-block json">{
-    "property_id": 1,
-    "name": "أحمد محمد",
-    "phone": "0912345678",
-    "message": "أريد معرفة المزيد عن هذا العقار"
-}</div>
-                            </div>
-                            
                             <div class="block success-response">
-                                <h4>استجابة ناجحة (201)</h4>
+                                <h4>استجابة (201)</h4>
                                 <div class="code-block json">{
     "success": true,
     "message": "تم إرسال طلب التواصل بنجاح",
-    "data": {
-        "id": 1,
-        "property_id": 1,
-        "name": "أحمد محمد",
-        "phone": "0912345678",
-        "message": "أريد معرفة المزيد عن هذا العقار",
-        "status": "pending"
-    }
+    "data": { "id": 1, "property_id": 1, "status": "pending" }
 }</div>
                             </div>
                         </div>
@@ -1983,63 +1039,21 @@ Content-Type: application/json
                             <span class="endpoint-url">/contact/my-requests</span>
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
-                        <div class="endpoint-desc">جلب طلبات التواصل المرسلة</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": {
-        "data": [
-            {
-                "id": 1,
-                "property": {
-                    "id": 1,
-                    "title": "شقة فاخرة في المزة"
-                },
-                "name": "أحمد محمد",
-                "status": "pending",
-                "created_at": "2026-03-26T12:00:00.000000Z"
-            }
-        ]
-    }
-}</div>
-                            </div>
-                        </div>
+                        <div class="endpoint-desc">طلباتي المرسلة</div>
                     </div>
                     
-                    <!-- My Received Requests -->
+                    <!-- My Received -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method get">GET</span>
                             <span class="endpoint-url">/contact/my-received</span>
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
-                        <div class="endpoint-desc">جلب طلبات التواصل المستلمة (للمالكين)</div>
+                        <div class="endpoint-desc">الطلبات المستلمة على عقاراتي (المقبولة فقط)</div>
                         <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": {
-        "data": [
-            {
-                "id": 1,
-                "property": {
-                    "id": 1,
-                    "title": "شقة فاخرة في المزة"
-                },
-                "name": "أحمد محمد",
-                "phone": "0912345678",
-                "message": "أريد معرفة المزيد",
-                "status": "pending",
-                "created_at": "2026-03-26T12:00:00.000000Z"
-            }
-        ]
-    }
-}</div>
+                            <div class="info-box">
+                                <h4>📌 ملاحظة</h4>
+                                <p>يُرجع فقط الطلبات المقبولة من الأدمن. يمكن تمرير status للتصفية.</p>
                             </div>
                         </div>
                     </div>
@@ -2048,40 +1062,20 @@ Content-Type: application/json
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method get">GET</span>
-                            <span class="endpoint-url">/contact/status/{propertyId}</span>
+                            <span class="endpoint-url">/contact/check/{propertyId}</span>
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
-                        <div class="endpoint-desc">فحص حالة طلب التواصل لعقار</div>
+                        <div class="endpoint-desc">فحص حالة الطلب</div>
                         <div class="endpoint-body">
-                            
                             <div class="block success-response">
-                                <h4>استجابة ناجحة (200) - يوجد طلب</h4>
+                                <h4>استجابة - معتمد (200)</h4>
                                 <div class="code-block json">{
     "success": true,
     "data": {
         "has_request": true,
-        "status": "pending",
-        "created_at": "2026-03-26T12:00:00.000000Z",
-        "owner": {
-            "name": "مكتب المفتاح",
-            "phone": "0912345678"
-        }
-    }
-}</div>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200) - لا يوجد طلب</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": {
-        "has_request": false,
-        "status": null,
-        "created_at": null,
-        "owner": {
-            "name": "مكتب المفتاح",
-            "phone": "0912345678"
-        }
+        "status": "approved",
+        "created_at": "2026-03-26T12:00:00Z",
+        "owner": { "name": "مكتب المفتاح", "phone": "0912345678" }
     }
 }</div>
                             </div>
@@ -2099,40 +1093,15 @@ Content-Type: application/json
                 </div>
                 <div class="section-content">
                     
-                    <!-- Save Token -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method post">POST</span>
                             <span class="endpoint-url">/fcm/token</span>
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
-                        <div class="endpoint-desc">حفظ FCM Token للجهاز</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Body (Required)</h4>
-                                <table>
-                                    <thead>
-                                        <tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td><code>token</code> <span class="required-field">*</span></td><td>string</td><td>FCM Token</td></tr>
-                                        <tr><td><code>device_type</code></td><td>string</td><td>android, ios, أو web</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم حفظ التوكن بنجاح"
-}</div>
-                            </div>
-                        </div>
+                        <div class="endpoint-desc">حفظ FCM Token</div>
                     </div>
                     
-                    <!-- Remove Token -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method delete">DELETE</span>
@@ -2140,141 +1109,39 @@ Content-Type: application/json
                             <span class="auth-badge required">يتطلب توثيق</span>
                         </div>
                         <div class="endpoint-desc">حذف FCM Token</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Body (Required)</h4>
-                                <div class="code-block json">{
-    "token": "fcm_token_string"
-}</div>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم حذف التوكن بنجاح"
-}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Send Notification (Admin) -->
-                    <div class="endpoint">
-                        <div class="endpoint-header">
-                            <span class="method post">POST</span>
-                            <span class="endpoint-url">/admin/send-notification</span>
-                            <span class="auth-badge admin">أدمن فقط</span>
-                        </div>
-                        <div class="endpoint-desc">إرسال إشعار Push لمستخدم</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Body (Required)</h4>
-                                <table>
-                                    <thead>
-                                        <tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td><code>user_id</code> <span class="required-field">*</span></td><td>integer</td><td>معرف المستخدم</td></tr>
-                                        <tr><td><code>title</code> <span class="required-field">*</span></td><td>string</td><td>عنوان الإشعار</td></tr>
-                                        <tr><td><code>body</code> <span class="required-field">*</span></td><td>string</td><td>محتوى الإشعار</td></tr>
-                                        <tr><td><code>extra</code></td><td>array</td><td>بيانات إضافية</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم إرسال الإشعار بنجاح"
-}</div>
-                            </div>
-                        </div>
                     </div>
                     
                 </div>
             </div>
             
-            <!-- Admin Users Section -->
-            <div class="section" id="admin-users">
+            <!-- Admin Section -->
+            <div class="section" id="admin">
                 <div class="section-header">
-                    <h2>👥 إدارة المستخدمين (أدمن)</h2>
+                    <h2>👑 الإدارة</h2>
                     <span class="badge">Admin</span>
                 </div>
                 <div class="section-content">
                     
-                    <!-- List Users -->
+                    <h3 style="margin-bottom: 20px; color: #495057;">📊 إدارة المستخدمين</h3>
+                    
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method get">GET</span>
                             <span class="endpoint-url">/admin/users</span>
                             <span class="auth-badge admin">أدمن فقط</span>
                         </div>
-                        <div class="endpoint-desc">جلب قائمة المستخدمين</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Query Parameters (Optional)</h4>
-                                <table>
-                                    <thead>
-                                        <tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td><code>search</code></td><td>string</td><td>البحث بالاسم أو البريد</td></tr>
-                                        <tr><td><code>role</code></td><td>string</td><td>user, owner, admin</td></tr>
-                                        <tr><td><code>is_verified</code></td><td>boolean</td><td>موثق أم لا</td></tr>
-                                        <tr><td><code>is_banned</code></td><td>boolean</td><td>محظور أم لا</td></tr>
-                                        <tr><td><code>per_page</code></td><td>integer</td><td>عدد العناصر</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": {
-        "data": [
-            {
-                "id": 1,
-                "name": "مدير النظام",
-                "email": "admin@almiftah.com",
-                "phone": "0912345678",
-                "role": "admin",
-                "is_active": true,
-                "is_banned": false,
-                "email_verified_at": "2026-03-26T10:00:00.000000Z"
-            }
-        ]
-    }
-}</div>
-                            </div>
-                        </div>
+                        <div class="endpoint-desc">قائمة المستخدمين</div>
                     </div>
                     
-                    <!-- Verify User -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method post">POST</span>
                             <span class="endpoint-url">/admin/users/{id}/verify</span>
                             <span class="auth-badge admin">أدمن فقط</span>
                         </div>
-                        <div class="endpoint-desc">توثيق مستخدم</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم توثيق المستخدم بنجاح"
-}</div>
-                            </div>
-                        </div>
+                        <div class="endpoint-desc">تفعيل مستخدم</div>
                     </div>
                     
-                    <!-- Ban User -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method post">POST</span>
@@ -2282,26 +1149,8 @@ Content-Type: application/json
                             <span class="auth-badge admin">أدمن فقط</span>
                         </div>
                         <div class="endpoint-desc">حظر مستخدم</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Body (Optional)</h4>
-                                <div class="code-block json">{
-    "reason": "انتهاك شروط الاستخدام"
-}</div>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم حظر المستخدم بنجاح"
-}</div>
-                            </div>
-                        </div>
                     </div>
                     
-                    <!-- Unban User -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method post">POST</span>
@@ -2309,93 +1158,10 @@ Content-Type: application/json
                             <span class="auth-badge admin">أدمن فقط</span>
                         </div>
                         <div class="endpoint-desc">إلغاء حظر مستخدم</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم إلغاء حظر المستخدم بنجاح"
-}</div>
-                            </div>
-                        </div>
                     </div>
                     
-                    <!-- Toggle Active -->
-                    <div class="endpoint">
-                        <div class="endpoint-header">
-                            <span class="method post">POST</span>
-                            <span class="endpoint-url">/admin/users/{id}/toggle-active</span>
-                            <span class="auth-badge admin">أدمن فقط</span>
-                        </div>
-                        <div class="endpoint-desc">تبديل حالة تفعيل المستخدم</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم تحديث حالة المستخدم بنجاح",
-    "data": {
-        "is_active": true
-    }
-}</div>
-                            </div>
-                        </div>
-                    </div>
+                    <h3 style="margin: 30px 0 20px; color: #495057;">🏠 إدارة العقارات</h3>
                     
-                    <!-- Promote to Admin -->
-                    <div class="endpoint">
-                        <div class="endpoint-header">
-                            <span class="method post">POST</span>
-                            <span class="endpoint-url">/auth/promote-to-admin</span>
-                            <span class="auth-badge admin">أدمن فقط</span>
-                        </div>
-                        <div class="endpoint-desc">ترقية مستخدم لأدمن</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Body (Required)</h4>
-                                <p>واحد منهما مطلوب:</p>
-                                <table>
-                                    <thead>
-                                        <tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td><code>id</code></td><td>integer</td><td>معرف المستخدم</td></tr>
-                                        <tr><td><code>email</code></td><td>string</td><td>بريد المستخدم</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم ترقية المستخدم إلى مسؤول بنجاح",
-    "data": {
-        "id": 5,
-        "name": "مستخدم جديد",
-        "email": "user@example.com",
-        "role": "admin"
-    }
-}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <!-- Admin Properties Section -->
-            <div class="section" id="admin-properties">
-                <div class="section-header">
-                    <h2>🏢 إدارة العقارات (أدمن)</h2>
-                    <span class="badge">Admin</span>
-                </div>
-                <div class="section-content">
-                    
-                    <!-- List All Properties -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method get">GET</span>
@@ -2403,44 +1169,8 @@ Content-Type: application/json
                             <span class="auth-badge admin">أدمن فقط</span>
                         </div>
                         <div class="endpoint-desc">جلب جميع العقارات</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Query Parameters (Optional)</h4>
-                                <table>
-                                    <thead>
-                                        <tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td><code>type</code></td><td>string</td><td>sale, rent</td></tr>
-                                        <tr><td><code>status</code></td><td>string</td><td>pending, active, rented, sold, rejected</td></tr>
-                                        <tr><td><code>region_id</code></td><td>integer</td><td>معرف المنطقة</td></tr>
-                                        <tr><td><code>search</code></td><td>string</td><td>البحث</td></tr>
-                                        <tr><td><code>per_page</code></td><td>integer</td><td>عدد العناصر</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": {
-        "data": [
-            {
-                "id": 1,
-                "title": "شقة فاخرة",
-                "status": "pending",
-                "owner": {"id": 2, "name": "مالك"}
-            }
-        ]
-    }
-}</div>
-                            </div>
-                        </div>
                     </div>
                     
-                    <!-- Approve Property -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method post">POST</span>
@@ -2448,30 +1178,8 @@ Content-Type: application/json
                             <span class="auth-badge admin">أدمن فقط</span>
                         </div>
                         <div class="endpoint-desc">الموافقة على عقار</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="info-box">
-                                <h4>📝 ملاحظة</h4>
-                                <p>عند الموافقة، سيتم إرسال إشعار Push للمالك.</p>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم الموافقة على العقار بنجاح",
-    "data": {
-        "id": 1,
-        "status": "active",
-        "approved_by": 1,
-        "approved_at": "2026-03-26T14:00:00.000000Z"
-    }
-}</div>
-                            </div>
-                        </div>
                     </div>
                     
-                    <!-- Reject Property -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method post">POST</span>
@@ -2480,86 +1188,26 @@ Content-Type: application/json
                         </div>
                         <div class="endpoint-desc">رفض عقار</div>
                         <div class="endpoint-body">
-                            
                             <div class="block">
-                                <h4>Body (Required)</h4>
+                                <h4>Body</h4>
                                 <div class="code-block json">{
-    "reason": "المعلومات غير مكتملة"
-}</div>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم رفض العقار بنجاح",
-    "data": {
-        "id": 1,
-        "status": "rejected",
-        "rejection_reason": "المعلومات غير مكتملة"
-    }
+    "reason": "سبب الرفض"
 }</div>
                             </div>
                         </div>
                     </div>
                     
-                </div>
-            </div>
-            
-            <!-- Admin Contact Section -->
-            <div class="section" id="admin-contact">
-                <div class="section-header">
-                    <h2>📬 إدارة التواصل (أدمن)</h2>
-                    <span class="badge">Admin</span>
-                </div>
-                <div class="section-content">
+                    <h3 style="margin: 30px 0 20px; color: #495057;">📬 إدارة طلبات التواصل</h3>
                     
-                    <!-- List Contact Requests -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method get">GET</span>
                             <span class="endpoint-url">/admin/contact-requests</span>
                             <span class="auth-badge admin">أدمن فقط</span>
                         </div>
-                        <div class="endpoint-desc">جلب طلبات التواصل</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block">
-                                <h4>Query Parameters (Optional)</h4>
-                                <table>
-                                    <thead>
-                                        <tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td><code>status</code></td><td>string</td><td>pending, approved, rejected</td></tr>
-                                        <tr><td><code>per_page</code></td><td>integer</td><td>عدد العناصر</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": {
-        "data": [
-            {
-                "id": 1,
-                "property": {"id": 1, "title": "شقة"},
-                "user": {"id": 2, "name": "أحمد"},
-                "name": "أحمد محمد",
-                "phone": "0912345678",
-                "message": "أريد معرفة المزيد",
-                "status": "pending"
-            }
-        ]
-    }
-}</div>
-                            </div>
-                        </div>
+                        <div class="endpoint-desc">قائمة طلبات التواصل</div>
                     </div>
                     
-                    <!-- Approve Contact Request -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method post">POST</span>
@@ -2568,31 +1216,13 @@ Content-Type: application/json
                         </div>
                         <div class="endpoint-desc">الموافقة على طلب التواصل</div>
                         <div class="endpoint-body">
-                            
                             <div class="info-box">
-                                <h4>📝 ملاحظة</h4>
-                                <p>عند الموافقة، سيرى المستخدم رقم هاتف المالك.</p>
-                            </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم الموافقة على طلب التواصل بنجاح",
-    "data": {
-        "id": 1,
-        "status": "approved",
-        "owner": {
-            "name": "مكتب المفتاح",
-            "phone": "0912345678"
-        }
-    }
-}</div>
+                                <h4>📱 ما يحدث</h4>
+                                <p>يُرسل إشعار للمستخدم بالموافقة مع رقم المالك.</p>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Reject Contact Request -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method post">POST</span>
@@ -2601,62 +1231,30 @@ Content-Type: application/json
                         </div>
                         <div class="endpoint-desc">رفض طلب التواصل</div>
                         <div class="endpoint-body">
-                            
                             <div class="block">
-                                <h4>Body (Required)</h4>
+                                <h4>Body</h4>
                                 <div class="code-block json">{
-    "reason": "العقار غير متاح"
+    "reason": "سبب الرفض"
 }</div>
                             </div>
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "message": "تم رفض طلب التواصل بنجاح"
-}</div>
+                            <div class="info-box">
+                                <h4>📱 ما يحدث</h4>
+                                <p>يُرسل إشعار للمستخدم بالرفض.</p>
                             </div>
                         </div>
                     </div>
                     
-                </div>
-            </div>
-            
-            <!-- Admin Dashboard Section -->
-            <div class="section" id="admin-dashboard">
-                <div class="section-header">
-                    <h2>📊 لوحة التحكم (أدمن)</h2>
-                    <span class="badge">Admin</span>
-                </div>
-                <div class="section-content">
+                    <h3 style="margin: 30px 0 20px; color: #495057;">📊 لوحة التحكم</h3>
                     
-                    <!-- Statistics -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method get">GET</span>
                             <span class="endpoint-url">/admin/statistics</span>
                             <span class="auth-badge admin">أدمن فقط</span>
                         </div>
-                        <div class="endpoint-desc">إحصائيات عامة</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": {
-        "total_users": 23,
-        "total_properties": 36,
-        "total_contact_requests": 21,
-        "pending_properties": 5,
-        "pending_contact_requests": 3
-    }
-}</div>
-                            </div>
-                        </div>
+                        <div class="endpoint-desc">الإحصائيات</div>
                     </div>
                     
-                    <!-- Recent Activities -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method get">GET</span>
@@ -2664,77 +1262,24 @@ Content-Type: application/json
                             <span class="auth-badge admin">أدمن فقط</span>
                         </div>
                         <div class="endpoint-desc">الأنشطة الأخيرة</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": {
-        "properties": [...],
-        "contact_requests": [...],
-        "users": [...]
-    }
-}</div>
-                            </div>
-                        </div>
                     </div>
                     
-                    <!-- Properties By Region -->
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="method get">GET</span>
                             <span class="endpoint-url">/admin/dashboard/properties-by-region</span>
                             <span class="auth-badge admin">أدمن فقط</span>
                         </div>
-                        <div class="endpoint-desc">إحصائيات العقارات حسب المنطقة</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": [
-        {
-            "region_name": "محافظة دمشق",
-            "total_properties": 15,
-            "active": 10,
-            "pending": 3,
-            "sold": 2
-        }
-    ]
-}</div>
-                            </div>
-                        </div>
+                        <div class="endpoint-desc">العقارات حسب المنطقة</div>
                     </div>
                     
-                    <!-- Properties By Type -->
                     <div class="endpoint">
                         <div class="endpoint-header">
-                            <span class="method get">GET</span>
-                            <span class="endpoint-url">/admin/dashboard/properties-by-type</span>
+                            <span class="method post">POST</span>
+                            <span class="endpoint-url">/admin/send-notification</span>
                             <span class="auth-badge admin">أدمن فقط</span>
                         </div>
-                        <div class="endpoint-desc">إحصائيات العقارات حسب النوع</div>
-                        <div class="endpoint-body">
-                            
-                            <div class="block success-response">
-                                <h4>استجابة ناجحة (200)</h4>
-                                <div class="code-block json">{
-    "success": true,
-    "data": [
-        {
-            "property_type": "apartment",
-            "count": 20
-        },
-        {
-            "property_type": "house",
-            "count": 8
-        }
-    ]
-}</div>
-                            </div>
-                        </div>
+                        <div class="endpoint-desc">إرسال إشعار Push</div>
                     </div>
                     
                 </div>
@@ -2743,8 +1288,9 @@ Content-Type: application/json
         </div>
         
         <div class="footer">
-            <p>📄 توثيق API - شركة المفتاح</p>
+            <p>📄 توثيق API - شركة المفتاح للعقارات</p>
             <p>© 2026 جميع الحقوق محفوظة</p>
+            <p>النسخة 2.0.0 - مارس 2026</p>
         </div>
     </div>
 </body>
