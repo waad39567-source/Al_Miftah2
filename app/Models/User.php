@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Models;
 
@@ -21,12 +21,15 @@ class User extends Authenticatable
         'is_banned',
         'banned_at',
         'ban_reason',
-        'email_verified_at'
+        'email_verified_at',
+        'firebase_uid',
+        'auth_provider',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'firebase_uid',
     ];
 
     protected $casts = [
@@ -84,7 +87,7 @@ class User extends Authenticatable
 
     /*
     |--------------------------------------------------------------------------
-    | Helpers (اختياري احترافي)
+    | Helpers
     |--------------------------------------------------------------------------
     */
 
@@ -96,5 +99,10 @@ class User extends Authenticatable
     public function isOwner()
     {
         return $this->role === 'owner';
+    }
+
+    public function isFirebaseUser(): bool
+    {
+        return !is_null($this->firebase_uid);
     }
 }

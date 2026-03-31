@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AdminController;
@@ -56,6 +56,7 @@ Route::middleware('auth:sanctum')->prefix('notifications')->group(function () {
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/firebase', [AuthController::class, 'firebaseLogin']);
     Route::post('/verify-email', [AuthController::class, 'verifyEmail']);
     Route::get('/verify-email', [AuthController::class, 'verifyEmail']);
     Route::post('/send-verification-email', [AuthController::class, 'sendVerificationEmail']);
@@ -67,6 +68,7 @@ Route::prefix('auth')->group(function () {
         Route::delete('/account', [AccountController::class, 'deleteAccount']);
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/change-password', [AuthController::class, 'changePassword']);
+        Route::post('/firebase/set-password', [AuthController::class, 'setFirebasePassword']);
     });
 });
 
@@ -196,3 +198,4 @@ Route::middleware('auth:sanctum')->group(function () {
         });
     });
 });
+
