@@ -24,7 +24,7 @@ class AuthService
 
     public function login(array $data): array|false|null|string
     {
-        $loginField = $data['email'];
+        $loginField = $data['login'];
 
         $user = User::where('email', $loginField)
             ->orWhere('phone', $loginField)

@@ -23,7 +23,7 @@ class AuthRequest extends FormRequest
                 'phone'    => 'required|string|min:8|max:20',
             ],
             'login' => [
-                'email'    => 'required|string|min:8|max:50',
+                'login'    => 'required|string|min:7|max:50',
                 'password' => 'required|string',
             ],
             'changePassword' => [
