@@ -15,6 +15,7 @@ class PropertyResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'price' => (float) $this->price,
+            'currency' => $this->currency,
             'type' => $this->type,
             'property_type' => $this->property_type,
             'area' => $this->area,
