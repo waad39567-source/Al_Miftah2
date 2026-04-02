@@ -91,6 +91,7 @@ class PropertyService
             'title' => $data['title'],
             'description' => $data['description'],
             'price' => $data['price'],
+            'currency' => $data['currency'] ?? null,
             'type' => $data['type'],
             'property_type' => $data['property_type'],
             'area' => $data['area'],
