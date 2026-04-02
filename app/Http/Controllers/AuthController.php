@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 /**
@@ -100,6 +101,7 @@ class AuthController extends Controller
                 'تم تسجيل الدخول بنجاح'
             );
         } catch (Throwable $e) {
+            if ($e instanceof ValidationException) throw $e;
             Log::error('Firebase login error: ' . $e->getMessage());
             return $this->errorResponse('حدث خطأ أثناء تسجيل الدخول', 500, null, $e->getMessage());
         }

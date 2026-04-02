@@ -13,7 +13,7 @@ class FirebaseAuthService
      */
     public function verifyIdToken(string $idToken): ?array
     {
-        $apiKey = env('FIREBASE_WEB_API_KEY');
+        $apiKey = config('firebase.web_api_key');
 
         if (empty($apiKey)) {
             Log::error('FIREBASE_WEB_API_KEY is not configured');
