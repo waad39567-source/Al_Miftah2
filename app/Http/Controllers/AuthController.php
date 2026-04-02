@@ -103,7 +103,7 @@ class AuthController extends Controller
         } catch (Throwable $e) {
             if ($e instanceof ValidationException) throw $e;
             Log::error('Firebase login error: ' . $e->getMessage());
-            return $this->errorResponse('حدث خطأ أثناء تسجيل الدخول', 500, null, $e->getMessage());
+            return $this->errorResponse('Firebase Error: ' . $e->getMessage(), 500);
         }
     }
 
