@@ -80,7 +80,10 @@ class AuthController extends Controller
     public function firebaseLogin(Request $request): JsonResponse
     {
         try {
-            $request->validate(['id_token' => 'required|string']);
+            $request->validate([
+                'id_token' => 'required|string',
+                'phone'    => 'nullable|string|min:8|max:20',
+            ]);
 
             $firebaseUser = $this->firebaseAuthService->verifyIdToken($request->id_token);
 
@@ -90,9 +93,13 @@ class AuthController extends Controller
 
             $result = $this->authService->loginOrRegisterWithFirebase(
                 $firebaseUser,
-                $this->firebaseAuthService
+                $this->firebaseAuthService,
+                $request->phone
             );
 
+            if ($result === 'needs_phone') {
+                return $this->errorResponse('رقم الهاتف مطلوب لإكمال التسجيل', 422, ['needs_phone' => true]);
+            }
             if ($result === false)    return $this->errorResponse('الحساب غير مفعل', 403);
             if ($result === 'banned') return $this->errorResponse('الحساب محظور. تواصل مع الدعم', 403);
 

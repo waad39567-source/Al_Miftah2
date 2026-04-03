@@ -42,13 +42,13 @@ class AuthService
         return ['user' => $user, 'token' => $token];
     }
 
-    public function loginOrRegisterWithFirebase(array $firebaseUser, FirebaseAuthService $firebaseAuthService): array|false|string
+    public function loginOrRegisterWithFirebase(array $firebaseUser, FirebaseAuthService $firebaseAuthService, ?string $requestPhone = null): array|false|string
     {
         $uid      = $firebaseUser['localId'];
         $email    = $firebaseUser['email'] ?? null;
         $phone    = isset($firebaseUser['phoneNumber'])
             ? $firebaseAuthService->normalizePhone($firebaseUser['phoneNumber'])
-            : null;
+            : $requestPhone;
         $provider = $firebaseAuthService->detectProvider($firebaseUser);
 
         // 1. Find by firebase_uid
@@ -66,10 +66,14 @@ class AuthService
 
         if ($user) {
             $updates = [];
-            if (!$user->firebase_uid)                              $updates['firebase_uid']  = $uid;
-            if (!$user->auth_provider || $user->auth_provider === 'email') $updates['auth_provider'] = $provider;
+            if (!$user->firebase_uid)                                        $updates['firebase_uid']  = $uid;
+            if (!$user->auth_provider || $user->auth_provider === 'email')   $updates['auth_provider'] = $provider;
+            if (!$user->phone && $phone)                                     $updates['phone']         = $phone;
             if (!empty($updates)) $user->update($updates);
         } else {
+            if ($provider === 'google' && !$phone) {
+                return 'needs_phone';
+            }
             $user = $this->createFromFirebase($uid, $email, $phone, $provider, $firebaseUser);
         }
 
