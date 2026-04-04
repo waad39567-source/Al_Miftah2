@@ -20,7 +20,7 @@ class AuthRequest extends FormRequest
                 'name'     => 'required|string|max:255',
                 'email'    => 'nullable|string|email|max:255|unique:users',
                 'password' => 'required|string|min:8|confirmed',
-                'phone'    => 'required|string|min:8|max:20',
+                'phone'    => 'required|string|min:8|max:20|unique:users,phone',
             ],
             'login' => [
                 'login'    => 'required|string|min:7|max:50',

@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\AuthService;
 use App\Services\FirebaseAuthService;
 use App\Traits\ApiResponseTrait;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -39,9 +40,46 @@ class AuthController extends Controller
                 ['user' => new UserResource($result['user'])],
                 'تم إنشاء الحساب بنجاح', 201
             );
+        } catch (QueryException $e) {
+            if ((string) $e->getCode() === '23000') {
+                return $this->registerIntegrityErrorResponse($e);
+            }
+
+            Log::error('Register query error: ' . $e->getMessage(), [
+                'sql_state' => $e->getCode(),
+                'error_info' => $e->errorInfo ?? null,
+            ]);
+
+            return $this->errorResponse('حدث خطأ أثناء إنشاء الحساب', 500);
         } catch (Throwable $e) {
-            return $this->errorResponse('حدث خطأ أثناء إنشاء الحساب', 500, null, $e->getMessage());
+            Log::error('Register unexpected error: ' . $e->getMessage());
+            return $this->errorResponse('حدث خطأ أثناء إنشاء الحساب', 500);
         }
+    }
+
+    private function registerIntegrityErrorResponse(QueryException $e): JsonResponse
+    {
+        $dbMessage = strtolower((string) ($e->errorInfo[2] ?? $e->getMessage()));
+
+        if (str_contains($dbMessage, 'users_phone_unique')) {
+            return $this->errorResponse('رقم الهاتف مستخدم مسبقاً', 422, [
+                'phone' => ['رقم الهاتف مستخدم مسبقاً'],
+            ]);
+        }
+
+        if (str_contains($dbMessage, 'users_email_unique')) {
+            return $this->errorResponse('البريد الإلكتروني مستخدم مسبقاً', 422, [
+                'email' => ['البريد الإلكتروني مستخدم مسبقاً'],
+            ]);
+        }
+
+        if (str_contains($dbMessage, "column 'email' cannot be null")) {
+            return $this->errorResponse('البريد الإلكتروني مطلوب', 422, [
+                'email' => ['البريد الإلكتروني مطلوب'],
+            ]);
+        }
+
+        return $this->errorResponse('بيانات التسجيل غير صالحة', 422);
     }
 
     public function login(AuthRequest $request): JsonResponse
