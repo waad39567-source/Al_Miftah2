@@ -13,7 +13,9 @@ class UpdateEmailRequest extends FormRequest
 
     public function rules(): array
     {
-        $userId = $this->user()?->id;
+        $user = $this->user();
+        $userId = $user?->id;
+        $isGoogleUser = $user && ($user->auth_provider === 'google' || is_null($user->password));
 
         return [
             'email' => [
@@ -22,7 +24,7 @@ class UpdateEmailRequest extends FormRequest
                 'max:255',
                 "unique:users,email,{$userId}",
             ],
-            'password' => ['required', 'string'],
+            'password' => [$isGoogleUser ? 'nullable' : 'required', 'string'],
         ];
     }
 

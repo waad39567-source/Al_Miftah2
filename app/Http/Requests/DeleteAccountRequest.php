@@ -13,8 +13,11 @@ class DeleteAccountRequest extends FormRequest
 
     public function rules(): array
     {
+        $user = $this->user();
+        $isGoogleUser = $user && ($user->auth_provider === 'google' || is_null($user->password));
+
         return [
-            'password' => ['required', 'string'],
+            'password' => [$isGoogleUser ? 'nullable' : 'required', 'string'],
         ];
     }
 

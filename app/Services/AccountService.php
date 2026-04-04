@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Storage;
 
 class AccountService
 {
-    public function deleteAccount(User $user, string $password): bool
+    public function deleteAccount(User $user, ?string $password): bool
     {
-        if (!Hash::check($password, $user->password)) {
+        $isGoogleUser = $user->auth_provider === 'google' || is_null($user->password);
+
+        if (!$isGoogleUser && !Hash::check($password, $user->password)) {
             return false;
         }
 
@@ -51,9 +53,11 @@ class AccountService
         return true;
     }
 
-    public function updateEmail(User $user, string $email, string $password): bool
+    public function updateEmail(User $user, string $email, ?string $password): bool
     {
-        if (!Hash::check($password, $user->password)) {
+        $isGoogleUser = $user->auth_provider === 'google' || is_null($user->password);
+
+        if (!$isGoogleUser && !Hash::check($password, $user->password)) {
             return false;
         }
 

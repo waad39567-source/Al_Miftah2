@@ -15,13 +15,12 @@ class FavoriteController extends Controller
         $perPage = $request->per_page ?? 20;
 
         $favorites = PropertyFavorite::where('user_id', $request->user()->id)
-            ->with(['property' => function ($query) {
-                $query->where('status', 'active');
-            }])
+            ->whereHas('property', fn($q) => $q->where('status', 'active'))
+            ->with('property')
             ->orderByDesc('created_at')
             ->paginate($perPage);
 
-        $properties = $favorites->pluck('property')->filter();
+        $properties = $favorites->pluck('property');
 
         return response()->json([
             'success' => true,
